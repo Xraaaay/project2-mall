@@ -19,7 +19,7 @@ public class UserController {
     // TODO HandlerMethod
 
     /***
-     * shaohuina
+     * @auther shaohuina
      * @param map
      * @return
      */
@@ -43,6 +43,15 @@ public class UserController {
     @RequestMapping("login10086")
     public BaseRespVO login10086(String username) {
         return BaseRespVO.ok(username);
+    }
+
+    /**
+    * @Description: zah
+    * @Date: 2022/7/13
+    **/
+    @RequestMapping("login10000")
+    public BaseRespVO info(String username,String password,Integer age){
+        return BaseRespVO.ok(username + ";" + password + ";" + age);
     }
 }
 
