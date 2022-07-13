@@ -27,9 +27,14 @@ public class UserController {
     public BaseRespVO login10000(@RequestBody Map map){
         String username = (String) map.get("username");
         String password = (String) map.get("password");
-        return BaseRespVO.ok(username+"--"+password);
+        return BaseRespVO.ok(username + "--" + password);
     }
 
+    /**
+     * @param username
+     * @return
+     * @Auther fanxing056
+     */
     @RequestMapping("login10010")
     public BaseRespVO login10010(String username) {
         return BaseRespVO.ok(username);
