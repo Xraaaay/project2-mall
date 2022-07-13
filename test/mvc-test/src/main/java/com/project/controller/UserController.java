@@ -40,6 +40,9 @@ public class UserController {
         return BaseRespVO.ok(username);
     }
 
+    /**
+     * xrw
+     */
     @RequestMapping("login10086")
     public BaseRespVO login10086(String username) {
         return BaseRespVO.ok(username);
