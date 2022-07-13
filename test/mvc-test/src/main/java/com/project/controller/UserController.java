@@ -17,6 +17,12 @@ public class UserController {
     UserService userService;
 
     // TODO HandlerMethod
+
+    /***
+     * shaohuina
+     * @param map
+     * @return
+     */
     @RequestMapping("login")
     public BaseRespVO login(@RequestBody Map map){
         String username = (String) map.get("username");
