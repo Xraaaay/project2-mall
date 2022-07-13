@@ -24,12 +24,15 @@ public class UserController {
         return BaseRespVO.ok(username+"--"+password);
     }
 
-    @RequestMapping("login10086")
-    public BaseRespVO login10086(String username, String password) {
-
+    @RequestMapping("login10010")
+    public BaseRespVO login10010(String username) {
         return BaseRespVO.ok(username);
     }
 
+    @RequestMapping("login10086")
+    public BaseRespVO login10086(String username) {
+        return BaseRespVO.ok(username);
+    }
 }
 
 
