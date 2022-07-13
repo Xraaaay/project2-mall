@@ -72,18 +72,10 @@ public class UserController {
     * @Date: 2022/7/13
     **/
      @RequestMapping("login3333")
-    public BaseRespVO login1111(String username,String password,Integer age){
+    public BaseRespVO login3333(String username,String password,Integer age){
         return BaseRespVO.ok(username + "--" + password + "--" + age);
     }
 
-    /*
-    * lyx
-    * 2022年7月13日
-    * */
-    @RequestMapping("test2")
-    public BaseRespVO login1111(String username,String password,Integer age){
-        return BaseRespVO.ok(username + "--" + password + "--" + age);
-    }
 }
 
 
