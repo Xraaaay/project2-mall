@@ -19,13 +19,13 @@ public class UserController {
     /***
      * @auther shaohuina
      * @param map
-     * @return
+     * @return:返回用户名、密码
      */
     @RequestMapping("login")
     public BaseRespVO login(@RequestBody Map map){
         String username = (String) map.get("username");
         String password = (String) map.get("password");
-        return BaseRespVO.ok(username + "--" + password);
+        return BaseRespVO.ok("hello, "+username + "--" + password);
     }
 
     /**
