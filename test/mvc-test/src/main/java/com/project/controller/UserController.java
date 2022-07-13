@@ -17,13 +17,24 @@ public class UserController {
     UserService userService;
 
     // TODO HandlerMethod
+
+    /***
+     * shaohuina
+     * @param map
+     * @return
+     */
     @RequestMapping("login")
-    public BaseRespVO login(@RequestBody Map map){
+    public BaseRespVO login(@RequestBody Map map) {
         String username = (String) map.get("username");
         String password = (String) map.get("password");
-        return BaseRespVO.ok(username+"--"+password);
+        return BaseRespVO.ok(username + "--" + password);
     }
 
+    /**
+     * @param username
+     * @return
+     * @Auther fanxing056
+     */
     @RequestMapping("login10010")
     public BaseRespVO login10010(String username) {
         return BaseRespVO.ok(username);
