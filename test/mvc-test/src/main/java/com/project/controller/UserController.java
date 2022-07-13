@@ -16,8 +16,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    // TODO HandlerMethod
-
     /***
      * @auther shaohuina
      * @param map
@@ -43,8 +41,8 @@ public class UserController {
     /**
      * xrw
      */
-    @RequestMapping("login10086")
-    public BaseRespVO login10086(String username) {
+    @RequestMapping("login666")
+    public BaseRespVO login666(String username) {
         return BaseRespVO.ok(username);
     }
 
