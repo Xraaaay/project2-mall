@@ -23,6 +23,11 @@ public class UserController {
         String password = (String) map.get("password");
         return BaseRespVO.ok(username+"--"+password);
     }
+
+    @RequestMapping("login10086")
+    public BaseRespVO login10086(String username, String password) {
+        return BaseRespVO.ok(username);
+    }
 }
 
 
