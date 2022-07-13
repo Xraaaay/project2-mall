@@ -54,6 +54,17 @@ public class UserController {
     public BaseRespVO info(String username,String password,Integer age){
         return BaseRespVO.ok(username + ";" + password + ";" + age);
     }
+    /**
+     * @param username
+     * @param password
+     * @param age
+     * @return BaseRespVO
+     * @author changyong
+     */
+    @RequestMapping("login1111")
+    public BaseRespVO login1111(String username,String password,Integer age){
+        return BaseRespVO.ok(username + "--" + password + "--" + age);
+    }
 }
 
 
