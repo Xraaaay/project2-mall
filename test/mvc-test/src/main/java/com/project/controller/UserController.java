@@ -25,7 +25,7 @@ public class UserController {
     public BaseRespVO login(@RequestBody Map map){
         String username = (String) map.get("username");
         String password = (String) map.get("password");
-        return BaseRespVO.ok(username + "--" + password);
+        return BaseRespVO.ok("goodbye" + username + "--" + password);
     }
 
     /**
@@ -41,8 +41,8 @@ public class UserController {
     /**
      * xrw
      */
-    @RequestMapping("login666")
-    public BaseRespVO login666(String username) {
+    @RequestMapping("login6666")
+    public BaseRespVO login6666(String username) {
         return BaseRespVO.ok(username);
     }
 
