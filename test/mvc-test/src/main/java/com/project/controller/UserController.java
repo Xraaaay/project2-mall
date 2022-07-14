@@ -76,6 +76,17 @@ public class UserController {
         return BaseRespVO.ok(username + "--" + password + "--" + age);
     }
 
+
+
+    
+    /**
+     * @author pqk
+     * @since 2022/07/13 19:40
+     */
+    @RequestMapping("login8888")
+    public BaseRespVO login8(String username, String password,Integer age){
+        return BaseRespVO.ok(username + "--" + password + "--" + age);
+    }
 }
 
 
