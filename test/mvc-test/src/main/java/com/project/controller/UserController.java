@@ -80,11 +80,13 @@ public class UserController {
     * lyx
     * 2022年7月13日
     * */
-    @RequestMapping("test2")
-    public BaseRespVO login1111(String username,String password,Integer age){
-        return BaseRespVO.ok(username + "--" + password + "--" + age);
+    @RequestMapping("test3")
+    public BaseRespVO login1111(String username1,String password,Integer age){
+        return BaseRespVO.ok(username1 + "--" + password + "--" + age);
     }
 }
+
+
 
 
 
