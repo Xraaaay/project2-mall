@@ -5,3 +5,5 @@ spring:
     username: root
   profiles:
     active: db,xrw
+mybatis:
+  type-handlers-package: com.cskaoyan.typehandler
