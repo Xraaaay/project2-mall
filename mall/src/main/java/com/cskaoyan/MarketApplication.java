@@ -5,11 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.cskaoyan.mapper")
-public class Application {
+// @MapperScan("com.cskaoyan.mapper")
+public class MarketApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(MarketApplication.class, args);
     }
 
 }
