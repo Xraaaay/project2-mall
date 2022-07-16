@@ -29,7 +29,9 @@ public class LogServiceImpl implements LogService {
         PageHelper.startPage(info.getPage(), info.getLimit());
 
         MarketLogExample example = new MarketLogExample();
+        example.setOrderByClause(info.getSort() + " " + info.getOrder());
         MarketLogExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(false);
         if (name != null) {
             criteria.andAdminLike("%" + name + "%");
         }

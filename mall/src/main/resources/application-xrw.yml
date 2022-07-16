@@ -1,3 +1,6 @@
 spring:
   datasource:
     password: 123456
+logging:
+  level:
+    com.cskaoyan.mapper: debug

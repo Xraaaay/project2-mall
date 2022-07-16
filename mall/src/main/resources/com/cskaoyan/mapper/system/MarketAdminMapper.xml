@@ -135,7 +135,7 @@
       #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}, 
       #{roleIds,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.cskaoyan.bean.system.MarketAdmin">
+  <insert id="insertSelective" parameterType="com.cskaoyan.bean.system.MarketAdmin" useGeneratedKeys="true" keyProperty="id">
     insert into market_admin
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

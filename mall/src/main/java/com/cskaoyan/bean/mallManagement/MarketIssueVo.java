@@ -1,18 +1,23 @@
-package com.cskaoyan.bean;
-
+package com.cskaoyan.bean.mallManagement;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
+/**
+ * 同步更新修改时间
+ * @author shn
+ * @date 2022/07/16 20:37
+ */
 
-public class MarketIssue {
+public class MarketIssueVo {
     private Integer id;
 
     private String question;
 
     private String answer;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date addTime;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date updateTime;
 
     private Boolean deleted;

@@ -76,7 +76,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, title, subtitle, price, read_count, pic_url, sort_order, goods, add_time, update_time, 
+    id, title, subtitle, content, price, read_count, pic_url, sort_order, goods, add_time, update_time,
     deleted
   </sql>
   <sql id="Blob_Column_List">
@@ -142,7 +142,7 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.cskaoyan.bean.MarketTopic">
+  <insert id="insertSelective" parameterType="com.cskaoyan.bean.MarketTopic" useGeneratedKeys="true" keyProperty="id">
     insert into market_topic
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

@@ -225,4 +225,12 @@
       deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectLongitudeConfig" resultType="com.cskaoyan.bean.marketConfig.MarketSystemVO">
+        select key_name,key_value from market_system where key_name like concat('%','mall','%')
+    </select>
+
+  <update id="UpdateLongitudeConfig">
+    update market_system set key_value = #{v} where key_name = #{k}
+  </update>
 </mapper>
