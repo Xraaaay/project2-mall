@@ -2,9 +2,12 @@ package com.cskaoyan.mapper;
 
 import com.cskaoyan.bean.MarketSystem;
 import com.cskaoyan.bean.MarketSystemExample;
+import com.cskaoyan.bean.marketConfig.MarketSystemVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.security.Key;
 import java.util.List;
+import java.util.Map;
 
 public interface MarketSystemMapper {
     long countByExample(MarketSystemExample example);
@@ -28,4 +31,10 @@ public interface MarketSystemMapper {
     int updateByPrimaryKeySelective(MarketSystem record);
 
     int updateByPrimaryKey(MarketSystem record);
+
+    List<MarketSystemVO> selectLongitudeConfig();
+
+
+
+    void UpdateLongitudeConfig(@Param("k") String key, @Param("v")String value);
 }
