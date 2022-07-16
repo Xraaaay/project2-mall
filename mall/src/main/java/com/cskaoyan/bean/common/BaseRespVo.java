@@ -1,4 +1,4 @@
-package com.cskaoyan.bean;
+package com.cskaoyan.bean.common;
 
 import lombok.Data;
 
@@ -14,7 +14,9 @@ public class BaseRespVo<T> {
 
     public static <T> BaseRespVo ok(T data) {
         BaseRespVo baseRespVo = new BaseRespVo();
+        baseRespVo.setErrno(0);
         baseRespVo.setData(data);
+        baseRespVo.setErrmsg("成功");
         return baseRespVo;
     }
 

@@ -1,7 +1,8 @@
-package com.cskaoyan.mapper;
+package com.cskaoyan.mapper.system;
 
-import com.cskaoyan.bean.MarketRole;
-import com.cskaoyan.bean.MarketRoleExample;
+import com.cskaoyan.bean.system.MarketRole;
+import com.cskaoyan.bean.system.MarketRoleExample;
+import com.cskaoyan.bean.system.MarketRoleOptionsVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public interface MarketRoleMapper {
     int insertSelective(MarketRole record);
 
     List<MarketRole> selectByExample(MarketRoleExample example);
+
+    List<MarketRoleOptionsVo> selectOptionsByExample(MarketRoleExample example);
 
     MarketRole selectByPrimaryKey(Integer id);
 
