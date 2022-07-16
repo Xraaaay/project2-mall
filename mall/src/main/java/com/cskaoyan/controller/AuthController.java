@@ -1,6 +1,7 @@
 package com.cskaoyan.controller;
 
 import com.cskaoyan.bean.*;
+import com.cskaoyan.bean.common.BaseRespVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,8 +35,6 @@ public class AuthController {
         return BaseRespVo.ok(loginUserData);
     }
 
-
-
     @RequestMapping("info")
     public BaseRespVo info(String token) {
 
@@ -56,4 +55,6 @@ public class AuthController {
 
         return BaseRespVo.ok(infoData);
     }
+
+
 }
