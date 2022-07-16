@@ -1,7 +1,7 @@
-package com.cskaoyan.mapper;
+package com.cskaoyan.mapper.system;
 
-import com.cskaoyan.bean.MarketLog;
-import com.cskaoyan.bean.MarketLogExample;
+import com.cskaoyan.bean.system.MarketLog;
+import com.cskaoyan.bean.system.MarketLogExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

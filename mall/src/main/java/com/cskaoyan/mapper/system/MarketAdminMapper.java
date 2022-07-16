@@ -1,7 +1,8 @@
-package com.cskaoyan.mapper;
+package com.cskaoyan.mapper.system;
 
-import com.cskaoyan.bean.MarketAdmin;
-import com.cskaoyan.bean.MarketAdminExample;
+import com.cskaoyan.bean.system.MarketAdmin;
+import com.cskaoyan.bean.system.MarketAdminExample;
+import com.cskaoyan.bean.system.MarketAdminListVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public interface MarketAdminMapper {
     int insertSelective(MarketAdmin record);
 
     List<MarketAdmin> selectByExample(MarketAdminExample example);
+
+    List<MarketAdminListVo> selectListByExample(MarketAdminExample example);
 
     MarketAdmin selectByPrimaryKey(Integer id);
 

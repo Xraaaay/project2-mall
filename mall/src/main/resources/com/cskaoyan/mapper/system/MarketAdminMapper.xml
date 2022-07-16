@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cskaoyan.mapper.MarketRoleMapper">
-  <resultMap id="BaseResultMap" type="com.cskaoyan.bean.MarketRole">
+<mapper namespace="com.cskaoyan.mapper.system.MarketAdminMapper">
+  <resultMap id="BaseResultMap" type="com.cskaoyan.bean.system.MarketAdmin">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="desc" jdbcType="VARCHAR" property="desc" />
-    <result column="enabled" jdbcType="BIT" property="enabled" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
+    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="deleted" jdbcType="BIT" property="deleted" />
+    <result column="role_ids" jdbcType="VARCHAR" property="roleIds" />
+  </resultMap>
+  <resultMap id="ListResultMap" type="com.cskaoyan.bean.system.MarketAdminListVo">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="username" jdbcType="VARCHAR" property="username"/>
+    <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+    <result column="role_ids" jdbcType="VARCHAR" property="roleIds"/>
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -69,15 +78,30 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, desc, enabled, add_time, update_time, deleted
+    id, username, password, last_login_ip, last_login_time, avatar, add_time, update_time, 
+    deleted, role_ids
   </sql>
-  <select id="selectByExample" parameterType="com.cskaoyan.bean.MarketRoleExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.cskaoyan.bean.system.MarketAdminExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from market_role
+    from market_admin
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectListByExample" resultMap="ListResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    id, username, avatar, role_ids
+    from market_admin
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -88,41 +112,49 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from market_role
+    from market_admin
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from market_role
+    delete from market_admin
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.cskaoyan.bean.MarketRoleExample">
-    delete from market_role
+  <delete id="deleteByExample" parameterType="com.cskaoyan.bean.system.MarketAdminExample">
+    delete from market_admin
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.cskaoyan.bean.MarketRole">
-    insert into market_role (id, name, desc, 
-      enabled, add_time, update_time, 
-      deleted)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}, 
-      #{enabled,jdbcType=BIT}, #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{deleted,jdbcType=BIT})
+  <insert id="insert" parameterType="com.cskaoyan.bean.system.MarketAdmin">
+    insert into market_admin (id, username, password, 
+      last_login_ip, last_login_time, avatar, 
+      add_time, update_time, deleted, 
+      role_ids)
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{lastLoginIp,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{avatar,jdbcType=VARCHAR}, 
+      #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}, 
+      #{roleIds,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.cskaoyan.bean.MarketRole">
-    insert into market_role
+  <insert id="insertSelective" parameterType="com.cskaoyan.bean.system.MarketAdmin" useGeneratedKeys="true" keyProperty="id">
+    insert into market_admin
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="name != null">
-        name,
+      <if test="username != null">
+        username,
       </if>
-      <if test="desc != null">
-        desc,
+      <if test="password != null">
+        password,
       </if>
-      <if test="enabled != null">
-        enabled,
+      <if test="lastLoginIp != null">
+        last_login_ip,
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time,
+      </if>
+      <if test="avatar != null">
+        avatar,
       </if>
       <if test="addTime != null">
         add_time,
@@ -133,19 +165,28 @@
       <if test="deleted != null">
         deleted,
       </if>
+      <if test="roleIds != null">
+        role_ids,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
       </if>
-      <if test="desc != null">
-        #{desc,jdbcType=VARCHAR},
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
       </if>
-      <if test="enabled != null">
-        #{enabled,jdbcType=BIT},
+      <if test="lastLoginIp != null">
+        #{lastLoginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null">
+        #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="avatar != null">
+        #{avatar,jdbcType=VARCHAR},
       </if>
       <if test="addTime != null">
         #{addTime,jdbcType=TIMESTAMP},
@@ -156,28 +197,37 @@
       <if test="deleted != null">
         #{deleted,jdbcType=BIT},
       </if>
+      <if test="roleIds != null">
+        #{roleIds,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.cskaoyan.bean.MarketRoleExample" resultType="java.lang.Long">
-    select count(*) from market_role
+  <select id="countByExample" parameterType="com.cskaoyan.bean.system.MarketAdminExample" resultType="java.lang.Long">
+    select count(*) from market_admin
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update market_role
+    update market_admin
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.name != null">
-        name = #{record.name,jdbcType=VARCHAR},
+      <if test="record.username != null">
+        username = #{record.username,jdbcType=VARCHAR},
       </if>
-      <if test="record.desc != null">
-        desc = #{record.desc,jdbcType=VARCHAR},
+      <if test="record.password != null">
+        password = #{record.password,jdbcType=VARCHAR},
       </if>
-      <if test="record.enabled != null">
-        enabled = #{record.enabled,jdbcType=BIT},
+      <if test="record.lastLoginIp != null">
+        last_login_ip = #{record.lastLoginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastLoginTime != null">
+        last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.avatar != null">
+        avatar = #{record.avatar,jdbcType=VARCHAR},
       </if>
       <if test="record.addTime != null">
         add_time = #{record.addTime,jdbcType=TIMESTAMP},
@@ -188,35 +238,47 @@
       <if test="record.deleted != null">
         deleted = #{record.deleted,jdbcType=BIT},
       </if>
+      <if test="record.roleIds != null">
+        role_ids = #{record.roleIds,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update market_role
+    update market_admin
     set id = #{record.id,jdbcType=INTEGER},
-      name = #{record.name,jdbcType=VARCHAR},
-      desc = #{record.desc,jdbcType=VARCHAR},
-      enabled = #{record.enabled,jdbcType=BIT},
+      username = #{record.username,jdbcType=VARCHAR},
+      password = #{record.password,jdbcType=VARCHAR},
+      last_login_ip = #{record.lastLoginIp,jdbcType=VARCHAR},
+      last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
+      avatar = #{record.avatar,jdbcType=VARCHAR},
       add_time = #{record.addTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      deleted = #{record.deleted,jdbcType=BIT}
+      deleted = #{record.deleted,jdbcType=BIT},
+      role_ids = #{record.roleIds,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cskaoyan.bean.MarketRole">
-    update market_role
+  <update id="updateByPrimaryKeySelective" parameterType="com.cskaoyan.bean.system.MarketAdmin">
+    update market_admin
     <set>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
       </if>
-      <if test="desc != null">
-        desc = #{desc,jdbcType=VARCHAR},
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
       </if>
-      <if test="enabled != null">
-        enabled = #{enabled,jdbcType=BIT},
+      <if test="lastLoginIp != null">
+        last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="avatar != null">
+        avatar = #{avatar,jdbcType=VARCHAR},
       </if>
       <if test="addTime != null">
         add_time = #{addTime,jdbcType=TIMESTAMP},
@@ -227,17 +289,23 @@
       <if test="deleted != null">
         deleted = #{deleted,jdbcType=BIT},
       </if>
+      <if test="roleIds != null">
+        role_ids = #{roleIds,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cskaoyan.bean.MarketRole">
-    update market_role
-    set name = #{name,jdbcType=VARCHAR},
-      desc = #{desc,jdbcType=VARCHAR},
-      enabled = #{enabled,jdbcType=BIT},
+  <update id="updateByPrimaryKey" parameterType="com.cskaoyan.bean.system.MarketAdmin">
+    update market_admin
+    set username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      avatar = #{avatar,jdbcType=VARCHAR},
       add_time = #{addTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      deleted = #{deleted,jdbcType=BIT}
+      deleted = #{deleted,jdbcType=BIT},
+      role_ids = #{roleIds,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
