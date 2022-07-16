@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * @author stone
- * @date 2022/04/06 10:13
+ * 通用数据
+ *
+ * @author fanxing056
+ * @date 2022/07/16 14:26
  */
 
 @NoArgsConstructor
@@ -20,7 +22,6 @@ public class CommonData<T> {
     private Integer limit;
     private Integer page;
     private List<T> list;
-
 
     public static CommonData data(PageInfo pageInfo) {
         CommonData data = new CommonData();
