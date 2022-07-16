@@ -1,20 +1,18 @@
 package com.cskaoyan.controller.promotion;
 
+import com.cskaoyan.bean.MarketAd;
+import com.cskaoyan.bean.common.BaseRespVo;
+import com.cskaoyan.bean.common.CommonData;
+import com.cskaoyan.service.promotion.AdService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 /**
  * 广告管理
  *
  * @author fanxing056
  * @date 2022/07/16 09:19
  */
-
-import com.cskaoyan.bean.BaseRespVo;
-import com.cskaoyan.bean.MarketAd;
-import com.cskaoyan.bean.common.CommonData;
-import com.cskaoyan.service.promotion.AdService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-
 @RestController
 @RequestMapping("admin/ad")
 public class AdController {
