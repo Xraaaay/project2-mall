@@ -1,7 +1,6 @@
 package com.cskaoyan.controller.system;
 
 import com.cskaoyan.bean.common.BasePageInfo;
-import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.MarketLog;
 import com.cskaoyan.service.system.LogService;

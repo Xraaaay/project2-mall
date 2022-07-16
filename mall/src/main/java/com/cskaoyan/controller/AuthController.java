@@ -1,7 +1,6 @@
 package com.cskaoyan.controller;
 
 import com.cskaoyan.bean.*;
-import com.cskaoyan.bean.common.BaseRespVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

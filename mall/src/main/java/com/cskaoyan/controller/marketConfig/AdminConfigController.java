@@ -1,18 +1,14 @@
 package com.cskaoyan.controller.marketConfig;
 
 
-import com.cskaoyan.bean.MarketSystem;
-import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.marketConfig.MarketSystemBO;
 import com.cskaoyan.bean.marketConfig.MarketSystemVO;
 
 import com.cskaoyan.service.marketConfig.ConfigService;
 import com.cskaoyan.util.BeanToMapUtil;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

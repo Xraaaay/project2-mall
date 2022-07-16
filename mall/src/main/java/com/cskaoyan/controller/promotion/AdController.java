@@ -12,7 +12,6 @@ package com.cskaoyan.controller.promotion;
 =======
 >>>>>>> 5303e2da51d6aa7af7ec4c172b0bf01c6b864d4d
 import com.cskaoyan.bean.MarketAd;
-import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.promotion.AdService;
 import org.springframework.beans.factory.annotation.Autowired;

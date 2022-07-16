@@ -1,7 +1,6 @@
 package com.cskaoyan.controller.system;
 
 import com.cskaoyan.bean.common.BasePageInfo;
-import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.*;
 import com.cskaoyan.service.system.AdminService;
@@ -10,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 /**
  * 系统管理模块：管理员管理
