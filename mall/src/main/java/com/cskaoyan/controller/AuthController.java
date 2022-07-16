@@ -34,8 +34,6 @@ public class AuthController {
         return BaseRespVo.ok(loginUserData);
     }
 
-
-
     @RequestMapping("info")
     public BaseRespVo info(String token) {
 
@@ -56,4 +54,6 @@ public class AuthController {
 
         return BaseRespVo.ok(infoData);
     }
+
+
 }

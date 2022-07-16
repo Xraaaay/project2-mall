@@ -9,8 +9,9 @@ import lombok.Data;
 @Data
 public class BaseRespVo<T> {
     T data;
-    String errmsg;
     int errno;
+    String errmsg;
+
 
     public static <T> BaseRespVo ok(T data) {
         BaseRespVo baseRespVo = new BaseRespVo();
