@@ -1,0 +1,7 @@
+spring:
+  # 静态资源访问
+  web:
+    resources:
+      static-locations: file:d:/temp/
+  mvc:
+    static-path-pattern: /storage/**
