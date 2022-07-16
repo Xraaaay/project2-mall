@@ -2,7 +2,7 @@ package com.cskaoyan.service.system;
 
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
-import com.cskaoyan.bean.system.MarketAdminListVo;
+import com.cskaoyan.bean.system.*;
 
 /**
  * 系统管理模块：管理员管理
@@ -20,4 +20,25 @@ public interface AdminService {
      * @date 2022/7/16 14:29
      */
     CommonData<MarketAdminListVo> list(BasePageInfo info, String name);
+
+    /**
+     * 添加一条管理员信息
+     * @author Xrw
+     * @date 2022/7/16 20:53
+     */
+    MarketAdminCreateVo create(MarketAdmin admin);
+
+    /**
+     * 修改一条管理员信息
+     * @author Xrw
+     * @date 2022/7/16 22:05
+     */
+    MarketAdminUpdateVo update(MarketAdmin admin);
+
+    /**
+     * 删除一条管理员信息
+     * @author Xrw
+     * @date 2022/7/16 22:55
+     */
+    void delete(MarketAdmin admin);
 }

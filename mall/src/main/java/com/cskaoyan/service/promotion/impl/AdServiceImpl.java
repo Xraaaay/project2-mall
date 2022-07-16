@@ -1,6 +1,5 @@
 package com.cskaoyan.service.promotion.impl;
 
-
 import com.cskaoyan.bean.MarketAd;
 import com.cskaoyan.bean.MarketAdExample;
 import com.cskaoyan.bean.common.CommonData;

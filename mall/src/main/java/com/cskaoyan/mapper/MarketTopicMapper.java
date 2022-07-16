@@ -15,6 +15,7 @@ public interface MarketTopicMapper {
 
     int insert(MarketTopic record);
 
+    // 获取自增主键id
     int insertSelective(MarketTopic record);
 
     List<MarketTopic> selectByExampleWithBLOBs(MarketTopicExample example);

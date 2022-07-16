@@ -30,7 +30,9 @@ public class RoleServiceImpl implements RoleService {
         PageHelper.startPage(info.getPage(), info.getLimit());
 
         MarketRoleExample example = new MarketRoleExample();
+        example.setOrderByClause(info.getSort() + " " + info.getOrder());
         MarketRoleExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(false);
         if (name != null) {
             criteria.andNameLike("%" + name + "%");
         }
