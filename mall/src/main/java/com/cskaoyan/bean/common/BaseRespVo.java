@@ -13,6 +13,7 @@ public class BaseRespVo<T> {
     String errmsg;
 
 
+
     public static <T> BaseRespVo ok(T data) {
         BaseRespVo baseRespVo = new BaseRespVo();
         baseRespVo.setErrno(0);
