@@ -9,8 +9,8 @@ import lombok.Data;
 @Data
 public class BaseRespVo<T> {
     T data;
-    String errmsg;
-    int errno;
+    String errmsg = "成功";
+    int errno = 0;
 
     public static <T> BaseRespVo ok(T data) {
         BaseRespVo baseRespVo = new BaseRespVo();
@@ -24,18 +24,21 @@ public class BaseRespVo<T> {
         baseRespVo.setErrmsg(msg);
         return baseRespVo;
     }
+
     public static <T> BaseRespVo invalidData() {
         BaseRespVo baseRespVo = new BaseRespVo();
         baseRespVo.setErrno(504);
         baseRespVo.setErrmsg("更新数据已失效");
         return baseRespVo;
     }
+
     public static <T> BaseRespVo invalidParameter(String msg) {
         BaseRespVo baseRespVo = new BaseRespVo();
         baseRespVo.setErrno(400);
         baseRespVo.setErrmsg(msg);
         return baseRespVo;
     }
+
     public static <T> BaseRespVo unAuthc() {
         BaseRespVo baseRespVo = new BaseRespVo();
         baseRespVo.setErrno(502);

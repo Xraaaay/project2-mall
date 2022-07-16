@@ -1,6 +1,7 @@
 package com.cskaoyan.bean;
 
 import java.util.Date;
+import java.util.List;
 
 public class MarketCategory {
     private Integer id;
@@ -26,6 +27,16 @@ public class MarketCategory {
     private Date updateTime;
 
     private Boolean deleted;
+
+    private List<MarketCategory> children;
+
+    public List<MarketCategory> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<MarketCategory> children) {
+        this.children = children;
+    }
 
     public Integer getId() {
         return id;

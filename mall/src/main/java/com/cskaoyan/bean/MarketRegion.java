@@ -1,5 +1,7 @@
 package com.cskaoyan.bean;
 
+import java.util.List;
+
 public class MarketRegion {
     private Integer id;
 
@@ -10,6 +12,8 @@ public class MarketRegion {
     private Byte type;
 
     private Integer code;
+
+    private List<MarketRegion> children;
 
     public Integer getId() {
         return id;
@@ -49,5 +53,13 @@ public class MarketRegion {
 
     public void setCode(Integer code) {
         this.code = code;
+    }
+
+    public List<MarketRegion> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<MarketRegion> children) {
+        this.children = children;
     }
 }
