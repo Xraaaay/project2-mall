@@ -1,9 +1,9 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /
 spring:
-  datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/cskaoyan_market?useSSL=false&characterEncoding=utf-8
-    username: root
   profiles:
-    active: db,xrw
+    active: db,pqk
 mybatis:
   type-handlers-package: com.cskaoyan.typehandler
