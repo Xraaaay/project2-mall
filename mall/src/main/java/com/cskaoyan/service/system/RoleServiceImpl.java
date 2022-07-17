@@ -1,17 +1,20 @@
 package com.cskaoyan.service.system;
 
-import com.cskaoyan.anno.SystemPage;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.MarketRole;
+import com.cskaoyan.bean.system.MarketRoleCreateVo;
 import com.cskaoyan.bean.system.MarketRoleExample;
 import com.cskaoyan.bean.system.MarketRoleOptionsVo;
+import com.cskaoyan.exception.system.InvalidParamException;
 import com.cskaoyan.mapper.system.MarketRoleMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,5 +54,43 @@ public class RoleServiceImpl implements RoleService {
         PageHelper.startPage(1, roles.size());
         PageInfo<MarketRoleOptionsVo> pageInfo = new PageInfo<>(roles);
         return CommonData.data(pageInfo);
+    }
+
+    @Transactional
+    @Override
+    public MarketRoleCreateVo create(MarketRole role) {
+        checkName(role.getName());
+
+        role.setAddTime(new Date());
+        role.setUpdateTime(new Date());
+        roleMapper.insertSelective(role);
+
+        MarketRoleCreateVo createVo = new MarketRoleCreateVo();
+        createVo.setId(role.getId());
+        createVo.setName(role.getName());
+        createVo.setDesc(role.getDesc());
+        createVo.setAddTime(role.getAddTime());
+        createVo.setUpdateTime(role.getUpdateTime());
+        return createVo;
+    }
+
+    @Transactional
+    @Override
+    public void update(MarketRole role) {
+        checkName(role.getName());
+
+        role.setUpdateTime(new Date());
+        roleMapper.updateByPrimaryKeySelective(role);
+    }
+
+    private void checkName(String name) {
+        MarketRoleExample example = new MarketRoleExample();
+        MarketRoleExample.Criteria criteria = example.createCriteria();
+        criteria.andNameEqualTo(name);
+
+        List<MarketRole> roles = roleMapper.selectByExample(example);
+        if (roles.size() > 0) {
+            throw new InvalidParamException("角色名已存在！");
+        }
     }
 }

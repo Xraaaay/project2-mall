@@ -3,6 +3,7 @@ package com.cskaoyan.service.system;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.MarketRole;
+import com.cskaoyan.bean.system.MarketRoleCreateVo;
 import com.cskaoyan.bean.system.MarketRoleOptionsVo;
 
 /**
@@ -28,4 +29,20 @@ public interface RoleService {
      * @date 2022/7/16 18:03
      */
     CommonData<MarketRoleOptionsVo> options();
+
+    /**
+     * 新增一条角色信息
+     * @throws com.cskaoyan.exception.system.InvalidParamException 角色名已存在
+     * @author Xrw
+     * @date 2022/7/17 16:16
+     */
+    MarketRoleCreateVo create(MarketRole role);
+
+    /**
+     * 修改一条角色信息
+     * @throws com.cskaoyan.exception.system.InvalidParamException 角色名已存在
+     * @author Xrw
+     * @date 2022/7/17 16:45
+     */
+    void update(MarketRole role);
 }
