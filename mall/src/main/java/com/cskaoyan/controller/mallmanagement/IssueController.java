@@ -28,6 +28,9 @@ public class IssueController {
     @GetMapping("list")
     public BaseRespSuccessVo list(BaseParam baseParam,String question){
         IssueAndKeywordListVo issueList =issueService.issueList(baseParam,question);
+        if (issueList==null) {
+            return BaseRespSuccessVo.failed(null);
+        }
         return BaseRespSuccessVo.success(issueList);
     }
 
@@ -41,6 +44,9 @@ public class IssueController {
     @PostMapping("update")
     public BaseRespSuccessVo update(@RequestBody MarketIssue marketIssue){
         MarketIssue issue=issueService.updateIssue(marketIssue);
+        if (issue==null) {
+            return BaseRespSuccessVo.failed(null);
+        }
         return BaseRespSuccessVo.success(issue);
     }
 
