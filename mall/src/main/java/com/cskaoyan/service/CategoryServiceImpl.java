@@ -22,7 +22,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 返回商品类目列表
-     * @return com.cskaoyan.bean.BaseRespVo<com.cskaoyan.bean.po.MarktCategoryListPo>
+     *
+     * @return com.cskaoyan.bean.po.MarktCategoryListPo
      * @author changyong
      * @since 2022/07/16 22:33
      */
@@ -31,12 +32,14 @@ public class CategoryServiceImpl implements CategoryService {
         //获取list
         MarketCategoryExample marketCategoryExample1 = new MarketCategoryExample();
         MarketCategoryExample.Criteria criteria1 = marketCategoryExample1.createCriteria();
-        criteria1.andPidEqualTo(0);
+        criteria1.andPidEqualTo(0)
+                .andDeletedEqualTo(false);
         List<MarketCategory> marketCategories1 = marketCategoryMapper.selectByExample(marketCategoryExample1);
         for (MarketCategory marketCategory : marketCategories1) {
             MarketCategoryExample marketCategoryExample2 = new MarketCategoryExample();
             MarketCategoryExample.Criteria criteria2 = marketCategoryExample2.createCriteria();
-            criteria2.andPidEqualTo(marketCategory.getId());
+            criteria2.andPidEqualTo(marketCategory.getId())
+                    .andDeletedEqualTo(false);
             List<MarketCategory> marketCategories2 = marketCategoryMapper.selectByExample(marketCategoryExample2);
             marketCategory.setChildren(marketCategories2);
         }
@@ -64,12 +67,35 @@ public class CategoryServiceImpl implements CategoryService {
      * 删除商品类目
      *
      * @param marketCategory
-     * @return com.cskaoyan.bean.BaseRespVo
+     * @return void
      * @author changyong
      * @since 2022/07/16 22:31
      */
     @Override
     public void delete(MarketCategory marketCategory) {
-        marketCategoryMapper.deleteByPrimaryKey(marketCategory.getId());
+        //创建marketCategory并赋值
+        MarketCategory marketCategory1 = new MarketCategory();
+        marketCategory1.setId(marketCategory.getId());
+        marketCategory1.setDeleted(true);
+        marketCategory1.setUpdateTime(new Date());
+        //update
+        marketCategoryMapper.updateByPrimaryKeySelective(marketCategory1);
+    }
+
+    /**
+     * 添加商品类目
+     *
+     * @param marketCategory
+     * @return com.cskaoyan.bean.MarketCategory
+     * @author changyong
+     * @since 2022/07/17 19:26
+     */
+    @Override
+    public MarketCategory create(MarketCategory marketCategory) {
+        Date addTime = new Date();
+        marketCategory.setAddTime(addTime);
+        marketCategory.setUpdateTime(addTime);
+        marketCategoryMapper.insertSelective(marketCategory);
+        return marketCategory;
     }
 }

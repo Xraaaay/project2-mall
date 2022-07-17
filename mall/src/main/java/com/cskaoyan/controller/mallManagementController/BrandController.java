@@ -1,6 +1,7 @@
 package com.cskaoyan.controller.mallManagementController;
 
 import com.cskaoyan.bean.MarketBrand;
+import com.cskaoyan.bean.bo.MarketBrandCreateBo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.po.MarketBrandListPo;
 import com.cskaoyan.service.BrandService;
@@ -40,7 +41,6 @@ public class BrandController {
         MarketBrandListPo marketBrandListPo = brandService.list(page, limit, id, name, sort, order);
         return BaseRespVo.ok(marketBrandListPo);
     }
-    //@RequestMapping("create")
 
     /**
      * 编辑修改品牌商
@@ -55,9 +55,32 @@ public class BrandController {
         MarketBrand update = brandService.update(marketBrand);
         return BaseRespVo.ok(update);
     }
+
+    /**
+     * 删除品牌商信息
+     *
+     * @param marketBrand
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author changyong
+     * @since 2022/07/17 18:22
+     */
     @RequestMapping("delete")
-    public BaseRespVo delete(@RequestBody MarketBrand marketBrand){
+    public BaseRespVo delete(@RequestBody MarketBrand marketBrand) {
         brandService.delete(marketBrand);
         return BaseRespVo.ok(null);
+    }
+
+    /**
+     * 添加品牌商信息
+     *
+     * @param marketBrandCreateBo
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author changyong
+     * @since 2022/07/17 19:09
+     */
+    @RequestMapping("create")
+    public BaseRespVo create(@RequestBody MarketBrandCreateBo marketBrandCreateBo) {
+        MarketBrand marketBrand = brandService.create(marketBrandCreateBo);
+        return BaseRespVo.ok(marketBrand);
     }
 }

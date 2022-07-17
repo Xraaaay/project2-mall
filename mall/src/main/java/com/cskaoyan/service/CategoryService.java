@@ -11,7 +11,8 @@ import com.cskaoyan.bean.po.MarktCategoryListPo;
 public interface CategoryService {
     /**
      * 返回商品类目列表
-     * @return com.cskaoyan.bean.BaseRespVo<com.cskaoyan.bean.po.MarktCategoryListPo>
+     *
+     * @return com.cskaoyan.bean.po.MarktCategoryListPo
      * @author changyong
      * @since 2022/07/16 22:33
      */
@@ -31,9 +32,19 @@ public interface CategoryService {
      * 删除商品类目
      *
      * @param marketCategory
-     * @return com.cskaoyan.bean.BaseRespVo
+     * @return void
      * @author changyong
      * @since 2022/07/16 22:31
      */
     void delete(MarketCategory marketCategory);
+
+    /**
+     * 添加商品类目
+     *
+     * @param marketCategory
+     * @return com.cskaoyan.bean.MarketCategory
+     * @author changyong
+     * @since 2022/07/17 19:26
+     */
+    MarketCategory create(MarketCategory marketCategory);
 }
