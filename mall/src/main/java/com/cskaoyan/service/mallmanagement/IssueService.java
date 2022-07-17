@@ -1,4 +1,4 @@
-package com.cskaoyan.mallManagementService;
+package com.cskaoyan.service.mallmanagement;
 
 import com.cskaoyan.bean.MarketIssue;
 import com.cskaoyan.bean.mallManagement.BaseParam;
@@ -11,9 +11,11 @@ import com.cskaoyan.bean.mallManagement.IssueAndKeywordListVo;
  */
 public interface IssueService {
     /*查询全部issue*/
-    IssueAndKeywordListVo issueList(BaseParam baseParam);
+    IssueAndKeywordListVo issueList(BaseParam baseParam,String question);
     /*编辑问题*/
     MarketIssue updateIssue(MarketIssue marketIssue);
     /*删除问题*/
     void deleteIssue(MarketIssue marketIssue);
+    /*添加问题*/
+    MarketIssue addIssue(MarketIssue marketIssue);
 }
