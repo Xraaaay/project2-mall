@@ -2,20 +2,18 @@ package com.cskaoyan.service.system;
 
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
-import com.cskaoyan.bean.system.MarketRole;
-import com.cskaoyan.bean.system.MarketRoleCreateVo;
-import com.cskaoyan.bean.system.MarketRoleExample;
-import com.cskaoyan.bean.system.MarketRoleOptionsVo;
+import com.cskaoyan.bean.system.*;
 import com.cskaoyan.exception.system.InvalidParamException;
+import com.cskaoyan.mapper.system.MarketPermissionMapper;
 import com.cskaoyan.mapper.system.MarketRoleMapper;
+import com.cskaoyan.mapper.system.MarketRolePermissionMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Xrw
@@ -26,6 +24,12 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     MarketRoleMapper roleMapper;
+
+    @Autowired
+    MarketRolePermissionMapper systemPermissionMapper;
+
+    @Autowired
+    MarketPermissionMapper assignedPermissionMapper;
 
     // @SystemPage
     @Override
@@ -90,6 +94,89 @@ public class RoleServiceImpl implements RoleService {
         marketRole.setUpdateTime(new Date());
         marketRole.setDeleted(true);
         roleMapper.updateByPrimaryKeySelective(marketRole);
+    }
+
+    @Transactional
+    @Override
+    public void getPermissions(SystemPermissions systemPermissions) {
+        for (SystemPermissions.First first : systemPermissions.getSystemPermissions()) {
+
+            MarketRolePermission firstPermission = new MarketRolePermission();
+            firstPermission.setId(first.getId());
+            firstPermission.setLabel(first.getLabel());
+            systemPermissionMapper.insertSelective(firstPermission);
+
+            for (SystemPermissions.First.Second second : first.getChildren()) {
+
+                MarketRolePermission secondPermission = new MarketRolePermission();
+                secondPermission.setId(second.getId());
+                secondPermission.setLabel(second.getLabel());
+                secondPermission.setPid(firstPermission.getPrimaryKey());
+                systemPermissionMapper.insertSelective(secondPermission);
+
+                for (SystemPermissions.First.Second.Third third : second.getChildren()) {
+
+                    MarketRolePermission thirdPermission = new MarketRolePermission();
+                    thirdPermission.setId(third.getId());
+                    thirdPermission.setLabel(third.getLabel());
+                    thirdPermission.setApi(third.getApi());
+                    thirdPermission.setPid(secondPermission.getPrimaryKey());
+                    systemPermissionMapper.insertSelective(thirdPermission);
+                }
+            }
+        }
+    }
+
+    @Override
+    public Map<String, Object> permissions(Integer roleId) {
+        // 全部权限
+        List<MarketRolePermission> allPermissions = systemPermissionMapper.selectByExample(null);
+
+        // TODO XRW 将数据库数据转换成json对象，简化
+        List<SystemPermissions.First> systemPermissions = new ArrayList<>();
+
+        for (MarketRolePermission first : allPermissions) {
+            if (first.getPid() == null) {
+                // 是一级权限
+                SystemPermissions.First f = new SystemPermissions.First();
+                f.setId(first.getId());
+                f.setLabel(first.getLabel());
+                f.setChildren(new ArrayList<>());
+                systemPermissions.add(f);
+
+                for (int i = 0; i < allPermissions.size(); i++) {
+                    MarketRolePermission second = allPermissions.get(i);
+                    if (first.getPrimaryKey().equals(second.getPid())) {
+                        // 是二级权限
+                        SystemPermissions.First.Second s = new SystemPermissions.First.Second();
+                        s.setId(second.getId());
+                        s.setLabel(second.getLabel());
+                        s.setChildren(new ArrayList<>());
+                        f.getChildren().add(s);
+
+                        for (int j = 0; j < allPermissions.size(); j++) {
+                            MarketRolePermission third = allPermissions.get(j);
+                            // 是三级权限
+                            if (second.getPrimaryKey().equals(third.getPid())) {
+                                SystemPermissions.First.Second.Third t = new SystemPermissions.First.Second.Third();
+                                t.setId(third.getId());
+                                t.setLabel(third.getLabel());
+                                t.setApi(third.getApi());
+                                s.getChildren().add(t);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 当前角色已有权限
+        MarketPermission assignedPermissions = assignedPermissionMapper.selectByPrimaryKey(roleId);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("systemPermissions", systemPermissions);
+        map.put("assignedPermissions", assignedPermissions);
+        return map;
     }
 
     private void checkName(MarketRole role) {
