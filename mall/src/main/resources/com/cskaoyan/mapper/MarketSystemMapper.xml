@@ -233,4 +233,12 @@
   <update id="UpdateLongitudeConfig">
     update market_system set key_value = #{v} where key_name = #{k}
   </update>
+
+  <select id="selectExpressConfig" resultType="com.cskaoyan.bean.marketConfig.MarketExpreessVO">
+    select key_name,key_value from market_system where key_name like concat('%','express','%')
+   </select>
+
+  <update id="UpdateExpressConfig">
+    update market_system set key_value = #{v} where key_name = #{k}
+  </update>
 </mapper>

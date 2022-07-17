@@ -2,6 +2,7 @@ package com.cskaoyan.mapper;
 
 import com.cskaoyan.bean.MarketSystem;
 import com.cskaoyan.bean.MarketSystemExample;
+import com.cskaoyan.bean.marketConfig.MarketExpreessVO;
 import com.cskaoyan.bean.marketConfig.MarketSystemVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,4 +38,8 @@ public interface MarketSystemMapper {
 
 
     void UpdateLongitudeConfig(@Param("k") String key, @Param("v")String value);
+
+    List<MarketExpreessVO> selectExpressConfig();
+
+    void UpdateExpressConfig(@Param("k") String key,@Param("v") String value);
 }
