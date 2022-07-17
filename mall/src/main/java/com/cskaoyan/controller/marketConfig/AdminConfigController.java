@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @author lyx
  */
 @RestController
-@RequestMapping("/admin/config")
+@RequestMapping("admin/config")
 public class AdminConfigController {
     @Autowired
     ConfigService configService;
@@ -37,8 +37,6 @@ public class AdminConfigController {
         Map<String, String> map = BeanToMapUtil.beanToMap(systemBO);
         configService.updateData(map);
         return BaseRespVo.ok(null);
-
-
     }
 
 

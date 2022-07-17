@@ -23,6 +23,7 @@ public interface AdminService {
 
     /**
      * 添加一条管理员信息
+     * @exception com.cskaoyan.exception.system.InvalidParamException 用户名已存在
      * @author Xrw
      * @date 2022/7/16 20:53
      */

@@ -1,6 +1,7 @@
 package com.cskaoyan.service.promotion;
 
 import com.cskaoyan.bean.MarketTopic;
+import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
 
 import java.util.List;
@@ -18,17 +19,14 @@ public interface TopicService {
     /**
      * 获取专题列表
      *
-     * @param page
-     * @param limit
+     * @param basePageInfo
      * @param title
      * @param subtitle
-     * @param sort
-     * @param order
      * @return com.cskaoyan.bean.common.CommonData<com.cskaoyan.bean.MarketTopic>
      * @author fanxing056
      * @date 2022/07/16 21:06
      */
-    CommonData<MarketTopic> list(Integer page, Integer limit, String title, String subtitle, String sort, String order);
+    CommonData<MarketTopic> list(BasePageInfo basePageInfo, String title, String subtitle);
 
     /**
      * 根据id获取专题信息，以及专题相关商品信息

@@ -1,6 +1,7 @@
 package com.cskaoyan.service.promotion;
 
 import com.cskaoyan.bean.MarketAd;
+import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
 
 
@@ -16,17 +17,14 @@ public interface AdService {
     /**
      * 获取广告列表，分页
      *
-     * @param page
-     * @param limit
-     * @param sort
-     * @param order
+     * @param pageInfo
      * @param name
      * @param content
      * @return com.cskaoyan.bean.common.CommonData<com.cskaoyan.bean.MarketAd>
      * @author fanxing056
      * @date 2022/07/16 15:31
      */
-    CommonData<MarketAd> query(Integer page, Integer limit, String sort, String order, String name, String content);
+    CommonData<MarketAd> query(BasePageInfo pageInfo, String name, String content);
 
     /**
      * 新增一条广告

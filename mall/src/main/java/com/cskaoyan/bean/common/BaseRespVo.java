@@ -35,7 +35,7 @@ public class BaseRespVo<T> {
     public static <T> BaseRespVo invalidData() {
         BaseRespVo baseRespVo = new BaseRespVo();
         baseRespVo.setErrno(504);
-        baseRespVo.setErrmsg("更新数据已失效");
+        baseRespVo.setErrmsg("更新数据已失效，请刷新页面重新操作");
         return baseRespVo;
     }
     public static <T> BaseRespVo invalidParameter(String msg) {

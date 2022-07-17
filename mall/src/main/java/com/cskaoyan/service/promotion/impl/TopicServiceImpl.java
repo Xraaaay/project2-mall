@@ -4,6 +4,7 @@ import com.cskaoyan.bean.MarketGoods;
 import com.cskaoyan.bean.MarketGoodsExample;
 import com.cskaoyan.bean.MarketTopic;
 import com.cskaoyan.bean.MarketTopicExample;
+import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.mapper.MarketGoodsMapper;
 import com.cskaoyan.mapper.MarketTopicMapper;
@@ -19,8 +20,9 @@ import java.util.*;
 
 /**
  * 专题管理
- * @date 2022/07/16 21:02
+ *
  * @author fanxing056
+ * @date 2022/07/16 21:02
  */
 
 @Service
@@ -33,16 +35,15 @@ public class TopicServiceImpl implements TopicService {
     MarketGoodsMapper goodsMapper;
 
     @Override
-    public CommonData<MarketTopic> list(Integer page, Integer limit, String title,
-                                        String subtitle, String sort, String order) {
+    public CommonData<MarketTopic> list(BasePageInfo basePageInfo, String title, String subtitle) {
 
         // 开启分页
-        PageHelper.startPage(page, limit, sort + " " + order);
-
-        MarketTopicExample marketTopicExample = new MarketTopicExample();
-        MarketTopicExample.Criteria criteria = marketTopicExample.createCriteria();
+        PageHelper.startPage(basePageInfo.getPage(), basePageInfo.getLimit());
 
         // 添加条件
+        MarketTopicExample topicExample = new MarketTopicExample();
+        MarketTopicExample.Criteria criteria = topicExample.createCriteria();
+        topicExample.setOrderByClause(basePageInfo.getSort() + " " + basePageInfo.getOrder());
         criteria.andDeletedEqualTo(false);
         if (!StringUtil.isEmpty(title)) {
             criteria.andTitleLike("%" + title + "%");
@@ -51,10 +52,8 @@ public class TopicServiceImpl implements TopicService {
             criteria.andSubtitleLike("%" + subtitle + "%");
         }
 
-        List<MarketTopic> marketTopicList = topicMapper.selectByExample(marketTopicExample);
-
+        List<MarketTopic> marketTopicList = topicMapper.selectByExample(topicExample);
         PageInfo<MarketTopic> pageInfo = new PageInfo<>(marketTopicList);
-
         return CommonData.data(pageInfo);
     }
 
@@ -67,7 +66,7 @@ public class TopicServiceImpl implements TopicService {
 
         List<MarketGoods> goodsList = new ArrayList<>();
         // 查询商品表
-        if (topic.getGoods().length > 0 ) {
+        if (topic.getGoods().length > 0) {
             // 查询商品表获取商品信息
             MarketGoodsExample goodsExample = new MarketGoodsExample();
             // 设置条件

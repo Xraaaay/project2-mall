@@ -17,6 +17,7 @@ public class BeanToMapUtil {
             field.setAccessible(true);
             map.put(field.getName(), field.get(object));
         }
+
         return  map;
 
     }

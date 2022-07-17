@@ -1,6 +1,8 @@
 package com.cskaoyan.service.goods;
 
 import com.cskaoyan.bean.common.CommonData;
+import com.cskaoyan.bean.goodsVo.CatAndBrandVo;
+import com.cskaoyan.bean.goodsVo.DetailVo;
 
 /**
  * @author pqk
@@ -29,4 +31,22 @@ public interface GoodsService {
      * @date 2022/07/16 22:58
      */
     void delete(Integer id);
+
+    /**
+     * @description 商品回显
+     * @return
+     * @param id
+     * @author pqk
+     * @date 2022/07/17 16:13
+     */
+    DetailVo detail(Integer id);
+
+    /**
+     * @description 所有商品父子类
+     * @return
+     * @param
+     * @author pqk
+     * @date 2022/07/17 18:31
+     */
+    CatAndBrandVo catAndBrand();
 }

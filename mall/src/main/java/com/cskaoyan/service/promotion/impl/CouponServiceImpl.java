@@ -4,6 +4,7 @@ import com.cskaoyan.bean.MarketCoupon;
 import com.cskaoyan.bean.MarketCouponExample;
 import com.cskaoyan.bean.MarketCouponUser;
 import com.cskaoyan.bean.MarketCouponUserExample;
+import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.mapper.MarketCouponMapper;
 import com.cskaoyan.mapper.MarketCouponUserMapper;
@@ -35,14 +36,14 @@ public class CouponServiceImpl implements CouponService {
     MarketCouponUserMapper couponUserMapper;
 
     @Override
-    public CommonData<MarketCoupon> query(Integer page, Integer limit, String name,
-                                          Short type, Short status, String sort, String order) {
+    public CommonData<MarketCoupon> query(BasePageInfo basePageInfo, String name, Short type, Short status) {
 
         // 开启分页
-        PageHelper.startPage(page, limit, sort + " " + order);
+        PageHelper.startPage(basePageInfo.getPage(), basePageInfo.getLimit());
 
         MarketCouponExample marketCouponExample = new MarketCouponExample();
         MarketCouponExample.Criteria criteria = marketCouponExample.createCriteria();
+        marketCouponExample.setOrderByClause(basePageInfo.getSort() + " " + basePageInfo.getOrder());
 
         // 添加条件
         criteria.andDeletedEqualTo(false);
@@ -84,15 +85,15 @@ public class CouponServiceImpl implements CouponService {
 
     // TODO:优化重复代码
     @Override
-    public CommonData<MarketCouponUser> listUser(Integer page, Integer limit, Integer couponId, Integer userId, Short status, String sort, String order) {
+    public CommonData<MarketCouponUser> listUser(BasePageInfo basePageInfo, Integer couponId, Integer userId, Short status) {
 
         // 开启分页
-        PageHelper.startPage(page, limit, sort + " " + order);
-
-        MarketCouponUserExample marketCouponUserExample = new MarketCouponUserExample();
-        MarketCouponUserExample.Criteria criteria = marketCouponUserExample.createCriteria();
+        PageHelper.startPage(basePageInfo.getPage(), basePageInfo.getLimit());
 
         // 添加条件
+        MarketCouponUserExample marketCouponUserExample = new MarketCouponUserExample();
+        MarketCouponUserExample.Criteria criteria = marketCouponUserExample.createCriteria();
+        marketCouponUserExample.setOrderByClause(basePageInfo.getSort() + " " + basePageInfo.getOrder());
         criteria.andDeletedEqualTo(false);
         if (userId != null) {
             criteria.andUserIdEqualTo(userId);

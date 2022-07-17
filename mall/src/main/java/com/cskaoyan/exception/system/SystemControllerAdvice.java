@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class SystemControllerAdvice {
 
-    @ExceptionHandler(RuntimeException.class)
-    public BaseRespVo runtimeExceptionHandler(RuntimeException exception) {
+    @ExceptionHandler(InvalidParamException.class)
+    public BaseRespVo runtimeExceptionHandler(InvalidParamException exception) {
         return BaseRespVo.invalidParameter(exception.getMessage());
     }
 }
