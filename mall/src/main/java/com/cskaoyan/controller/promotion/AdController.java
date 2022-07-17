@@ -1,5 +1,6 @@
 package com.cskaoyan.controller.promotion;
 
+
 import com.cskaoyan.bean.MarketAd;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
