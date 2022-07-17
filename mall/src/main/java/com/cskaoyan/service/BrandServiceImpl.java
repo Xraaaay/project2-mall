@@ -2,6 +2,7 @@ package com.cskaoyan.service;
 
 import com.cskaoyan.bean.MarketBrand;
 import com.cskaoyan.bean.MarketBrandExample;
+import com.cskaoyan.bean.bo.MarketBrandCreateBo;
 import com.cskaoyan.bean.po.MarketBrandListPo;
 import com.cskaoyan.mapper.MarketBrandMapper;
 import com.github.pagehelper.PageHelper;
@@ -36,16 +37,16 @@ public class BrandServiceImpl implements BrandService {
      */
     @Override
     public MarketBrandListPo list(Integer page, Integer limit, Integer id, String name, String sort, String order) {
-        //TODO sort=add_time&order=descc  按添加时间逆序排列
         MarketBrandExample marketBrandExample1 = new MarketBrandExample();
         MarketBrandExample.Criteria criteria1 = marketBrandExample1.createCriteria();
-        //marketBrandExample1.setOrderByClause(order);
-        if (id != null&& ! "".equals(id)) {
+        marketBrandExample1.setOrderByClause(sort + " " + order);
+        if (id != null && !"".equals(id)) {
             criteria1.andIdEqualTo(id);
         }
-        if (name != null&& ! "".equals(name)) {
+        if (name != null && !"".equals(name)) {
             criteria1.andNameLike("%" + name + "%");
         }
+        criteria1.andDeletedEqualTo(false);
         long total = marketBrandMapper.countByExample(marketBrandExample1);
         Integer pages = Math.toIntExact((total / limit) + 1);
         //分页之后查询
@@ -79,6 +80,36 @@ public class BrandServiceImpl implements BrandService {
      */
     @Override
     public void delete(MarketBrand marketBrand) {
-        marketBrandMapper.deleteByPrimaryKey(marketBrand.getId());
+        // 创建marketBrand并赋值
+        MarketBrand marketBrand1 = new MarketBrand();
+        marketBrand1.setId(marketBrand.getId());
+        marketBrand1.setDeleted(true);
+        marketBrand1.setUpdateTime(new Date());
+        //update
+        marketBrandMapper.updateByPrimaryKeySelective(marketBrand1);
+    }
+
+    /**
+     * 添加品牌商信息
+     *
+     * @param marketBrandCreateBo
+     * @return com.cskaoyan.bean.MarketBrand
+     * @author changyong
+     * @since 2022/07/17 19:10
+     */
+    @Override
+    public MarketBrand create(MarketBrandCreateBo marketBrandCreateBo) {
+        //创建marketBrand并赋值
+        MarketBrand marketBrand = new MarketBrand();
+        Date addTime = new Date();
+        marketBrand.setAddTime(addTime);
+        marketBrand.setUpdateTime(addTime);
+        marketBrand.setDesc(marketBrandCreateBo.getDesc());
+        marketBrand.setFloorPrice(marketBrandCreateBo.getFloorPrice());
+        marketBrand.setName(marketBrandCreateBo.getName());
+        marketBrand.setPicUrl(marketBrandCreateBo.getPicUrl());
+        //插入
+        marketBrandMapper.insertSelective(marketBrand);
+        return marketBrand;
     }
 }

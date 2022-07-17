@@ -22,6 +22,7 @@ public class CategoryController {
 
     /**
      * 返回商品类目列表
+     *
      * @return com.cskaoyan.bean.BaseRespVo<com.cskaoyan.bean.po.MarktCategoryListPo>
      * @author changyong
      * @since 2022/07/16 22:33
@@ -36,7 +37,7 @@ public class CategoryController {
      * 修改商品类目
      *
      * @param marketCategory
-     * @return void
+     * @return com.cskaoyan.bean.BaseRespVo
      * @author changyong
      * @since 2022/07/16 22:32
      */
@@ -58,5 +59,19 @@ public class CategoryController {
     public BaseRespVo delete(@RequestBody MarketCategory marketCategory) {
         categoryService.delete(marketCategory);
         return BaseRespVo.ok(null);
+    }
+
+    /**
+     * 添加商品类目
+     *
+     * @param marketCategory
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author changyong
+     * @since 2022/07/17 19:25
+     */
+    @RequestMapping("create")
+    public BaseRespVo create(@RequestBody MarketCategory marketCategory) {
+        MarketCategory marketCategory1 = categoryService.create(marketCategory);
+        return BaseRespVo.ok(marketCategory1);
     }
 }

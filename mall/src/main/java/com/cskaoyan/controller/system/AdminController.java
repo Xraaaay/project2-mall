@@ -4,6 +4,7 @@ import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.*;
+import com.cskaoyan.exception.system.InvalidParamException;
 import com.cskaoyan.service.system.AdminService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +50,19 @@ public class AdminController {
         return BaseRespVo.ok(null);
     }
 
+    /**
+     * 校验用户名和密码的合法性
+     * @exception InvalidParamException
+     * @author Xrw
+     * @date 2022/7/17 16:12
+     */
     private void checkNameAndPwd(String username, String password) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            throw new RuntimeException("用户名和密码不能为空");
+            throw new InvalidParamException("用户名和密码不能为空");
         }
         // TODO XRW 用户名、密码校验
         if (username.length() < 6 || username.length() > 15) {
-            throw new RuntimeException("用户名不合法");
+            throw new InvalidParamException("用户名不合法");
         }
     }
 }

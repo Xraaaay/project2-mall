@@ -119,7 +119,7 @@
       #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.cskaoyan.bean.MarketCategory">
+  <insert id="insertSelective" parameterType="com.cskaoyan.bean.MarketCategory" useGeneratedKeys="true" keyProperty="id">
     insert into market_category
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -132,7 +132,7 @@
         keywords,
       </if>
       <if test="desc != null">
-        desc,
+        `desc`,
       </if>
       <if test="pid != null">
         pid,

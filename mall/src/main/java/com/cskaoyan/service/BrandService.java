@@ -1,6 +1,7 @@
 package com.cskaoyan.service;
 
 import com.cskaoyan.bean.MarketBrand;
+import com.cskaoyan.bean.bo.MarketBrandCreateBo;
 import com.cskaoyan.bean.po.MarketBrandListPo;
 
 public interface BrandService {
@@ -17,7 +18,8 @@ public interface BrandService {
      * @author changyong
      * @since 2022/07/16 18:15
      */
-    MarketBrandListPo list(Integer page, Integer limit,Integer id,String name, String sort, String order);
+    MarketBrandListPo list(Integer page, Integer limit, Integer id, String name, String sort, String order);
+
     /**
      * 编辑修改品牌商
      *
@@ -27,6 +29,7 @@ public interface BrandService {
      * @since 2022/07/16 20:40
      */
     MarketBrand update(MarketBrand marketBrand);
+
     /**
      * 删除品牌商
      *
@@ -36,4 +39,14 @@ public interface BrandService {
      * @since 2022/07/16 20:45
      */
     void delete(MarketBrand marketBrand);
+
+    /**
+     * 添加品牌商信息
+     *
+     * @param marketBrandCreateBo
+     * @return com.cskaoyan.bean.MarketBrand
+     * @author changyong
+     * @since 2022/07/17 19:10
+     */
+    MarketBrand create(MarketBrandCreateBo marketBrandCreateBo);
 }
