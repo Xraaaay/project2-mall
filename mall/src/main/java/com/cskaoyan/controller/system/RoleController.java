@@ -6,13 +6,17 @@ import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.MarketRole;
 import com.cskaoyan.bean.system.MarketRoleCreateVo;
 import com.cskaoyan.bean.system.MarketRoleOptionsVo;
+import com.cskaoyan.bean.system.SystemPermissions;
 import com.cskaoyan.exception.system.InvalidParamException;
 import com.cskaoyan.service.system.RoleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * 系统管理模块：角色管理
@@ -55,6 +59,23 @@ public class RoleController {
     @RequestMapping("delete")
     public BaseRespVo delete(@RequestBody MarketRole role) {
         roleService.delete(role);
+        return BaseRespVo.ok(null);
+    }
+
+    @GetMapping("permissions")
+    public BaseRespVo permissions(Integer roleId) {
+        Map<String, Object> map = roleService.permissions(roleId);
+        return BaseRespVo.ok(map);
+    }
+
+    /**
+     * 自定义请求，根据json请求生成market_role_permission表数据
+     * @author Xrw
+     * @date 2022/7/17 23:05
+     */
+    @RequestMapping("getpermissions")
+    public BaseRespVo getPermissions(@RequestBody SystemPermissions systemPermissions) {
+        roleService.getPermissions(systemPermissions);
         return BaseRespVo.ok(null);
     }
 

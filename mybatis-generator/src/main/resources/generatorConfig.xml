@@ -84,7 +84,7 @@
                    enableDeleteByPrimaryKey="true"
                    enableSelectByPrimaryKey="true"
                    selectByExampleQueryId="false" ></table>-->
-        <table tableName="%"/>
+        <!--<table tableName="%"/>-->
 
                <!-- 指定数据库表，要生成哪些表，就写哪些表，要和数据库中对应，不能写错！ -->
         <!--enableCountByExample="false"
@@ -98,6 +98,7 @@
                <!--<table  tableName="market_user"
                        domainObjectName="User"
                > </table>-->
+        <table  tableName="market_role_permission" domainObjectName="MarketRolePermission"/>
 
         <!--<table tableName="market_user" domainObjectName="Userx"/>
         <table tableName="market_admin" domainObjectName="Admin"/>-->
