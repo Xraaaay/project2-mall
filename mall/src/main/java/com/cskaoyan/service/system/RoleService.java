@@ -5,6 +5,9 @@ import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.MarketRole;
 import com.cskaoyan.bean.system.MarketRoleCreateVo;
 import com.cskaoyan.bean.system.MarketRoleOptionsVo;
+import com.cskaoyan.bean.system.SystemPermissions;
+
+import java.util.Map;
 
 /**
  * 系统管理模块：角色管理
@@ -52,4 +55,18 @@ public interface RoleService {
      * @date 2022/7/17 17:13
      */
     void delete(MarketRole role);
+
+    /**
+     * 通过Json请求，构造权限表
+     * @author Xrw
+     * @date 2022/7/17 21:46
+     */
+    void getPermissions(SystemPermissions systemPermissions);
+
+    /**
+     * 获取全部权限和当前角色已有权限
+     * @author Xrw
+     * @date 2022/7/17 23:07
+     */
+    Map<String, Object> permissions(Integer roleId);
 }

@@ -1,7 +1,7 @@
-package com.cskaoyan.mapper;
+package com.cskaoyan.mapper.system;
 
-import com.cskaoyan.bean.MarketPermission;
-import com.cskaoyan.bean.MarketPermissionExample;
+import com.cskaoyan.bean.system.MarketPermission;
+import com.cskaoyan.bean.system.MarketPermissionExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
