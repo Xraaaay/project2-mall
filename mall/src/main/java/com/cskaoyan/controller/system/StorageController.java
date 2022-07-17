@@ -4,10 +4,6 @@ import com.cskaoyan.bean.MarketStorage;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
-import com.cskaoyan.bean.marketConfig.MarketSystemVO;
-import com.cskaoyan.bean.system.MarketAdminListVo;
-import com.cskaoyan.bean.system.MarketStorageListVo;
-import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.MarketStorageListVo;
 import com.cskaoyan.service.system.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import java.util.List;
 
 /**
  * 对象存储
