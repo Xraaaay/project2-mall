@@ -47,7 +47,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public MarketAdminCreateVo create(MarketAdmin admin) {
         // 用户名重复
-        checkName(admin.getUsername());
+        checkName(admin);
 
         // TODO XRW 密码加密
         admin.setAddTime(new Date());
@@ -70,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     @Override
     public MarketAdminUpdateVo update(MarketAdmin admin) {
-        checkName(admin.getUsername());
+        checkName(admin);
 
         admin.setUpdateTime(new Date());
         adminMapper.updateByPrimaryKeySelective(admin);
@@ -85,23 +85,25 @@ public class AdminServiceImpl implements AdminService {
         return updateVo;
     }
 
-    private void checkName(String username) {
-        MarketAdminExample example = new MarketAdminExample();
-        MarketAdminExample.Criteria criteria = example.createCriteria();
-        criteria.andUsernameEqualTo(username);
-
-        List<MarketAdmin> marketAdmins = adminMapper.selectByExample(example);
-        if (marketAdmins.size() > 0) {
-            throw new InvalidParamException("用户名已存在");
-        }
-    }
-
     @Transactional
     @Override
     public void delete(MarketAdmin admin) {
         MarketAdmin marketAdmin = new MarketAdmin();
         marketAdmin.setId(admin.getId());
+        marketAdmin.setUpdateTime(new Date());
         marketAdmin.setDeleted(true);
         adminMapper.updateByPrimaryKeySelective(marketAdmin);
+    }
+
+    private void checkName(MarketAdmin admin) {
+        MarketAdminExample example = new MarketAdminExample();
+        MarketAdminExample.Criteria criteria = example.createCriteria();
+        criteria.andUsernameEqualTo(admin.getUsername());
+        criteria.andDeletedEqualTo(false);
+
+        List<MarketAdmin> marketAdmins = adminMapper.selectByExample(example);
+        if (marketAdmins.size() > 0 && !marketAdmins.get(0).getId().equals(admin.getId())) {
+            throw new InvalidParamException("用户名已存在");
+        }
     }
 }

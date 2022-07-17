@@ -59,7 +59,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     @Override
     public MarketRoleCreateVo create(MarketRole role) {
-        checkName(role.getName());
+        checkName(role);
 
         role.setAddTime(new Date());
         role.setUpdateTime(new Date());
@@ -77,19 +77,29 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     @Override
     public void update(MarketRole role) {
-        checkName(role.getName());
+        checkName(role);
 
         role.setUpdateTime(new Date());
         roleMapper.updateByPrimaryKeySelective(role);
     }
 
-    private void checkName(String name) {
+    @Override
+    public void delete(MarketRole role) {
+        MarketRole marketRole = new MarketRole();
+        marketRole.setId(role.getId());
+        marketRole.setUpdateTime(new Date());
+        marketRole.setDeleted(true);
+        roleMapper.updateByPrimaryKeySelective(marketRole);
+    }
+
+    private void checkName(MarketRole role) {
         MarketRoleExample example = new MarketRoleExample();
         MarketRoleExample.Criteria criteria = example.createCriteria();
-        criteria.andNameEqualTo(name);
+        criteria.andNameEqualTo(role.getName());
+        criteria.andDeletedEqualTo(false);
 
         List<MarketRole> roles = roleMapper.selectByExample(example);
-        if (roles.size() > 0) {
+        if (roles.size() > 0 && !roles.get(0).getId().equals(role.getId())) {
             throw new InvalidParamException("角色名已存在！");
         }
     }

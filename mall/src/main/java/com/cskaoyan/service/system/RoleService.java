@@ -45,4 +45,11 @@ public interface RoleService {
      * @date 2022/7/17 16:45
      */
     void update(MarketRole role);
+
+    /**
+     * 逻辑删除一条角色信息
+     * @author Xrw
+     * @date 2022/7/17 17:13
+     */
+    void delete(MarketRole role);
 }

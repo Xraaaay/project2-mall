@@ -52,6 +52,12 @@ public class RoleController {
         return BaseRespVo.ok(null);
     }
 
+    @RequestMapping("delete")
+    public BaseRespVo delete(@RequestBody MarketRole role) {
+        roleService.delete(role);
+        return BaseRespVo.ok(null);
+    }
+
     private void checkRoleName(String name) {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidParamException("角色名不能为空");
