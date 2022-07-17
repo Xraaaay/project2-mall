@@ -4,6 +4,7 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.cskaoyan.bean.MarketStorage;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
+import com.cskaoyan.bean.system.MarketAdminExample;
 import com.cskaoyan.bean.system.MarketStorageListVo;
 import com.cskaoyan.config.aliyun.AliyunComponent;
 import com.cskaoyan.mapper.MarketStorageMapper;
@@ -20,9 +21,8 @@ import java.util.UUID;
 import java.util.List;
 
 /**
- * 
- * @since 2022/07/17 14:29
  * @author lyx
+ * @since 2022/07/17 14:29
  */
 
 @Service
@@ -82,7 +82,6 @@ public class StorageServiceImpl implements StorageService {
         storageMapper.insert(marketStorage);
         return marketStorage;
     }
-
 
 
     @Override

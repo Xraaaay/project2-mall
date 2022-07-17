@@ -57,7 +57,6 @@ public class StorageController {
             e.printStackTrace();
             return BaseRespVo.invalidData("参数异常");
         }
-
         return BaseRespVo.ok(marketStorage);
     }
 
