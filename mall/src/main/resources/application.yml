@@ -4,6 +4,6 @@ server:
     context-path: /
 spring:
   profiles:
-    active: db,pqk,aliyun
+    active: db,xrw,aliyun
 mybatis:
   type-handlers-package: com.cskaoyan.typehandler

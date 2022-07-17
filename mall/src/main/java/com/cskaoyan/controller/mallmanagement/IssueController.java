@@ -1,10 +1,9 @@
-package com.cskaoyan.controller.mallManagementController;
+package com.cskaoyan.controller.mallmanagement;
 import com.cskaoyan.bean.MarketIssue;
 import com.cskaoyan.bean.mallManagement.BaseParam;
 import com.cskaoyan.bean.mallManagement.BaseRespSuccessVo;
 import com.cskaoyan.bean.mallManagement.IssueAndKeywordListVo;
-
-import com.cskaoyan.mallManagementService.IssueService;
+import com.cskaoyan.service.mallmanagement.IssueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,15 +19,15 @@ public class IssueController {
     IssueService issueService;
 
     /**
-     * 查询全部issue
+     * 获取issue列表
      * @param baseParam
      * @return com.cskaoyan.bean.BaseRespVo
      * @author shn
      * @date 2022/7/16 15:38
      */
     @GetMapping("list")
-    public BaseRespSuccessVo list(BaseParam baseParam){
-        IssueAndKeywordListVo issueList =issueService.issueList(baseParam);
+    public BaseRespSuccessVo list(BaseParam baseParam,String question){
+        IssueAndKeywordListVo issueList =issueService.issueList(baseParam,question);
         return BaseRespSuccessVo.success(issueList);
     }
 
@@ -46,7 +45,7 @@ public class IssueController {
     }
 
     /**
-     * 逻辑删除问题
+     * 逻辑删除 通用问题
      * @param marketIssue
      * @return com.cskaoyan.bean.mallManagement.BaseRespSuccessVo
      * @author shn
@@ -58,5 +57,16 @@ public class IssueController {
         return BaseRespSuccessVo.success(null);
     }
 
-    //@PostMapping("create")
+    /**
+     * 添加 通用问题
+     * @param marketIssue
+     * @return com.cskaoyan.bean.mallManagement.BaseRespSuccessVo
+     * @author shn
+     * @date 2022/7/17 16:05
+     */
+    @PostMapping("create")
+    public BaseRespSuccessVo create(@RequestBody MarketIssue marketIssue) {
+        MarketIssue addIssue=issueService.addIssue(marketIssue);
+        return BaseRespSuccessVo.success(addIssue);
+    }
 }

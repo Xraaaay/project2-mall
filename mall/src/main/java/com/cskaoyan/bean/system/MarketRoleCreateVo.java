@@ -5,21 +5,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author Xrw
- * @date 2022/7/16 22:04
+ * @date 2022/7/17 16:34
  */
 @NoArgsConstructor
 @Data
-public class MarketAdminUpdateVo {
+public class MarketRoleCreateVo {
+
     private Integer id;
-    private String username;
-    private String avatar;
+    private String name;
+    private String desc;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date addTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
-    private Integer[] roleIds;
 }
