@@ -19,7 +19,7 @@ public interface MarketGoodsAttributeMapper {
 
     List<MarketGoodsAttribute> selectByExample(MarketGoodsAttributeExample example);
 
-    MarketGoodsAttribute selectByPrimaryKey(Integer id);
+    List<MarketGoodsAttribute> selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") MarketGoodsAttribute record, @Param("example") MarketGoodsAttributeExample example);
 

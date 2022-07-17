@@ -1,4 +1,4 @@
-package com.cskaoyan.controller.mallManagementController;
+package com.cskaoyan.controller.mallmanagement;
 
 import com.cskaoyan.bean.MarketBrand;
 import com.cskaoyan.bean.common.BaseRespVo;

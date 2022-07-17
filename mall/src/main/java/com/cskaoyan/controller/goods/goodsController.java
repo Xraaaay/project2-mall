@@ -2,6 +2,8 @@ package com.cskaoyan.controller.goods;
 
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
+import com.cskaoyan.bean.goodsVo.CatAndBrandVo;
+import com.cskaoyan.bean.goodsVo.DetailVo;
 import com.cskaoyan.service.goods.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,13 +50,25 @@ public class goodsController {
     }
 
     /**
-     * @description 商品编辑
+     * @description 商品编辑 todo 返回格式的问题
      * @author pqk
      * @date 2022/07/16 23:25
      */
     @RequestMapping("detail")
     public BaseRespVo detail(Integer id){
-        // goodsService.detail(id);
-        return BaseRespVo.ok(null);
+        DetailVo detailVo = goodsService.detail(id);
+        return BaseRespVo.ok(detailVo);
+    }
+    
+    /**
+     * @description
+     * @author pqk
+     * @date 2022/07/17 18:02 
+     */
+    @RequestMapping("catAndBrand")
+    public BaseRespVo catAndBrand(){
+        CatAndBrandVo catAndBrandVo = goodsService.catAndBrand();
+
+        return BaseRespVo.ok(catAndBrandVo);
     }
 }
