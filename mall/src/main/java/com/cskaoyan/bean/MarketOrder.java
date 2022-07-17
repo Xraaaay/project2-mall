@@ -1,5 +1,7 @@
 package com.cskaoyan.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -37,7 +39,7 @@ public class MarketOrder {
     private BigDecimal actualPrice;
 
     private String payId;
-
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date payTime;
 
     private String shipSn;

@@ -1,6 +1,8 @@
 package com.cskaoyan.service;
 
+import com.cskaoyan.bean.po.MarketOrderDetailPo;
 import com.cskaoyan.bean.po.MarketOrderListPo;
+import com.cskaoyan.bean.bo.MarketOrderListBo;
 
 /**
  * @author changyong
@@ -9,5 +11,9 @@ import com.cskaoyan.bean.po.MarketOrderListPo;
 
 public interface OrderService {
 
-    MarketOrderListPo list(Integer page, Integer limit, String sort, String order, String start, String end);
+    MarketOrderListPo list(MarketOrderListBo marketOrderListBo);
+
+    MarketOrderDetailPo detail(Integer id);
+
+    void ship(Integer orderId,String shipChannel,String shipSn);
 }

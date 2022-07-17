@@ -39,7 +39,7 @@ public class BrandServiceImpl implements BrandService {
         //TODO sort=add_time&order=descc  按添加时间逆序排列
         MarketBrandExample marketBrandExample1 = new MarketBrandExample();
         MarketBrandExample.Criteria criteria1 = marketBrandExample1.createCriteria();
-        marketBrandExample1.setOrderByClause(order);
+        //marketBrandExample1.setOrderByClause(order);
         if (id != null&& ! "".equals(id)) {
             criteria1.andIdEqualTo(id);
         }

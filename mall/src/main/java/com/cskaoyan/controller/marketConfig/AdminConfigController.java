@@ -1,6 +1,7 @@
 package com.cskaoyan.controller.marketConfig;
 
 
+import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.marketConfig.MarketSystemBO;
 import com.cskaoyan.bean.marketConfig.MarketSystemVO;
 
