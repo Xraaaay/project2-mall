@@ -103,8 +103,8 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.cskaoyan.bean.MarketStorage">
-    insert into market_storage (id, key, name, 
+  <insert id="insert" parameterType="com.cskaoyan.bean.MarketStorage" useGeneratedKeys="true" keyProperty="id">
+    insert into market_storage (id, `key`, name,
       type, size, url, add_time, 
       update_time, deleted)
     values (#{id,jdbcType=INTEGER}, #{key,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
@@ -118,7 +118,7 @@
         id,
       </if>
       <if test="key != null">
-        key,
+        `key`,
       </if>
       <if test="name != null">
         name,
