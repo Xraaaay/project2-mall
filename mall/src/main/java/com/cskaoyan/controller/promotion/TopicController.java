@@ -1,6 +1,7 @@
 package com.cskaoyan.controller.promotion;
 
 import com.cskaoyan.bean.MarketTopic;
+import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.promotion.TopicService;
@@ -27,21 +28,17 @@ public class TopicController {
     /**
      * 获取专题列表，分页
      *
-     * @param page
-     * @param limit
+     * @param pageInfo
      * @param title
      * @param subtitle
-     * @param sort
-     * @param order
      * @return com.cskaoyan.bean.common.BaseRespVo
      * @author fanxing056
      * @date 2022/07/16 21:13
      */
     @GetMapping("/list")
-    public BaseRespVo list(Integer page, Integer limit, String title,
-                           String subtitle, String sort, String order) {
+    public BaseRespVo list(BasePageInfo pageInfo, String title, String subtitle) {
 
-        CommonData<MarketTopic> commonData = topicService.list(page, limit, title, subtitle, sort, order);
+        CommonData<MarketTopic> commonData = topicService.list(pageInfo, title, subtitle);
 
         return BaseRespVo.ok(commonData);
     }

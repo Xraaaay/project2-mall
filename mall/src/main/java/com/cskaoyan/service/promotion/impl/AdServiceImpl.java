@@ -2,6 +2,7 @@ package com.cskaoyan.service.promotion.impl;
 
 import com.cskaoyan.bean.MarketAd;
 import com.cskaoyan.bean.MarketAdExample;
+import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.mapper.MarketAdMapper;
 import com.cskaoyan.service.promotion.AdService;
@@ -28,15 +29,15 @@ public class AdServiceImpl implements AdService {
     MarketAdMapper adMapper;
 
     @Override
-    public CommonData<MarketAd> query(Integer page, Integer limit, String sort, String order, String name, String content) {
+    public CommonData<MarketAd> query(BasePageInfo basePageInfo, String name, String content) {
 
         // 开启分页
-        PageHelper.startPage(page, limit, sort + " " + order);
-
-        MarketAdExample marketAdExample = new MarketAdExample();
-        MarketAdExample.Criteria criteria = marketAdExample.createCriteria();
+        PageHelper.startPage(basePageInfo.getPage(), basePageInfo.getLimit());
 
         // 添加条件
+        MarketAdExample marketAdExample = new MarketAdExample();
+        MarketAdExample.Criteria criteria = marketAdExample.createCriteria();
+        marketAdExample.setOrderByClause(basePageInfo.getSort() + " " + basePageInfo.getOrder());
         criteria.andDeletedEqualTo(false);
         if (!StringUtil.isEmpty(name)) {
             criteria.andNameLike("%" + name + "%");
@@ -46,9 +47,7 @@ public class AdServiceImpl implements AdService {
         }
 
         List<MarketAd> marketAds = adMapper.selectByExample(marketAdExample);
-
         PageInfo<MarketAd> pageInfo = new PageInfo<>(marketAds);
-
         return CommonData.data(pageInfo);
     }
 
@@ -57,6 +56,8 @@ public class AdServiceImpl implements AdService {
     @Override
     public int create(MarketAd ad) {
 
+        ad.setAddTime(new Date());
+        ad.setUpdateTime(new Date());
         int affect = adMapper.insertSelective(ad);
 
         return affect;

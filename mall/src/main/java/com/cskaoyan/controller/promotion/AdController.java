@@ -2,6 +2,7 @@ package com.cskaoyan.controller.promotion;
 
 
 import com.cskaoyan.bean.MarketAd;
+import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.promotion.AdService;
@@ -22,8 +23,25 @@ public class AdController {
     AdService adService;
 
     /**
+     * 获取广告列表
+     *
+     * @param pageInfo
+     * @param name
+     * @param content
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author fanxing056
+     * @date 2022/07/17 20:38
+     */
+    @GetMapping("/list")
+    public BaseRespVo list(BasePageInfo pageInfo, String name, String content) {
+
+        CommonData<MarketAd> data = adService.query(pageInfo, name, content);
+
+        return BaseRespVo.ok(data);
+    }
+
+    /**
      * 新增广告
-     * TODO:等待admin/storage/create接口完成@lyx
      *
      * @return com.cskaoyan.bean.BaseRespVo
      * @author fanxing056
@@ -31,6 +49,11 @@ public class AdController {
      */
     @PostMapping("/create")
     public BaseRespVo create(@RequestBody MarketAd ad) {
+
+        // 正则验证，验证广告链接
+        if (!ad.getLink().matches("[a-zA-z]+://[^\\s]*") && !ad.getLink().matches("[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\\.?")) {
+            return BaseRespVo.invalidData("请输入正确的活动链接");
+        }
 
         try {
             adService.create(ad);
@@ -40,25 +63,6 @@ public class AdController {
         }
 
         return BaseRespVo.ok(ad);
-    }
-
-    /**
-     * 获取广告列表
-     *
-     * @param page
-     * @param limit
-     * @param sort
-     * @param order
-     * @return com.cskaoyan.bean.BaseRespVo
-     * @author fanxing056
-     * @date 2022/07/16 14:43
-     */
-    @GetMapping("/list")
-    public BaseRespVo list(Integer page, Integer limit, String sort, String order, String name, String content) {
-
-        CommonData<MarketAd> data = adService.query(page, limit, sort, order, name, content);
-
-        return BaseRespVo.ok(data);
     }
 
     /**
@@ -75,7 +79,6 @@ public class AdController {
         try {
             adService.delete(ad);
         } catch (Exception e) {
-            e.printStackTrace();
             return BaseRespVo.invalidData();
         }
         return BaseRespVo.ok(null);
@@ -91,6 +94,11 @@ public class AdController {
      */
     @PostMapping("/update")
     public BaseRespVo update(@RequestBody MarketAd ad) {
+
+        // 正则验证，验证广告链接
+        if (!ad.getLink().matches("[a-zA-z]+://[^\\s]*") && !ad.getLink().matches("[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\\.?")) {
+            return BaseRespVo.invalidData("请输入正确的活动链接");
+        }
 
         try {
             adService.update(ad);
