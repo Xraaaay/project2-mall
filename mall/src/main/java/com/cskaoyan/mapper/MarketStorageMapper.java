@@ -1,7 +1,7 @@
 package com.cskaoyan.mapper;
 
 import com.cskaoyan.bean.MarketStorage;
-import com.cskaoyan.bean.MarketStorageExample;
+import com.cskaoyan.bean.system.MarketStorageExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -28,4 +28,7 @@ public interface MarketStorageMapper {
     int updateByPrimaryKeySelective(MarketStorage record);
 
     int updateByPrimaryKey(MarketStorage record);
+
+
+
 }

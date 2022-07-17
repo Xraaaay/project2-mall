@@ -3,7 +3,9 @@ package com.cskaoyan.mapper;
 import com.cskaoyan.bean.MarketSystem;
 import com.cskaoyan.bean.MarketSystemExample;
 import com.cskaoyan.bean.marketConfig.MarketExpreessVO;
+import com.cskaoyan.bean.marketConfig.MarketOrderVO;
 import com.cskaoyan.bean.marketConfig.MarketSystemVO;
+import com.cskaoyan.bean.marketConfig.MarketWxVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.security.Key;
@@ -42,4 +44,14 @@ public interface MarketSystemMapper {
     List<MarketExpreessVO> selectExpressConfig();
 
     void UpdateExpressConfig(@Param("k") String key,@Param("v") String value);
+
+    void UpdateOrderConfig(@Param("k")  String key,@Param("v") String value);
+
+    List<MarketOrderVO> selectOrderConfig();
+
+
+    List<MarketWxVO> selectWxConfig();
+
+
+    void UpdateWxConfig1(@Param("k") String key,@Param("v") String value);
 }

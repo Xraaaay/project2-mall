@@ -5,3 +5,4 @@ spring:
     username: root
 pagehelper:
   helper-dialect: mysql
+  

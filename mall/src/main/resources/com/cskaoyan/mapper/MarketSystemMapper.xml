@@ -241,4 +241,24 @@
   <update id="UpdateExpressConfig">
     update market_system set key_value = #{v} where key_name = #{k}
   </update>
+
+  <select id="selectOrderConfig" resultType="com.cskaoyan.bean.marketConfig.MarketOrderVO">
+    select key_name,key_value from market_system where key_name like concat('%','order','%')
+    </select>
+
+  <update id="UpdateOrderConfig">
+     update market_system set key_value = #{v} where key_name = #{k}
+  </update>
+
+  <select id="selectWxConfig" resultType="com.cskaoyan.bean.marketConfig.MarketWxVO">
+   select key_name,key_value from market_system where key_name like concat('%','wx','%')
+  </select>
+
+  <update id="UpdateWxConfig">
+    update market_system set key_value = #{v} where key_name = #{k}
+  </update>
+
+  <update id="UpdateWxConfig1">
+     update market_system set key_value = #{v} where key_name = #{k}
+  </update>
 </mapper>

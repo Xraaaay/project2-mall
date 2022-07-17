@@ -4,17 +4,19 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.cskaoyan.bean.MarketStorage;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
-import com.cskaoyan.bean.system.MarketAdminExample;
+import com.cskaoyan.bean.system.MarketStorageExample;
 import com.cskaoyan.bean.system.MarketStorageListVo;
 import com.cskaoyan.config.aliyun.AliyunComponent;
 import com.cskaoyan.mapper.MarketStorageMapper;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -81,25 +83,61 @@ public class StorageServiceImpl implements StorageService {
         return marketStorage;
     }
 
+    @Override
+    public CommonData<MarketStorage> list(BasePageInfo info, String key, String name) {
+        PageHelper.startPage(info.getPage(), info.getLimit());
+        MarketStorageExample example = new MarketStorageExample();
+        example.setOrderByClause(info.getSort() + " " + info.getOrder());
+        MarketStorageExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(false);
+        if (name != null && !"".equals(name)) {
+            criteria.andNameLike("%" + name + "%");
+        }
+        if (key != null && !"".equals(key)) {
+            criteria.andNameLike("%" + key + "%");
+            // criteria.andKeyEqualTo(key);
+        }
+        List<MarketStorage> marketStorages = storageMapper.selectByExample(example);
+
+        PageInfo<MarketStorage> pageInfo = new PageInfo<>(marketStorages);
+        CommonData commonData = CommonData.data(pageInfo);
+        return commonData;
+
+    }
 
     @Override
-    public CommonData<MarketStorageListVo> list(BasePageInfo info, String name) {
-        PageHelper.startPage(info.getPage(), info.getLimit());
+    public MarketStorage update(MarketStorage marketStorage) {
 
-        MarketAdminExample example = new MarketAdminExample();
-        example.setOrderByClause(info.getSort() + " " + info.getOrder());
-        MarketAdminExample.Criteria criteria = example.createCriteria();
-        criteria.andDeletedEqualTo(false);
-        if (name != null) {
-            criteria.andUsernameLike("%" + name + "%");
-        }
-
-        // List<MarketAdminListVo> admins = adminMapper.selectListByExample(example);
-
-        // PageInfo<MarketAdminListVo> pageInfo = new PageInfo<>(admins);
-        // return CommonData.data(pageInfo);
+        marketStorage.setUpdateTime(new Date());
+        storageMapper.updateByPrimaryKeySelective(marketStorage);
+        MarketStorage marketAdmin = storageMapper.selectByPrimaryKey(marketStorage.getId());
 
 
-        return null;
+
+ /*       marketStorage.setUpdateTime(new Date());
+        storageMapper.updateByPrimaryKeySelective(marketStorage);
+
+        MarketStorage marketAdmin = storageMapper.selectByPrimaryKey(marketStorage.getId());
+        MarketAdminUpdateVo updateVo = new MarketAdminUpdateVo();
+        updateVo.setId(marketAdmin.getId());
+        updateVo.setUsername(marketAdmin.getUsername());
+        updateVo.setAddTime(marketAdmin.getAddTime());
+        updateVo.setUpdateTime(marketAdmin.getUpdateTime());
+        updateVo.setRoleIds(marketAdmin.getRoleIds());*/
+        return marketAdmin;
+
+
+
     }
+
+    @Override
+    public void delete(MarketStorage marketStorage) {
+
+        // MarketStorage updatemarketStorage = new MarketStorage();
+        // updatemarketStorage.setId(marketStorage.getId());
+        marketStorage.setDeleted(true);
+        storageMapper.updateByPrimaryKeySelective(marketStorage);
+    }
+
+
 }

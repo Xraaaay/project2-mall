@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public interface StorageService {
 
-    CommonData<MarketStorageListVo> list(BasePageInfo info, String name);
+
 
     /**
      * 文件上传
@@ -24,4 +24,11 @@ public interface StorageService {
      * @date 2022/07/17 15:16
      */
     MarketStorage create(MultipartFile file) throws IOException;
+
+
+    CommonData<MarketStorage> list(BasePageInfo info, String key, String value);
+
+    MarketStorage update(MarketStorage marketStorage);
+
+    void delete(MarketStorage marketStorage);
 }

@@ -71,14 +71,14 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, key, name, type, size, url, add_time, update_time, deleted
+    id, `key`, name, type, size, url, add_time, update_time, deleted
   </sql>
-  <select id="selectByExample" parameterType="com.cskaoyan.bean.MarketStorageExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.cskaoyan.bean.system.MarketStorageExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
-    <include refid="Base_Column_List" />
+    id, `key`, name, type, size, url, add_time, update_time, deleted
     from market_storage
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -97,7 +97,7 @@
     delete from market_storage
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.cskaoyan.bean.MarketStorageExample">
+  <delete id="deleteByExample" parameterType="com.cskaoyan.bean.system.MarketStorageExample">
     delete from market_storage
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -172,7 +172,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.cskaoyan.bean.MarketStorageExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.cskaoyan.bean.system.MarketStorageExample" resultType="java.lang.Long">
     select count(*) from market_storage
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -185,7 +185,7 @@
         id = #{record.id,jdbcType=INTEGER},
       </if>
       <if test="record.key != null">
-        key = #{record.key,jdbcType=VARCHAR},
+        `key` = #{record.key,jdbcType=VARCHAR},
       </if>
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
@@ -216,7 +216,7 @@
   <update id="updateByExample" parameterType="map">
     update market_storage
     set id = #{record.id,jdbcType=INTEGER},
-      key = #{record.key,jdbcType=VARCHAR},
+      `key` = #{record.key,jdbcType=VARCHAR},
       name = #{record.name,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=VARCHAR},
       size = #{record.size,jdbcType=INTEGER},
@@ -232,7 +232,7 @@
     update market_storage
     <set>
       <if test="key != null">
-        key = #{key,jdbcType=VARCHAR},
+        `key` = #{key,jdbcType=VARCHAR},
       </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
@@ -260,7 +260,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.cskaoyan.bean.MarketStorage">
     update market_storage
-    set key = #{key,jdbcType=VARCHAR},
+    set `key` = #{key,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
       type = #{type,jdbcType=VARCHAR},
       size = #{size,jdbcType=INTEGER},
@@ -270,4 +270,8 @@
       deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectListByExample" resultType="com.cskaoyan.bean.system.MarketStorageListVo">
+
+    </select>
 </mapper>
