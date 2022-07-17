@@ -1,6 +1,7 @@
 package com.cskaoyan.controller.promotion;
 
 import com.cskaoyan.bean.MarketTopic;
+import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.promotion.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
