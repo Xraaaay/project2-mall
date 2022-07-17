@@ -1,0 +1,12 @@
+aliyun:
+  accessKeyId: LTAI5t8gpxPTCR6W58RnZq4u
+  accessKeySecret: mVPbpbxia0JQotb7HyJAREV8QUuq8h
+  oss:
+    bucket: cskaoyan
+    endPoint: oss-cn-beijing.aliyuncs.com
+  sms:
+    signName: stone4j
+    templateCode: SMS_173765187
+    domain: dysmsapi.aliyuncs.com
+    version: 2017-05-25
+    Action: SendSms
