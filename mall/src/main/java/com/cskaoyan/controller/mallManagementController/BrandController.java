@@ -1,7 +1,7 @@
 package com.cskaoyan.controller.mallManagementController;
 
-import com.cskaoyan.bean.BaseRespVo;
 import com.cskaoyan.bean.MarketBrand;
+import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.po.MarketBrandListPo;
 import com.cskaoyan.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;

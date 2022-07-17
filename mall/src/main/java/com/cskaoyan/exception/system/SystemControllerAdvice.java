@@ -1,5 +1,6 @@
 package com.cskaoyan.exception.system;
 
+import com.cskaoyan.bean.common.BaseRespVo;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
