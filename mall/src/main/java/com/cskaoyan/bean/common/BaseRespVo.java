@@ -1,12 +1,16 @@
 package com.cskaoyan.bean.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author stone
  * @date 2022/01/06 16:24
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BaseRespVo<T> {
     T data;
     int errno;

@@ -1,4 +1,4 @@
-package com.cskaoyan.bean;
+package com.cskaoyan.bean.adminauth;
 
 import lombok.Data;
 
