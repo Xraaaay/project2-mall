@@ -10,7 +10,6 @@ import com.cskaoyan.config.shiro.MarketToken;
 import com.cskaoyan.service.adminauth.AdminLoginService;
 import com.cskaoyan.util.Md5Utils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,7 +68,7 @@ public class AuthController {
         InfoData infoData = adminLoginService.adminInfo();
 
         if (infoData == null) {
-            return BaseRespVo.invalidData("未登录，请登录之后在操作");
+            return unAuthc();
         }
 
         return BaseRespVo.ok(infoData);
@@ -83,7 +82,6 @@ public class AuthController {
      * @author Zah
      * @date 2022/07/18 14:23
      */
-
     // AOP 安全操作日志xrw
     @SecurityOperationLog(SecurityOperationType.LOGOUT)
     @PostMapping("logout")

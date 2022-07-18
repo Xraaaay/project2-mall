@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 系统提示？至少不会过一段时间就不能使用登出功能了
+ * 这里是系统通知！
  *
  * @author Zah
  * @date 2022/07/18 17:19
