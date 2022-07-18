@@ -1,11 +1,13 @@
 package com.cskaoyan.aspect;
 
-import com.cskaoyan.anno.OrderOperationLog;
-import com.cskaoyan.anno.SecurityOperationLog;
+import com.cskaoyan.anno.OperationLog;
+import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.system.MarketAdmin;
 import com.cskaoyan.bean.system.MarketLog;
 import com.cskaoyan.mapper.system.MarketLogMapper;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -15,11 +17,11 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Date;
 
@@ -36,39 +38,25 @@ public class OperationLogAspect {
     @Autowired
     MarketLogMapper logMapper;
 
-    @Pointcut("@annotation(com.cskaoyan.anno.SecurityOperationLog)")
-    public void securityPointcut() {
+    @Pointcut("@annotation(com.cskaoyan.anno.OperationLog)")
+    public void logPointcut() {
     }
 
-    @Pointcut("@annotation(com.cskaoyan.anno.OrderOperationLog)")
-    public void orderPointcut() {
-    }
-
-    @Around("securityPointcut() || orderPointcut()")
+    @Transactional
+    @Around("logPointcut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         MarketLog log = new MarketLog();
         log.setAddTime(new Date());
         log.setUpdateTime(new Date());
 
-        // 通过反射获取注解中的操作类别type和操作动作action
-        // 获取方法的注解
+        // 通过反射获取注解中的type和action
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
-        Annotation[] annotations = method.getDeclaredAnnotations();
-        // 根据注解进行不同的赋值
-        for (Annotation annotation : annotations) {
-            if (annotation.annotationType().equals(SecurityOperationLog.class)) {
-                log.setType(1);
-                SecurityOperationLog security = (SecurityOperationLog) annotation;
-                String action = security.value().action;
-                log.setAction(action);
-            } else if (annotation.annotationType().equals(OrderOperationLog.class)) {
-                log.setType(2);
-                OrderOperationLog order = (OrderOperationLog) annotation;
-                String action = order.value().action;
-                log.setAction(action);
-            }
-        }
+        OperationLog annotation = method.getAnnotation(OperationLog.class);
+        int type = annotation.type();
+        String action = annotation.action();
+        log.setType(type);
+        log.setAction(action);
 
         // 通过request获取ip
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -76,7 +64,7 @@ public class OperationLogAspect {
         String ip = request.getRemoteHost();
         log.setIp(ip);
 
-        // 获取管理员信息login
+        // 获取管理员信息logout
         Subject subject = SecurityUtils.getSubject();
         PrincipalCollection principals = subject.getPrincipals();
         if (principals != null) {
@@ -85,29 +73,37 @@ public class OperationLogAspect {
             log.setAdmin(username);
         }
 
-        Object proceed = null;
+        BaseRespVo proceed = null;
         try {
-            // 执行操作
-            proceed = joinPoint.proceed();
-        } catch (Throwable throwable) {
+            proceed = (BaseRespVo) joinPoint.proceed();
+        } catch (UnknownAccountException | IncorrectCredentialsException e) {
+            log.setAdmin("匿名用户");
+            proceed = BaseRespVo.invalidData("用户名或账号密码不正确");
+        }
+        String errmsg = proceed.getErrmsg();
+        int errno = proceed.getErrno();
+
+        // 获取管理员信息login
+        if (principals == null) {
+            principals = subject.getPrincipals();
+            if (principals != null) {
+                MarketAdmin marketAdmin = (MarketAdmin) principals.getPrimaryPrincipal();
+                String username = marketAdmin.getUsername();
+                log.setAdmin(username);
+            }
+        }
+
+        if (errno != 0) {
             // 操作状态：失败
             log.setStatus(false);
-            log.setResult(throwable.getMessage());
+            log.setResult(errmsg);
             logMapper.insertSelective(log);
-            throw throwable;
+        } else {
+            // 操作状态：成功
+            // xrw 操作结果
+            log.setStatus(true);
+            logMapper.insertSelective(log);
         }
-
-        // 获取管理员信息logout
-        principals = subject.getPrincipals();
-        if (principals != null) {
-            MarketAdmin marketAdmin = (MarketAdmin) principals.getPrimaryPrincipal();
-            String username = marketAdmin.getUsername();
-            log.setAdmin(username);
-        }
-
-        // 操作状态：成功
-        log.setStatus(true);
-        logMapper.insertSelective(log);
 
         return proceed;
     }

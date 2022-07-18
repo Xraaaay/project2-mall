@@ -1,7 +1,6 @@
 package com.cskaoyan.controller.adminauth;
 
-import com.cskaoyan.anno.SecurityOperationLog;
-import com.cskaoyan.anno.SecurityOperationType;
+import com.cskaoyan.anno.OperationLog;
 import com.cskaoyan.bean.adminauth.AdminInfoBean;
 import com.cskaoyan.bean.adminauth.InfoData;
 import com.cskaoyan.bean.adminauth.LoginUserData;
@@ -10,7 +9,6 @@ import com.cskaoyan.bean.system.MarketAdmin;
 import com.cskaoyan.config.shiro.MarketToken;
 import com.cskaoyan.util.Md5Utils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +33,7 @@ public class AuthController {
      * @date 2022/07/17 22:10
      */
     // AOP 安全操作日志xrw
-    @SecurityOperationLog(SecurityOperationType.LOGIN)
+    @OperationLog(action = "登录")
     @PostMapping("login")
     public BaseRespVo<LoginUserData> login(@RequestBody Map map) throws Exception {
 
@@ -84,7 +82,7 @@ public class AuthController {
     }
 
     // AOP 安全操作日志xrw
-    @SecurityOperationLog(SecurityOperationType.LOGOUT)
+    @OperationLog(action = "退出")
     @PostMapping("logout")
     public BaseRespVo logout(){
         Subject subject = SecurityUtils.getSubject();
