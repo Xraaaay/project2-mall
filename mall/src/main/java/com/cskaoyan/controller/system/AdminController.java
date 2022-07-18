@@ -34,7 +34,7 @@ public class AdminController {
 
     @SecurityOperationLog(SecurityOperationType.CREAT)
     @RequestMapping("create")
-    public BaseRespVo create(@RequestBody MarketAdmin admin) {
+    public BaseRespVo create(@RequestBody MarketAdmin admin) throws Exception {
         checkNameAndPwd(admin.getUsername(), admin.getPassword());
         MarketAdminCreateVo createVo = adminService.create(admin);
         return BaseRespVo.ok(createVo);

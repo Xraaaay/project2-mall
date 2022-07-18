@@ -28,7 +28,7 @@ public interface AdminService {
      * @author Xrw
      * @date 2022/7/16 20:53
      */
-    MarketAdminCreateVo create(MarketAdmin admin);
+    MarketAdminCreateVo create(MarketAdmin admin) throws Exception;
 
     /**
      * 修改一条管理员信息

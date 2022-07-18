@@ -2,18 +2,23 @@ package com.cskaoyan.aspect;
 
 import com.cskaoyan.anno.OrderOperationLog;
 import com.cskaoyan.anno.SecurityOperationLog;
-import com.cskaoyan.anno.SecurityOperationType;
+import com.cskaoyan.bean.system.MarketAdmin;
 import com.cskaoyan.bean.system.MarketLog;
 import com.cskaoyan.mapper.system.MarketLogMapper;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -45,7 +50,6 @@ public class OperationLogAspect {
         log.setAddTime(new Date());
         log.setUpdateTime(new Date());
 
-        // xrw 获取admin,ip,status
         // 通过反射获取注解中的操作类别type和操作动作action
         // 获取方法的注解
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -67,10 +71,23 @@ public class OperationLogAspect {
         }
 
         // 通过request获取ip
+        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = sra.getRequest();
+        String ip = request.getRemoteHost();
+        log.setIp(ip);
 
+        // 获取管理员信息login
+        Subject subject = SecurityUtils.getSubject();
+        PrincipalCollection principals = subject.getPrincipals();
+        if (principals != null) {
+            MarketAdmin marketAdmin = (MarketAdmin) principals.getPrimaryPrincipal();
+            String username = marketAdmin.getUsername();
+            log.setAdmin(username);
+        }
 
         Object proceed = null;
         try {
+            // 执行操作
             proceed = joinPoint.proceed();
         } catch (Throwable throwable) {
             // 操作状态：失败
@@ -78,6 +95,14 @@ public class OperationLogAspect {
             log.setResult(throwable.getMessage());
             logMapper.insertSelective(log);
             throw throwable;
+        }
+
+        // 获取管理员信息logout
+        principals = subject.getPrincipals();
+        if (principals != null) {
+            MarketAdmin marketAdmin = (MarketAdmin) principals.getPrimaryPrincipal();
+            String username = marketAdmin.getUsername();
+            log.setAdmin(username);
         }
 
         // 操作状态：成功
