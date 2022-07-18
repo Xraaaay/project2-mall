@@ -6,6 +6,7 @@ import com.cskaoyan.anno.SecurityOperationType;
 import com.cskaoyan.bean.adminauth.InfoData;
 import com.cskaoyan.bean.adminauth.LoginUserData;
 import com.cskaoyan.bean.common.BaseRespVo;
+import com.cskaoyan.config.shiro.MarketToken;
 import com.cskaoyan.service.adminauth.AdminLoginService;
 import com.cskaoyan.util.Md5Utils;
 import org.apache.shiro.SecurityUtils;
@@ -47,7 +48,7 @@ public class AuthController {
         // 将密码通过MD5进行加密
         String password = Md5Utils.getMd5(originalPassword);
 
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+        MarketToken token = new MarketToken(username, password,"admin");
 
         LoginUserData loginUserData = adminLoginService.adminLogin(token);
 

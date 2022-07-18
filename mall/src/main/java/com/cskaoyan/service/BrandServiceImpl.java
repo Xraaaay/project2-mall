@@ -39,7 +39,9 @@ public class BrandServiceImpl implements BrandService {
     public MarketBrandListPo list(Integer page, Integer limit, Integer id, String name, String sort, String order) {
         MarketBrandExample marketBrandExample1 = new MarketBrandExample();
         MarketBrandExample.Criteria criteria1 = marketBrandExample1.createCriteria();
-        marketBrandExample1.setOrderByClause(sort + " " + order);
+        if(sort!=null&&order!=null){
+            marketBrandExample1.setOrderByClause(sort + " " + order);
+        }
         if (id != null && !"".equals(id)) {
             criteria1.andIdEqualTo(id);
         }
@@ -110,6 +112,12 @@ public class BrandServiceImpl implements BrandService {
         marketBrand.setPicUrl(marketBrandCreateBo.getPicUrl());
         //插入
         marketBrandMapper.insertSelective(marketBrand);
+        return marketBrand;
+    }
+
+    @Override
+    public MarketBrand detail(Integer id) {
+        MarketBrand marketBrand = marketBrandMapper.selectByPrimaryKey(id);
         return marketBrand;
     }
 }

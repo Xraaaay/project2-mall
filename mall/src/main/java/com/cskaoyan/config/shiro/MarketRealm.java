@@ -42,9 +42,10 @@ public class MarketRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
 
-        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+        //UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         String type = ((MarketToken) authenticationToken).getType();
-        String username = token.getUsername();
+        String username = (String) authenticationToken.getPrincipal();
+        //String username = token.getUsername();
         if ("admin".equals(type)) {
             // 根据用户名查询数据库中对应的管理员信息
             MarketAdminExample example = new MarketAdminExample();

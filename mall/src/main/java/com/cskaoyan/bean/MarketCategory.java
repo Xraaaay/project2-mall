@@ -9,7 +9,7 @@ public class MarketCategory {
     private Integer id;
 
     private String name;
-
+    //TODO  改为数组
     private String keywords;
 
     private String desc;
