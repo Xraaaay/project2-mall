@@ -1,7 +1,6 @@
 package com.cskaoyan.controller.system;
 
-import com.cskaoyan.anno.SecurityOperationLog;
-import com.cskaoyan.anno.SecurityOperationType;
+import com.cskaoyan.anno.OperationLog;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
@@ -32,7 +31,7 @@ public class AdminController {
         return BaseRespVo.ok(adminList);
     }
 
-    @SecurityOperationLog(SecurityOperationType.CREAT)
+    @OperationLog(action = "添加管理员")
     @RequestMapping("create")
     public BaseRespVo create(@RequestBody MarketAdmin admin) throws Exception {
         checkNameAndPwd(admin.getUsername(), admin.getPassword());
@@ -40,7 +39,7 @@ public class AdminController {
         return BaseRespVo.ok(createVo);
     }
 
-    @SecurityOperationLog(SecurityOperationType.UPDATE)
+    @OperationLog(action = "编辑管理员")
     @RequestMapping("update")
     public BaseRespVo update(@RequestBody MarketAdmin admin) {
         checkNameAndPwd(admin.getUsername(), admin.getPassword());
@@ -48,7 +47,7 @@ public class AdminController {
         return BaseRespVo.ok(updateVo);
     }
 
-    @SecurityOperationLog(SecurityOperationType.DELETE)
+    @OperationLog(action = "删除管理员")
     @RequestMapping("delete")
     public BaseRespVo delete(@RequestBody MarketAdmin admin) {
         adminService.delete(admin);
@@ -65,9 +64,13 @@ public class AdminController {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new InvalidParamException("用户名和密码不能为空");
         }
-        // xrw 用户名、密码校验
-        if (username.length() < 6 || username.length() > 15) {
-            throw new InvalidParamException("用户名不合法");
+        // 用户名校验
+        if (!username.matches("^[\\u4e00-\\u9fa5a-zA-Z0-9]{6,12}$")) {
+            throw new InvalidParamException("用户名可以包含中文、大小写字母、和数字，长度在6-12之间");
+        }
+        // 密码校验
+        if (!password.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,15}$")) {
+            throw new InvalidParamException("密码必须包含大小写字母和数字的组合，可以使用特殊字符，长度在6-15之间");
         }
     }
 }

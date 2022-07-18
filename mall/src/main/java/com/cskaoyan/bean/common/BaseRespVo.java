@@ -50,6 +50,4 @@ public class BaseRespVo<T> {
         baseRespVo.setErrmsg("认证失败");
         return baseRespVo;
     }
-
-
 }

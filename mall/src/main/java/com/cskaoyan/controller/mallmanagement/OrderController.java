@@ -1,9 +1,7 @@
 package com.cskaoyan.controller.mallmanagement;
 
 
-import com.cskaoyan.anno.OrderOperationLog;
-import com.cskaoyan.anno.OrderOperationType;
-import com.cskaoyan.anno.SecurityOperationLog;
+import com.cskaoyan.anno.OperationLog;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.po.MarketOrderDetailPo;
 import com.cskaoyan.bean.po.MarketOrderListPo;
@@ -65,7 +63,7 @@ public class OrderController {
      * @since 2022/07/17 18:15
      */
     // AOP 订单操作日志xrw
-    @OrderOperationLog(OrderOperationType.SHIP)
+    @OperationLog(action = "订单发货", type = 2)
     @RequestMapping("ship")
     public BaseRespVo ship(@RequestBody MarketOrderShipBo marketOrderShipBo) {
         orderService.ship(marketOrderShipBo.getOrderId(), marketOrderShipBo.getShipChannel(), marketOrderShipBo.getShipSn());
@@ -97,7 +95,7 @@ public class OrderController {
      * @since 2022/07/17 20:58
      */
     // AOP 订单操作日志xrw
-    @OrderOperationLog(OrderOperationType.DELETE)
+    @OperationLog(action = "删除订单", type = 2)
     @RequestMapping("delete")
     public BaseRespVo delete(@RequestBody Map map) {
         Integer orderId = (Integer) map.get("orderId");

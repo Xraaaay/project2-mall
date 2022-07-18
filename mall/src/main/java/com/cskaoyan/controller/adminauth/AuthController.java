@@ -1,8 +1,6 @@
 package com.cskaoyan.controller.adminauth;
 
-
-import com.cskaoyan.anno.SecurityOperationLog;
-import com.cskaoyan.anno.SecurityOperationType;
+import com.cskaoyan.anno.OperationLog;
 import com.cskaoyan.bean.adminauth.InfoData;
 import com.cskaoyan.bean.adminauth.LoginUserData;
 import com.cskaoyan.bean.common.BaseRespVo;
@@ -37,7 +35,7 @@ public class AuthController {
      * @date 2022/07/17 22:10
      */
     // AOP 安全操作日志xrw
-    @SecurityOperationLog(SecurityOperationType.LOGIN)
+    @OperationLog(action = "登录")
     @PostMapping("login")
     public BaseRespVo<LoginUserData> login(@RequestBody Map map) throws Exception {
 
@@ -83,7 +81,7 @@ public class AuthController {
      * @date 2022/07/18 14:23
      */
     // AOP 安全操作日志xrw
-    @SecurityOperationLog(SecurityOperationType.LOGOUT)
+    @OperationLog(action = "退出")
     @PostMapping("logout")
     public BaseRespVo logout() {
         Subject subject = SecurityUtils.getSubject();

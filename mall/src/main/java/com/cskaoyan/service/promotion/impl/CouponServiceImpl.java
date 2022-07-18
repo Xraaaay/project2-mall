@@ -123,4 +123,12 @@ public class CouponServiceImpl implements CouponService {
         int affect = couponMapper.updateByPrimaryKeySelective(coupon);
         return affect;
     }
+
+    // TODO
+    @Override
+    public int receive(Integer couponId) {
+
+
+        return 0;
+    }
 }

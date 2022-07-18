@@ -9,6 +9,7 @@ import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.goodsVo.CatAndBrandVo;
 import com.cskaoyan.bean.goodsVo.CreateBo;
 import com.cskaoyan.bean.goodsVo.DetailVo;
+import com.cskaoyan.bean.goodsVo.UpdateBo;
 import com.cskaoyan.service.goods.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -84,6 +85,17 @@ public class GoodsController {
     @RequestMapping("create")
     public BaseRespVo create(@RequestBody CreateBo createBo) {
         goodsService.create(createBo);
+        return BaseRespVo.ok(null);
+    }
+
+    /**
+     * @description
+     * @author pqk
+     * @date 2022/07/18 21:32
+     */
+    @RequestMapping("update")
+    public BaseRespVo update(@RequestBody UpdateBo updateBo){
+        goodsService.update(updateBo);
         return BaseRespVo.ok(null);
     }
 }

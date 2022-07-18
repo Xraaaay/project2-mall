@@ -89,9 +89,9 @@ public class RoleController {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidParamException("角色名不能为空");
         }
-        // xrw 用户名校验
-        if (name.length() < 5 || name.length() > 10) {
-            throw new InvalidParamException("角色名不合法");
+        // 角色名校验
+        if (!name.matches("^[\\u4e00-\\u9fa5]{5,12}$") || !name.endsWith("管理员")) {
+            throw new InvalidParamException("角色名必须为中文，且以“管理员”结尾，长度在6-12之间");
         }
     }
 }

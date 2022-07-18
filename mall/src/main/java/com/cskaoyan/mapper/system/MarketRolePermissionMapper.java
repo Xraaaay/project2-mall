@@ -28,4 +28,6 @@ public interface MarketRolePermissionMapper {
     int updateByPrimaryKeySelective(MarketRolePermission record);
 
     int updateByPrimaryKey(MarketRolePermission record);
+
+    String selectApiByPermission(String permission);
 }

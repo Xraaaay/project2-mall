@@ -201,7 +201,8 @@ public class RoleServiceImpl implements RoleService {
         // 新增权限
         MarketPermission marketPermission = new MarketPermission();
         for (String permission : permissions) {
-            marketPermission.setPermission(permission);
+            String api = systemPermissionMapper.selectApiByPermission(permission);
+            marketPermission.setPermission(api);
             marketPermission.setRoleId(roleId);
             marketPermission.setAddTime(new Date());
             marketPermission.setUpdateTime(new Date());

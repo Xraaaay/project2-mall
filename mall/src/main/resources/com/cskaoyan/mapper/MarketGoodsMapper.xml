@@ -619,6 +619,8 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cskaoyan.bean.MarketGoods">
     update market_goods
     set goods_sn = #{goodsSn,jdbcType=VARCHAR},
@@ -664,6 +666,73 @@
       add_time = #{addTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       deleted = #{deleted,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKeySelectiveVo" parameterType="com.cskaoyan.bean.goodsVo.MarketGoodsVo">
+    update market_goods
+    <set>
+      <if test="goodsSn != null">
+        goods_sn = #{goodsSn,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="gallery != null">
+        gallery = #{gallery,jdbcType=VARCHAR},
+      </if>
+      <if test="keywords != null">
+        keywords = #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null">
+        brief = #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="isOnSale != null">
+        is_on_sale = #{isOnSale,jdbcType=BIT},
+      </if>
+      <if test="sortOrder != null">
+        sort_order = #{sortOrder,jdbcType=SMALLINT},
+      </if>
+      <if test="picUrl != null">
+        pic_url = #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="shareUrl != null">
+        share_url = #{shareUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isNew != null">
+        is_new = #{isNew,jdbcType=BIT},
+      </if>
+      <if test="isHot != null">
+        is_hot = #{isHot,jdbcType=BIT},
+      </if>
+      <if test="unit != null">
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="counterPrice != null">
+        counter_price = #{counterPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="retailPrice != null">
+        retail_price = #{retailPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=BIT},
+      </if>
+      <if test="detail != null">
+        detail = #{detail,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

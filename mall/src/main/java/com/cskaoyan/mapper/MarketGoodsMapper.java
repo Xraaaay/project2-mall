@@ -34,6 +34,8 @@ public interface MarketGoodsMapper {
 
     int updateByPrimaryKeySelective(MarketGoods record);
 
+    int updateByPrimaryKeySelectiveVo(MarketGoodsVo record);
+
     int updateByPrimaryKeyWithBLOBs(MarketGoods record);
 
     int updateByPrimaryKey(MarketGoods record);
