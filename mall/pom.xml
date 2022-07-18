@@ -75,14 +75,14 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-<<<<<<< HEAD
+
         <!--Shiro-->
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-spring</artifactId>
             <version>1.7.1</version>
         </dependency>
-=======
+
         <!--对象存储-->
         <dependency>
             <groupId>com.aliyun.oss</groupId>
@@ -102,7 +102,6 @@
             <version>4.0.3</version>
         </dependency>
 
->>>>>>> 7e958eb890fc8e6b39db17868f27abdfd6b4ba40
     </dependencies>
 
     <build>
