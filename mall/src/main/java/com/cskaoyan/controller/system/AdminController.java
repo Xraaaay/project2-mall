@@ -6,7 +6,7 @@ import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.*;
-import com.cskaoyan.exception.system.InvalidParamException;
+import com.cskaoyan.exception.common.InvalidParamException;
 import com.cskaoyan.service.system.AdminService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

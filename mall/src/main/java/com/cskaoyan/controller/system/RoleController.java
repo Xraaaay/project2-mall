@@ -7,7 +7,7 @@ import com.cskaoyan.bean.system.MarketRole;
 import com.cskaoyan.bean.system.MarketRoleCreateVo;
 import com.cskaoyan.bean.system.MarketRoleOptionsVo;
 import com.cskaoyan.bean.system.SystemPermissions;
-import com.cskaoyan.exception.system.InvalidParamException;
+import com.cskaoyan.exception.common.InvalidParamException;
 import com.cskaoyan.service.system.RoleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
