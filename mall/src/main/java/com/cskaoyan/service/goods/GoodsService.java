@@ -8,6 +8,7 @@ import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.goodsVo.CatAndBrandVo;
 import com.cskaoyan.bean.goodsVo.CreateBo;
 import com.cskaoyan.bean.goodsVo.DetailVo;
+import com.cskaoyan.bean.goodsVo.UpdateBo;
 
 /**
  * @author pqk
@@ -62,4 +63,13 @@ public interface GoodsService {
      * @date 2022/07/18 17:25
      */
     void create(CreateBo createBo);
+
+    /**
+     * @description 商品更新
+     * @return
+     * @param updateBo
+     * @author pqk
+     * @date 2022/07/18 21:34
+     */
+    void update(UpdateBo updateBo);
 }

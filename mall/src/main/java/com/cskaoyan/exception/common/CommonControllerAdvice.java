@@ -24,7 +24,7 @@ public class CommonControllerAdvice {
     }
 
     // 顶级异常处理
-    @ExceptionHandler(Throwable.class)
+    // @ExceptionHandler(Throwable.class)
     public BaseRespVo commonException(Throwable throwable) {
         return BaseRespVo.invalidData("参数异常");
     }
