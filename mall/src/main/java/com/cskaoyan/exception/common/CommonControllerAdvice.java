@@ -22,4 +22,10 @@ public class CommonControllerAdvice {
     public BaseRespVo invalidData(InvalidDataException exception) {
         return BaseRespVo.invalidData(exception.getMessage());
     }
+
+    // 顶级异常处理
+    @ExceptionHandler(Throwable.class)
+    public BaseRespVo commonException(Throwable throwable) {
+        return BaseRespVo.invalidData("参数异常");
+    }
 }
