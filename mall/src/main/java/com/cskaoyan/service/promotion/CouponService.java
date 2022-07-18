@@ -79,4 +79,14 @@ public interface CouponService {
      * @date 2022/07/16 20:34
      */
     int delete(MarketCoupon coupon);
+
+    /**
+     * 用户领取优惠券
+     *
+     * @param couponId
+     * @return int
+     * @author fanxing056
+     * @date 2022/07/18 22:31
+     */
+    int receive(Integer couponId);
 }

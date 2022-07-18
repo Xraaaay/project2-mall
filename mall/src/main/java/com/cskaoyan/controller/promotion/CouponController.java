@@ -1,5 +1,6 @@
 package com.cskaoyan.controller.promotion;
 
+import com.cskaoyan.anno.ParamValidation;
 import com.cskaoyan.bean.MarketCoupon;
 import com.cskaoyan.bean.MarketCouponUser;
 import com.cskaoyan.bean.common.BasePageInfo;
@@ -7,6 +8,8 @@ import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.promotion.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -41,7 +44,6 @@ public class CouponController {
         return BaseRespVo.ok(commonData);
     }
 
-
     /**
      * 添加优惠券
      *
@@ -50,8 +52,9 @@ public class CouponController {
      * @author fanxing056
      * @date 2022/07/16 16:52
      */
+    @ParamValidation
     @PostMapping("/create")
-    public BaseRespVo create(@RequestBody MarketCoupon coupon) {
+    public BaseRespVo create(@RequestBody @Validated MarketCoupon coupon, BindingResult bindingResult) {
 
         couponService.create(coupon);
         return BaseRespVo.ok(coupon);
@@ -103,8 +106,9 @@ public class CouponController {
      * @author fanxing056
      * @date 2022/07/16 18:14
      */
+    @ParamValidation
     @PostMapping("/update")
-    public BaseRespVo update(@RequestBody MarketCoupon coupon) {
+    public BaseRespVo update(@RequestBody @Validated MarketCoupon coupon, BindingResult bindingResult) {
 
         couponService.update(coupon);
         return BaseRespVo.ok(coupon);

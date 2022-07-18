@@ -1,11 +1,14 @@
 package com.cskaoyan.controller.promotion;
 
+import com.cskaoyan.anno.ParamValidation;
 import com.cskaoyan.bean.MarketTopic;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.promotion.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -66,8 +69,9 @@ public class TopicController {
      * @author fanxing056
      * @date 2022/07/16 22:14
      */
+    @ParamValidation
     @PostMapping("/create")
-    public BaseRespVo create(@RequestBody MarketTopic topic) {
+    public BaseRespVo create(@RequestBody @Validated MarketTopic topic, BindingResult bindingResult) {
 
         topicService.create(topic);
         return BaseRespVo.ok(topic);
@@ -81,8 +85,9 @@ public class TopicController {
      * @author fanxing056
      * @date 2022/07/16 22:39
      */
+    @ParamValidation
     @PostMapping("/update")
-    public BaseRespVo update(@RequestBody MarketTopic topic) {
+    public BaseRespVo update(@RequestBody @Validated MarketTopic topic, BindingResult bindingResult) {
 
         topicService.update(topic);
         return BaseRespVo.ok(topic);
