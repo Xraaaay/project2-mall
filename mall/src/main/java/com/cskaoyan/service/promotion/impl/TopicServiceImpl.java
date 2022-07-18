@@ -12,6 +12,7 @@ import com.cskaoyan.service.promotion.TopicService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
+import jdk.nashorn.internal.objects.NativeUint8Array;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -130,5 +131,28 @@ public class TopicServiceImpl implements TopicService {
         topic.setDeleted(true);
         int affect = topicMapper.updateByExampleSelective(topic, topicExample);
         return affect;
+    }
+
+    @Override
+    public CommonData<MarketTopic> related(Integer id) {
+
+        BasePageInfo basePageInfo = new BasePageInfo();
+        basePageInfo.setPage(1);
+        basePageInfo.setLimit(5);
+        basePageInfo.setSort("add_time");
+        basePageInfo.setOrder("desc");
+        CommonData<MarketTopic> commonData = list(basePageInfo, null, null);
+        List<MarketTopic> list = commonData.getList();
+        // 从list中移除自身
+        int count = 0;
+        for (MarketTopic topic : list) {
+            if (topic.getId().equals(id)) {
+                break;
+            }
+            count++;
+        }
+        list.remove(count);
+
+        return commonData;
     }
 }

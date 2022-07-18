@@ -77,4 +77,14 @@ public interface TopicService {
      * @date 2022/07/16 22:53
      */
     int batchDelete(Map<String, List<Integer>> map);
+
+    /**
+     * 获取一个专题的相关专题（专题推荐）
+     *
+     * @param id
+     * @return com.cskaoyan.bean.common.CommonData<com.cskaoyan.bean.MarketTopic>
+     * @author fanxing056
+     * @date 2022/07/18 21:53
+     */
+    CommonData<MarketTopic> related(Integer id);
 }
