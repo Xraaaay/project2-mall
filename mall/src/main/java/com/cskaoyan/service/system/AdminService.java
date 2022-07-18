@@ -3,6 +3,7 @@ package com.cskaoyan.service.system;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.*;
+import com.cskaoyan.exception.common.InvalidParamException;
 
 /**
  * 系统管理模块：管理员管理
@@ -23,7 +24,7 @@ public interface AdminService {
 
     /**
      * 添加一条管理员信息
-     * @exception com.cskaoyan.exception.system.InvalidParamException 用户名已存在
+     * @exception InvalidParamException 用户名已存在
      * @author Xrw
      * @date 2022/7/16 20:53
      */

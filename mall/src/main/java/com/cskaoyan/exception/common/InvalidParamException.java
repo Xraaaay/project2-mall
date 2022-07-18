@@ -1,4 +1,4 @@
-package com.cskaoyan.exception.system;
+package com.cskaoyan.exception.common;
 
 /**
  * 参数非法异常

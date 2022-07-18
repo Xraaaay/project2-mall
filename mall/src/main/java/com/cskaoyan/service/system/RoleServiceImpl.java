@@ -3,7 +3,7 @@ package com.cskaoyan.service.system;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.*;
-import com.cskaoyan.exception.system.InvalidParamException;
+import com.cskaoyan.exception.common.InvalidParamException;
 import com.cskaoyan.mapper.system.MarketPermissionMapper;
 import com.cskaoyan.mapper.system.MarketRoleMapper;
 import com.cskaoyan.mapper.system.MarketRolePermissionMapper;

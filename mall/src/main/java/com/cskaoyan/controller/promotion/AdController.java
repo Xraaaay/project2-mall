@@ -7,6 +7,7 @@ import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.promotion.AdService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -48,7 +49,7 @@ public class AdController {
      * @date 2022/07/16 14:43
      */
     @PostMapping("/create")
-    public BaseRespVo create(@RequestBody MarketAd ad) {
+    public BaseRespVo create(@RequestBody @Validated MarketAd ad) {
 
         // 正则验证，验证广告链接
         if (!ad.getLink().matches("[a-zA-z]+://[^\\s]*") && !ad.getLink().matches("[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\\.?")) {
@@ -58,7 +59,6 @@ public class AdController {
         try {
             adService.create(ad);
         } catch (Exception e) {
-            e.printStackTrace();
             return BaseRespVo.invalidData("创建失败");
         }
 

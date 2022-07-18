@@ -1,7 +1,7 @@
 package com.cskaoyan.util;
 
 import com.cskaoyan.exception.common.InvalidDataException;
-import com.cskaoyan.exception.system.InvalidParamException;
+import com.cskaoyan.exception.common.InvalidParamException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
