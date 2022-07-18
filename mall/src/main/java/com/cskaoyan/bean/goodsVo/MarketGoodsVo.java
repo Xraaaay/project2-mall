@@ -12,7 +12,7 @@ import java.util.Date;
 public class MarketGoodsVo {
     private Integer id;
 
-    private String goodsSn;
+    private Integer goodsSn;
 
     private String name;
 
