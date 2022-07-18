@@ -6,7 +6,9 @@ import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.promotion.AdService;
+import com.cskaoyan.util.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,12 +51,14 @@ public class AdController {
      * @date 2022/07/16 14:43
      */
     @PostMapping("/create")
-    public BaseRespVo create(@RequestBody @Validated MarketAd ad) {
+    public BaseRespVo create(@RequestBody @Validated MarketAd ad, BindingResult bindingResult) {
 
         // 正则验证，验证广告链接
-        if (!ad.getLink().matches("[a-zA-z]+://[^\\s]*") && !ad.getLink().matches("[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\\.?")) {
-            return BaseRespVo.invalidData("请输入正确的活动链接");
-        }
+        // if (!ad.getLink().matches("[a-zA-z]+://[^\\s]*") && !ad.getLink().matches("[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\\.?")) {
+        //     return BaseRespVo.invalidData("请输入正确的活动链接");
+        // }
+
+        ValidationUtils.validData(bindingResult);
 
         try {
             adService.create(ad);
