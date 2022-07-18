@@ -96,6 +96,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     // TODO:商品最低价需要维护？是后台管理员手动指定的
+    @Transactional
     @Override
     public int update(MarketTopic topic) {
 
@@ -114,6 +115,7 @@ public class TopicServiceImpl implements TopicService {
         return affect;
     }
 
+    @Transactional
     @Override
     public int batchDelete(Map<String, List<Integer>> map) {
 

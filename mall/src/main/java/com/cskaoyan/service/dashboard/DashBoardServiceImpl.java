@@ -7,6 +7,7 @@ import com.cskaoyan.mapper.MarketGoodsProductMapper;
 import com.cskaoyan.mapper.MarketOrderMapper;
 import com.cskaoyan.mapper.MarketUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 后台系统首页
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Zah
  * @date 2022/07/18 00:01
  */
+@Service
 public class DashBoardServiceImpl implements DashBoardService {
 
     @Autowired
