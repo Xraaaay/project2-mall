@@ -19,4 +19,5 @@ public class AuthException {
     public BaseRespVo exception(Exception exception) {
         return new BaseRespVo(null, 605, "用户名或账号密码不正确");
     }
+
 }

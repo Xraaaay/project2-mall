@@ -2,6 +2,7 @@ package com.cskaoyan.mapper;
 
 import com.cskaoyan.bean.MarketGoods;
 import com.cskaoyan.bean.MarketGoodsExample;
+import com.cskaoyan.bean.goodsVo.MarketGoodsVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public interface MarketGoodsMapper {
     int insert(MarketGoods record);
 
     int insertSelective(MarketGoods record);
+
+    int insertSelectiveVo(MarketGoodsVo record);
 
     List<MarketGoods> selectByExampleWithBLOBs(MarketGoodsExample example);
 

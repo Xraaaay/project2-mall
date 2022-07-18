@@ -49,4 +49,6 @@ public interface BrandService {
      * @since 2022/07/17 19:10
      */
     MarketBrand create(MarketBrandCreateBo marketBrandCreateBo);
+
+    MarketBrand detail(Integer id);
 }
