@@ -1,5 +1,6 @@
 package com.cskaoyan.controller.adminauth;
 
+import com.cskaoyan.bean.MarketUser;
 import com.cskaoyan.bean.adminauth.AdminInfoBean;
 import com.cskaoyan.bean.adminauth.InfoData;
 import com.cskaoyan.bean.adminauth.LoginUserData;
@@ -8,7 +9,6 @@ import com.cskaoyan.bean.system.MarketAdmin;
 import com.cskaoyan.config.shiro.MarketToken;
 import com.cskaoyan.util.Md5Utils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +19,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
-//shiro整合之后，在做具体的开发
-//响应结果都是JSON，Controller组件上我们都用@RestController注解
+/**
+ * @author changyong
+ * @since 2022/07/18 15:54
+ */
 @RestController
-@RequestMapping("admin/auth")
-public class AuthController {
-
+@RequestMapping("wx/auth")
+public class WxAuthController {
     /**
      * 整合Shiro之后的login
      * @param map
@@ -44,14 +45,14 @@ public class AuthController {
         // 认证登录准备
         Subject subject = SecurityUtils.getSubject();
         //UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-        MarketToken token = new MarketToken(username, password, "admin");
+        MarketToken token = new MarketToken(username, password, "wx");
         // 认证登录
         subject.login(token);
 
         boolean authenticated = subject.isAuthenticated();
 
         // 获取经过认证之后的用户信息
-        MarketAdmin primaryPrincipal = (MarketAdmin) subject.getPrincipals().getPrimaryPrincipal();
+        MarketUser primaryPrincipal = (MarketUser) subject.getPrincipals().getPrimaryPrincipal();
         // 获取SessionId
         Serializable sessionId = subject.getSession().getId();
 
@@ -106,6 +107,4 @@ public class AuthController {
 
         return BaseRespVo.ok(infoData);
     }
-
-
 }

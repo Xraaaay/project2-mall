@@ -21,7 +21,7 @@ public class MarketSessionManager extends DefaultWebSessionManager {
     private static final String HEADER = "X-CskaoyanMarket-Admin-Token";
 
     // 后续还要添加小程序的SessionId的请求头
-
+    private static final String MARKET_WX_TOKEN = "X-CskaoyanMarket-Token";
     /**
      * 获得SessionId
      * @param servletRequest
@@ -37,6 +37,10 @@ public class MarketSessionManager extends DefaultWebSessionManager {
         String sessionId = request.getHeader(HEADER);
         if (sessionId != null && !"".equals(sessionId)){
             return sessionId;
+        }
+        String sessionId2 = request.getHeader(MARKET_WX_TOKEN);
+        if (sessionId2 != null && !"".equals(sessionId2)){
+            return sessionId2;
         }
         return super.getSessionId(servletRequest, response);
 
