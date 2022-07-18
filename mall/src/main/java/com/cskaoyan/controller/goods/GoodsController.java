@@ -19,7 +19,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("admin/goods")
-public class goodsController {
+public class GoodsController {
 
     @Autowired
     GoodsService goodsService;
@@ -50,7 +50,7 @@ public class goodsController {
     }
 
     /**
-     * @description 商品编辑 todo 返回格式的问题
+     * @description 商品编辑
      * @author pqk
      * @date 2022/07/16 23:25
      */
@@ -61,14 +61,13 @@ public class goodsController {
     }
     
     /**
-     * @description
+     * @description 商品分类
      * @author pqk
      * @date 2022/07/17 18:02 
      */
     @RequestMapping("catAndBrand")
     public BaseRespVo catAndBrand(){
         CatAndBrandVo catAndBrandVo = goodsService.catAndBrand();
-
         return BaseRespVo.ok(catAndBrandVo);
     }
 }

@@ -9,7 +9,6 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.yaml.snakeyaml.error.Mark;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ public class GoodsServiceImpl implements GoodsService {
 
         PageInfo<MarketGoods> marketGoodsPageInfo = new PageInfo<>(marketGoods);
 
-        marketGoodsCommonData.setTotal(marketGoodsPageInfo.getSize());
+        marketGoodsCommonData.setTotal((int) marketGoodsPageInfo.getTotal());
         marketGoodsCommonData.setLimit(marketGoodsPageInfo.getPageSize());
         marketGoodsCommonData.setList(marketGoods);
         marketGoodsCommonData.setPage(marketGoodsPageInfo.getPageNum());
@@ -68,6 +67,15 @@ public class GoodsServiceImpl implements GoodsService {
     public DetailVo detail(Integer id) {
         //根据传入id查询到商品详情
         MarketGoods goods = marketGoodsMapper.selectByPrimaryKey(id);
+
+        String galleryString = goods.getGallery().replace("[", "").replace("]", "");
+        String[] galleryArr = galleryString.split(",");
+
+        for (int i = 0; i < galleryArr.length; i++) {
+            String replaceAll = galleryArr[i].trim().replaceAll("\"", "");
+            galleryArr[i] = replaceAll;
+        }
+
         //根据传入id查商品参数表
         MarketGoodsAttributeExample goodsAttributeExample = new MarketGoodsAttributeExample();
         MarketGoodsAttributeExample.Criteria goodsAttributeExampleCriteria = goodsAttributeExample.createCriteria().andGoodsIdEqualTo(id);
@@ -81,6 +89,7 @@ public class GoodsServiceImpl implements GoodsService {
         MarketGoodsProductExample.Criteria productExampleCriteria = goodsProductExample.createCriteria().andGoodsIdEqualTo(id);
         List<MarketGoodsProduct> products = marketGoodsProductMapper.selectByExample(goodsProductExample);
 
+
         //根据传入id返回商品类别 ,类别表id，商品分类id
         ArrayList<Integer> arrayList = new ArrayList<>();
         //根据id返回父类pid
@@ -90,10 +99,17 @@ public class GoodsServiceImpl implements GoodsService {
         arrayList.add(marketCategory.getPid());
         arrayList.add(goods.getCategoryId());
 
+
+        MarketGoodsVo marketGoodsVO = new MarketGoodsVo(goods.getId(), goods.getGoodsSn(), goods.getName(), goods.getCategoryId(), goods.getBrandId(), galleryArr, goods.getKeywords(), goods.getBrief(),
+                goods.getIsOnSale(), goods.getSortOrder(), goods.getPicUrl(), goods.getShareUrl(), goods.getIsNew(), goods.getIsHot(), goods.getUnit(),
+                goods.getCounterPrice(), goods.getRetailPrice(), goods.getAddTime(), goods.getUpdateTime(), goods.getDeleted(), goods.getDetail());
+
+
+
         DetailVo detailVo = new DetailVo();
         detailVo.setCategoryIds(arrayList);
         detailVo.setAttributes(attributes);
-        detailVo.setGoods(goods);
+        detailVo.setGoods(marketGoodsVO);
         detailVo.setProducts(products);
         detailVo.setSpecifications(specifications);
 
