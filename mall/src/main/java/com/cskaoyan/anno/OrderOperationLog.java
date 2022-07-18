@@ -7,11 +7,13 @@ import java.lang.annotation.Target;
 
 /**
  * 系统管理模块：操作日志注解
+ * 订单操作
  *
  * @author Xrw
- * @date 2022/7/17 20:36
+ * @date 2022/7/18 10:38
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface OperationLog {
+public @interface OrderOperationLog {
+    OrderOperationType value();
 }

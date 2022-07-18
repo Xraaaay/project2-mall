@@ -84,6 +84,20 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectPermissionsByExample" parameterType="com.cskaoyan.bean.system.MarketPermissionExample" resultType="string">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    permission
+    from market_permission
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

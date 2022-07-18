@@ -6,12 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 系统管理模块：分页注解
+ * 此注解用于给指定controller层方法做增强
+ * 参数校验
  *
- * @author Xrw
- * @date 2022/7/16 16:45
+ * @author fanxing056
+ * @date 2022/07/18 14:04
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SystemPage {
+public @interface ParamValidation {
 }

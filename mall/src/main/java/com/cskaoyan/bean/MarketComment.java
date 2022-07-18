@@ -1,7 +1,13 @@
 package com.cskaoyan.bean;
 
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.Date;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MarketComment {
     private Integer id;
 
@@ -17,7 +23,7 @@ public class MarketComment {
 
     private Boolean hasPicture;
 
-    private String picUrls;
+    private String[] picUrls;
 
     private Short star;
 
@@ -27,99 +33,5 @@ public class MarketComment {
 
     private Boolean deleted;
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getValueId() {
-        return valueId;
-    }
-
-    public void setValueId(Integer valueId) {
-        this.valueId = valueId;
-    }
-
-    public Byte getType() {
-        return type;
-    }
-
-    public void setType(Byte type) {
-        this.type = type;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
-    }
-
-    public String getAdminContent() {
-        return adminContent;
-    }
-
-    public void setAdminContent(String adminContent) {
-        this.adminContent = adminContent == null ? null : adminContent.trim();
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Boolean getHasPicture() {
-        return hasPicture;
-    }
-
-    public void setHasPicture(Boolean hasPicture) {
-        this.hasPicture = hasPicture;
-    }
-
-    public String getPicUrls() {
-        return picUrls;
-    }
-
-    public void setPicUrls(String picUrls) {
-        this.picUrls = picUrls == null ? null : picUrls.trim();
-    }
-
-    public Short getStar() {
-        return star;
-    }
-
-    public void setStar(Short star) {
-        this.star = star;
-    }
-
-    public Date getAddTime() {
-        return addTime;
-    }
-
-    public void setAddTime(Date addTime) {
-        this.addTime = addTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
 }

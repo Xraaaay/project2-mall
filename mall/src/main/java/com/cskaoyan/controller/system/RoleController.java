@@ -11,11 +11,9 @@ import com.cskaoyan.exception.common.InvalidParamException;
 import com.cskaoyan.service.system.RoleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,9 +61,17 @@ public class RoleController {
     }
 
     @GetMapping("permissions")
-    public BaseRespVo permissions(Integer roleId) {
-        Map<String, Object> map = roleService.permissions(roleId);
+    public BaseRespVo getPermissions(Integer roleId) {
+        Map<String, Object> map = roleService.getPermissions(roleId);
         return BaseRespVo.ok(map);
+    }
+
+    @PostMapping("permissions")
+    public BaseRespVo setPermissions(@RequestBody Map map) {
+        Integer roleId = (Integer) map.get("roleId");
+        List<String > permissions = (List<String>) map.get("permissions");
+        roleService.setPermissions(roleId, permissions);
+        return BaseRespVo.ok(null);
     }
 
     /**
@@ -74,8 +80,8 @@ public class RoleController {
      * @date 2022/7/17 23:05
      */
     @RequestMapping("getpermissions")
-    public BaseRespVo getPermissions(@RequestBody SystemPermissions systemPermissions) {
-        roleService.getPermissions(systemPermissions);
+    public BaseRespVo permissions(@RequestBody SystemPermissions systemPermissions) {
+        roleService.permissions(systemPermissions);
         return BaseRespVo.ok(null);
     }
 
@@ -83,7 +89,7 @@ public class RoleController {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidParamException("角色名不能为空");
         }
-        // TODO XRW 用户名校验
+        // xrw 用户名校验
         if (name.length() < 5 || name.length() > 10) {
             throw new InvalidParamException("角色名不合法");
         }

@@ -38,7 +38,6 @@ public class CouponController {
     public BaseRespVo list(BasePageInfo pageInfo, String name, Short type, Short status) {
 
         CommonData<MarketCoupon> commonData = couponService.query(pageInfo, name, type, status);
-
         return BaseRespVo.ok(commonData);
     }
 
@@ -54,12 +53,7 @@ public class CouponController {
     @PostMapping("/create")
     public BaseRespVo create(@RequestBody MarketCoupon coupon) {
 
-        try {
-            couponService.create(coupon);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return BaseRespVo.invalidData();
-        }
+        couponService.create(coupon);
         return BaseRespVo.ok(coupon);
     }
 
@@ -98,7 +92,6 @@ public class CouponController {
     public BaseRespVo listUser(BasePageInfo pageInfo, Integer couponId, Integer userId, Short status) {
 
         CommonData<MarketCouponUser> commonData = couponService.listUser(pageInfo, couponId, userId, status);
-
         return BaseRespVo.ok(commonData);
     }
 
@@ -113,12 +106,7 @@ public class CouponController {
     @PostMapping("/update")
     public BaseRespVo update(@RequestBody MarketCoupon coupon) {
 
-        try {
-            couponService.update(coupon);
-        } catch (Exception e) {
-            return BaseRespVo.invalidData();
-        }
-
+        couponService.update(coupon);
         return BaseRespVo.ok(coupon);
     }
 

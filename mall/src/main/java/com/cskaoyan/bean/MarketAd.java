@@ -4,6 +4,8 @@ import java.util.Date;
 
 import lombok.Data;
 
+import javax.validation.constraints.Pattern;
+
 
 @Data
 public class MarketAd {
@@ -11,6 +13,9 @@ public class MarketAd {
 
     private String name;
 
+    // URL或域名
+    @Pattern(regexp = "[a-zA-z]+://[^\\s]*|[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\\.?",
+            message = "请输入正确的活动链接")
     private String link;
 
     private String url;

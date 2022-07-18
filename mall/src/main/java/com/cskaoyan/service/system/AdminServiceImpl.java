@@ -5,6 +5,7 @@ import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.*;
 import com.cskaoyan.exception.common.InvalidParamException;
 import com.cskaoyan.mapper.system.MarketAdminMapper;
+import com.cskaoyan.util.Md5Utils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,16 +46,17 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public MarketAdminCreateVo create(MarketAdmin admin) {
+    public MarketAdminCreateVo create(MarketAdmin admin) throws Exception {
         // 用户名重复
         checkName(admin);
 
-        // TODO XRW 密码加密
         admin.setAddTime(new Date());
         admin.setUpdateTime(new Date());
+        String password = Md5Utils.getMd5(admin.getPassword());
+        admin.setPassword(password);
         adminMapper.insertSelective(admin);
 
-        // TODO XRW 赋值工具类
+        // xrw 赋值工具类
         MarketAdmin marketAdmin1 = adminMapper.selectByPrimaryKey(admin.getId());
         MarketAdminCreateVo createVo = new MarketAdminCreateVo();
         createVo.setId(marketAdmin1.getId());

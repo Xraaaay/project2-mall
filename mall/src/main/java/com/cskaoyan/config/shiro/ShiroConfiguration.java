@@ -31,8 +31,8 @@ public class ShiroConfiguration {
         filterChainDefinitionMap.put("/admin/auth/info","anon");
         filterChainDefinitionMap.put("/admin/auth/401","anon");
 
-        // admin开头的请求,都要经过认证才行
-        filterChainDefinitionMap.put("/admin/**","authc");
+        // admin开头的请求,都要经过认证才行(等待开发完成在做拦截，把anon改成authc)
+        filterChainDefinitionMap.put("/admin/**","anon");
 
         // 对于没有访问权限的重定向地址
         shiroFilterFactoryBean.setLoginUrl("/admin/auth/401");

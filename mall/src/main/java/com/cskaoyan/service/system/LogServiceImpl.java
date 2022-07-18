@@ -1,6 +1,5 @@
 package com.cskaoyan.service.system;
 
-import com.cskaoyan.anno.SystemPage;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.system.MarketLog;

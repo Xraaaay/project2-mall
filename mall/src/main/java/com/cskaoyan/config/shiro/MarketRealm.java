@@ -85,11 +85,11 @@ public class MarketRealm extends AuthorizingRealm {
         MarketAdmin principal = (MarketAdmin) principalCollection.getPrimaryPrincipal();
 
         // 根据用户信息查询出对应的权限列表
-        //  List<String> permissions = getPermissionsByUsername(principal);
+        //  List<String> getPermissions = getPermissionsByUsername(principal);
 
         // 把权限信息放入授权信息中
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        // simpleAuthorizationInfo.addStringPermissions(permissions);
+        // simpleAuthorizationInfo.addStringPermissions(getPermissions);
 
         return simpleAuthorizationInfo;
     }

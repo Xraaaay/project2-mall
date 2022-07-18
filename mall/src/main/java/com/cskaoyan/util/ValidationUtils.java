@@ -33,7 +33,7 @@ public class ValidationUtils {
             FieldError fieldError = bindingResult.getFieldError();
             //错误的消息
             String msg = fieldError.getDefaultMessage();
-            throw new InvalidParamException(msg);
+            throw new InvalidDataException(msg);
         }
     }
 }
