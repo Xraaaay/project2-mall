@@ -261,4 +261,16 @@
   <update id="UpdateWxConfig1">
      update market_system set key_value = #{v} where key_name = #{k}
   </update>
+
+  <select id="selectStatUser" resultType="com.cskaoyan.bean.marketConfig.StatRowsVO">
+    select count(id) as users ,DATE_FORMAT(add_time, "%Y-%m-%d") as day from market_user where id !=0 group by day order by day ASC
+  </select>
+
+  <select id="selectStatOrder" resultType="com.cskaoyan.bean.marketConfig.StatOrderRowsVO">
+  select  count(id) as orders, count(DISTINCT user_id) as customers ,sum(order_price) as amount, avg (order_price) as pcr, DATE_FORMAT(add_time, "%Y-%m-%d") as day from market_order where id !=0 group by day  order by day ASC
+</select>
+
+  <select id="selectStatGoods" resultType="com.cskaoyan.bean.marketConfig.StatGoodsRowsVO">
+   select  count(DISTINCT order_id) as orders ,sum(number) as products, sum(number * price) as amount, DATE_FORMAT(add_time, "%Y-%m-%d") as day from market_order_goods where id !=0 group by day  order by day ASC
+  </select>
 </mapper>

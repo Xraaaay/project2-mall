@@ -1,14 +1,12 @@
 package com.cskaoyan.service.marketConfig;
 
 import com.cskaoyan.bean.MarketSystem;
-import com.cskaoyan.bean.marketConfig.MarketExpreessVO;
-import com.cskaoyan.bean.marketConfig.MarketOrderVO;
-import com.cskaoyan.bean.marketConfig.MarketSystemVO;
-import com.cskaoyan.bean.marketConfig.MarketWxVO;
+import com.cskaoyan.bean.marketConfig.*;
 import com.cskaoyan.mapper.MarketSystemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +86,47 @@ public class ConfigServiceImpl implements ConfigService {
 
                 marketSystemMapper.UpdateWxConfig1(entry.getKey(), entry.getValue());
         }
+    }
+
+    @Override
+    public StatUserVO statUser() {
+          List<String> columns = new ArrayList<>();
+          columns.add("day");
+          columns.add( "users");
+        List<StatRowsVO> rows = marketSystemMapper.selectStatUser();
+        StatUserVO statUserVO = new StatUserVO();
+        statUserVO.setColumns(columns);
+        statUserVO.setRows(rows);
+        return statUserVO;
+    }
+
+    @Override
+    public StatOrderVO statOrder() {
+        List<String> columns = new ArrayList<>();
+        columns.add("day");
+        columns.add( "orders");
+        columns.add( "customers");
+        columns.add( "amount");
+        columns.add( "pcr");
+        List<StatOrderRowsVO> rows = marketSystemMapper.selectStatOrder();
+        StatOrderVO statOrderVO = new StatOrderVO();
+        statOrderVO.setColumns(columns);
+        statOrderVO.setRows(rows);
+        return statOrderVO;
+    }
+
+    @Override
+    public StatGoodsVO statGoods() {
+        List<String> columns = new ArrayList<>();
+        columns.add("day");
+        columns.add( "orders");
+        columns.add( "products");
+        columns.add( "amount");
+        List<StatGoodsRowsVO> rows = marketSystemMapper.selectStatGoods();
+        StatGoodsVO statGoodsVO = new StatGoodsVO();
+        statGoodsVO.setColumns(columns);
+        statGoodsVO.setRows(rows);
+        return statGoodsVO;
     }
 }
 

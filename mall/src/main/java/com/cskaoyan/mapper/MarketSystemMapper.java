@@ -2,10 +2,7 @@ package com.cskaoyan.mapper;
 
 import com.cskaoyan.bean.MarketSystem;
 import com.cskaoyan.bean.MarketSystemExample;
-import com.cskaoyan.bean.marketConfig.MarketExpreessVO;
-import com.cskaoyan.bean.marketConfig.MarketOrderVO;
-import com.cskaoyan.bean.marketConfig.MarketSystemVO;
-import com.cskaoyan.bean.marketConfig.MarketWxVO;
+import com.cskaoyan.bean.marketConfig.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.security.Key;
@@ -38,14 +35,13 @@ public interface MarketSystemMapper {
     List<MarketSystemVO> selectLongitudeConfig();
 
 
-
-    void UpdateLongitudeConfig(@Param("k") String key, @Param("v")String value);
+    void UpdateLongitudeConfig(@Param("k") String key, @Param("v") String value);
 
     List<MarketExpreessVO> selectExpressConfig();
 
-    void UpdateExpressConfig(@Param("k") String key,@Param("v") String value);
+    void UpdateExpressConfig(@Param("k") String key, @Param("v") String value);
 
-    void UpdateOrderConfig(@Param("k")  String key,@Param("v") String value);
+    void UpdateOrderConfig(@Param("k") String key, @Param("v") String value);
 
     List<MarketOrderVO> selectOrderConfig();
 
@@ -53,5 +49,13 @@ public interface MarketSystemMapper {
     List<MarketWxVO> selectWxConfig();
 
 
-    void UpdateWxConfig1(@Param("k") String key,@Param("v") String value);
+    void UpdateWxConfig1(@Param("k") String key, @Param("v") String value);
+
+    List<StatRowsVO> selectStatUser();
+
+    List<StatOrderRowsVO> selectStatOrder();
+
+    List<StatGoodsRowsVO> selectStatGoods();
 }
+
+
