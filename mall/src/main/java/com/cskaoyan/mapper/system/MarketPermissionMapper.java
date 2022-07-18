@@ -19,6 +19,8 @@ public interface MarketPermissionMapper {
 
     List<MarketPermission> selectByExample(MarketPermissionExample example);
 
+    List<String > selectPermissionsByExample(MarketPermissionExample example);
+
     MarketPermission selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") MarketPermission record, @Param("example") MarketPermissionExample example);

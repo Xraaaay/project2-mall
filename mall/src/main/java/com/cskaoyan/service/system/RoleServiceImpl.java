@@ -98,7 +98,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional
     @Override
-    public void getPermissions(SystemPermissions systemPermissions) {
+    public void permissions(SystemPermissions systemPermissions) {
         for (SystemPermissions.First first : systemPermissions.getSystemPermissions()) {
 
             MarketRolePermission firstPermission = new MarketRolePermission();
@@ -128,14 +128,15 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Map<String, Object> permissions(Integer roleId) {
+    public Map<String, Object> getPermissions(Integer roleId) {
         // 全部权限
         List<MarketRolePermission> allPermissions = systemPermissionMapper.selectByExample(null);
 
-        // TODO XRW 将数据库数据转换成json对象，简化
+        // xrw 将数据库数据转换成json对象，简化
         List<SystemPermissions.First> systemPermissions = new ArrayList<>();
 
-        for (MarketRolePermission first : allPermissions) {
+        for (int k = 0; k < allPermissions.size(); k++) {
+            MarketRolePermission first = allPermissions.get(k);
             if (first.getPid() == null) {
                 // 是一级权限
                 SystemPermissions.First f = new SystemPermissions.First();
@@ -171,12 +172,38 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 当前角色已有权限
-        MarketPermission assignedPermissions = assignedPermissionMapper.selectByPrimaryKey(roleId);
+        MarketPermissionExample example = new MarketPermissionExample();
+        MarketPermissionExample.Criteria criteria = example.createCriteria();
+        criteria.andRoleIdEqualTo(roleId);
+        criteria.andDeletedEqualTo(false);
+        List<String> assignedPermissions =
+                assignedPermissionMapper.selectPermissionsByExample(example);
 
         Map<String, Object> map = new HashMap<>();
         map.put("systemPermissions", systemPermissions);
         map.put("assignedPermissions", assignedPermissions);
         return map;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void setPermissions(Integer roleId, List<String> permissions) {
+        // xrw 优化，考虑使用逻辑删除
+        // 删除所有权限
+        MarketPermissionExample example = new MarketPermissionExample();
+        MarketPermissionExample.Criteria criteria = example.createCriteria();
+        criteria.andRoleIdEqualTo(roleId);
+        assignedPermissionMapper.deleteByExample(example);
+
+        // 新增权限
+        MarketPermission marketPermission = new MarketPermission();
+        for (String permission : permissions) {
+            marketPermission.setPermission(permission);
+            marketPermission.setRoleId(roleId);
+            marketPermission.setAddTime(new Date());
+            marketPermission.setUpdateTime(new Date());
+            assignedPermissionMapper.insertSelective(marketPermission);
+        }
     }
 
     private void checkName(MarketRole role) {

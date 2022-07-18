@@ -49,12 +49,12 @@ public class AdminServiceImpl implements AdminService {
         // 用户名重复
         checkName(admin);
 
-        // TODO XRW 密码加密
+        // xrw 密码加密
         admin.setAddTime(new Date());
         admin.setUpdateTime(new Date());
         adminMapper.insertSelective(admin);
 
-        // TODO XRW 赋值工具类
+        // xrw 赋值工具类
         MarketAdmin marketAdmin1 = adminMapper.selectByPrimaryKey(admin.getId());
         MarketAdminCreateVo createVo = new MarketAdminCreateVo();
         createVo.setId(marketAdmin1.getId());

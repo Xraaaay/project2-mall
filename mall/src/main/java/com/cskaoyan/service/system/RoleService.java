@@ -7,6 +7,7 @@ import com.cskaoyan.bean.system.MarketRoleCreateVo;
 import com.cskaoyan.bean.system.MarketRoleOptionsVo;
 import com.cskaoyan.bean.system.SystemPermissions;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,12 +62,19 @@ public interface RoleService {
      * @author Xrw
      * @date 2022/7/17 21:46
      */
-    void getPermissions(SystemPermissions systemPermissions);
+    void permissions(SystemPermissions systemPermissions);
 
     /**
      * 获取全部权限和当前角色已有权限
      * @author Xrw
      * @date 2022/7/17 23:07
      */
-    Map<String, Object> permissions(Integer roleId);
+    Map<String, Object> getPermissions(Integer roleId);
+
+    /**
+     * 修改当前角色权限
+     * @author Xrw
+     * @date 2022/7/18 9:28
+     */
+    void setPermissions(Integer roleId, List<String> permissions);
 }

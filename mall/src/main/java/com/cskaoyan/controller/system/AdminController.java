@@ -1,5 +1,7 @@
 package com.cskaoyan.controller.system;
 
+import com.cskaoyan.anno.SecurityOperationLog;
+import com.cskaoyan.anno.SecurityOperationType;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
@@ -30,6 +32,7 @@ public class AdminController {
         return BaseRespVo.ok(adminList);
     }
 
+    @SecurityOperationLog(SecurityOperationType.CREAT)
     @RequestMapping("create")
     public BaseRespVo create(@RequestBody MarketAdmin admin) {
         checkNameAndPwd(admin.getUsername(), admin.getPassword());
@@ -37,6 +40,7 @@ public class AdminController {
         return BaseRespVo.ok(createVo);
     }
 
+    @SecurityOperationLog(SecurityOperationType.UPDATE)
     @RequestMapping("update")
     public BaseRespVo update(@RequestBody MarketAdmin admin) {
         checkNameAndPwd(admin.getUsername(), admin.getPassword());
@@ -44,6 +48,7 @@ public class AdminController {
         return BaseRespVo.ok(updateVo);
     }
 
+    @SecurityOperationLog(SecurityOperationType.DELETE)
     @RequestMapping("delete")
     public BaseRespVo delete(@RequestBody MarketAdmin admin) {
         adminService.delete(admin);
@@ -60,7 +65,7 @@ public class AdminController {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new InvalidParamException("用户名和密码不能为空");
         }
-        // TODO XRW 用户名、密码校验
+        // xrw 用户名、密码校验
         if (username.length() < 6 || username.length() > 15) {
             throw new InvalidParamException("用户名不合法");
         }
