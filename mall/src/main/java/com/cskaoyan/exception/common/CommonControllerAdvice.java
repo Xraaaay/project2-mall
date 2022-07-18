@@ -1,7 +1,6 @@
 package com.cskaoyan.exception.common;
 
 import com.cskaoyan.bean.common.BaseRespVo;
-import com.cskaoyan.exception.system.InvalidParamException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
