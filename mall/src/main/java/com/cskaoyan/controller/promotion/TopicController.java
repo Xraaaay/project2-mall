@@ -39,7 +39,6 @@ public class TopicController {
     public BaseRespVo list(BasePageInfo pageInfo, String title, String subtitle) {
 
         CommonData<MarketTopic> commonData = topicService.list(pageInfo, title, subtitle);
-
         return BaseRespVo.ok(commonData);
     }
 
@@ -56,7 +55,6 @@ public class TopicController {
     public BaseRespVo read(Integer id) {
 
         Map<String, Object> map = topicService.read(id);
-
         return BaseRespVo.ok(map);
     }
 
@@ -71,11 +69,7 @@ public class TopicController {
     @PostMapping("/create")
     public BaseRespVo create(@RequestBody MarketTopic topic) {
 
-        try {
-            topicService.create(topic);
-        } catch (Exception e) {
-            return BaseRespVo.invalidData();
-        }
+        topicService.create(topic);
         return BaseRespVo.ok(topic);
     }
 
@@ -90,12 +84,7 @@ public class TopicController {
     @PostMapping("/update")
     public BaseRespVo update(@RequestBody MarketTopic topic) {
 
-        try {
-            topicService.update(topic);
-        } catch (Exception e) {
-            return BaseRespVo.invalidData();
-        }
-
+        topicService.update(topic);
         return BaseRespVo.ok(topic);
     }
 

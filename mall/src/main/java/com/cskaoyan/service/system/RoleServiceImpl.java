@@ -53,7 +53,10 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public CommonData<MarketRoleOptionsVo> options() {
 
-        List<MarketRoleOptionsVo> roles = roleMapper.selectOptionsByExample(null);
+        MarketRoleExample example = new MarketRoleExample();
+        MarketRoleExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(false);
+        List<MarketRoleOptionsVo> roles = roleMapper.selectOptionsByExample(example);
 
         PageHelper.startPage(1, roles.size());
         PageInfo<MarketRoleOptionsVo> pageInfo = new PageInfo<>(roles);

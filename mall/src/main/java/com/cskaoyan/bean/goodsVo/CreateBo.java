@@ -1,5 +1,6 @@
 package com.cskaoyan.bean.goodsVo;
 
+import com.cskaoyan.bean.MarketGoods;
 import com.cskaoyan.bean.MarketGoodsAttribute;
 import com.cskaoyan.bean.MarketGoodsProduct;
 import com.cskaoyan.bean.MarketGoodsSpecification;
@@ -11,15 +12,15 @@ import java.util.List;
 
 /**
  * @author pqk
- * @since 2022/07/17 16:18
+ * @since 2022/07/18 16:49
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DetailVo {
-    List<Integer> categoryIds;
+public class CreateBo {
     MarketGoodsVo goods;
-    List<MarketGoodsAttribute> attributes;
     List<MarketGoodsSpecification> specifications;
     List<MarketGoodsProduct> products;
+    List<MarketGoodsAttribute> attributes;
+
 }

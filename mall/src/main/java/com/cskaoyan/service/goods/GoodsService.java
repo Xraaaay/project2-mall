@@ -1,7 +1,12 @@
 package com.cskaoyan.service.goods;
 
+import com.cskaoyan.bean.MarketGoods;
+import com.cskaoyan.bean.MarketGoodsAttribute;
+import com.cskaoyan.bean.MarketGoodsProduct;
+import com.cskaoyan.bean.MarketGoodsSpecification;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.goodsVo.CatAndBrandVo;
+import com.cskaoyan.bean.goodsVo.CreateBo;
 import com.cskaoyan.bean.goodsVo.DetailVo;
 
 /**
@@ -49,4 +54,12 @@ public interface GoodsService {
      * @date 2022/07/17 18:31
      */
     CatAndBrandVo catAndBrand();
+    /**
+     * @description 商品新增
+     * @return  null
+     * @param createBo
+     * @author pqk
+     * @date 2022/07/18 17:25
+     */
+    void create(CreateBo createBo);
 }

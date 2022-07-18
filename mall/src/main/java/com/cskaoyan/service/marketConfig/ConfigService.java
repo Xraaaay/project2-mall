@@ -1,9 +1,6 @@
 package com.cskaoyan.service.marketConfig;
 
-import com.cskaoyan.bean.marketConfig.MarketExpreessVO;
-import com.cskaoyan.bean.marketConfig.MarketOrderVO;
-import com.cskaoyan.bean.marketConfig.MarketSystemVO;
-import com.cskaoyan.bean.marketConfig.MarketWxVO;
+import com.cskaoyan.bean.marketConfig.*;
 
 
 import java.util.List;
@@ -25,5 +22,11 @@ public interface ConfigService {
     List<MarketWxVO> wx1();
 
     void updateWx(Map<String, String> map);
+
+    StatUserVO statUser();
+
+    StatOrderVO statOrder();
+
+    StatGoodsVO statGoods();
 }
 
