@@ -222,4 +222,33 @@ public class GoodsServiceImpl implements GoodsService {
 
     }
 
+    /**
+     * 更新商品
+     * @param updateBo
+     */
+    @Override
+    @Transactional
+    public void update(UpdateBo updateBo) {
+
+        MarketGoodsVo goods = updateBo.getGoods();
+        marketGoodsMapper.updateByPrimaryKeySelectiveVo(goods);
+
+        List<MarketGoodsProduct> products = updateBo.getProducts();
+        for (MarketGoodsProduct product : products) {
+            marketGoodsProductMapper.updateByPrimaryKeySelective(product);
+        }
+
+
+        List<MarketGoodsAttribute> attributes = updateBo.getAttributes();
+        for (MarketGoodsAttribute attribute : attributes) {
+            marketGoodsAttributeMapper.updateByPrimaryKeySelective(attribute);
+        }
+
+        List<MarketGoodsSpecification> specifications = updateBo.getSpecifications();
+        for (MarketGoodsSpecification specification : specifications) {
+            marketGoodsSpecificationMapper.updateByPrimaryKeySelective(specification);
+        }
+
+    }
+
 }
