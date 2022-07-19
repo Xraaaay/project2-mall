@@ -41,7 +41,7 @@ public class AdminController {
 
     @OperationLog(action = "编辑管理员")
     @RequestMapping("update")
-    public BaseRespVo update(@RequestBody MarketAdmin admin) {
+    public BaseRespVo update(@RequestBody MarketAdmin admin) throws Exception {
         checkNameAndPwd(admin.getUsername(), admin.getPassword());
         MarketAdminUpdateVo updateVo = adminService.update(admin);
         return BaseRespVo.ok(updateVo);

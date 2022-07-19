@@ -1,4 +1,4 @@
-package com.cskaoyan.bean.wx;
+package com.cskaoyan.bean.wx.search;
 
 import com.cskaoyan.bean.common.MarketKeyword;
 import com.cskaoyan.bean.common.MarketSearchHistory;
