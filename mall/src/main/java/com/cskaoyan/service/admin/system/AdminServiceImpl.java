@@ -72,10 +72,13 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public MarketAdminUpdateVo update(MarketAdmin admin) {
+    public MarketAdminUpdateVo update(MarketAdmin admin) throws Exception {
         checkName(admin);
 
         admin.setUpdateTime(new Date());
+        String password = admin.getPassword();
+        String md5 = Md5Utils.getMd5(password);
+        admin.setPassword(md5);
         adminMapper.updateByPrimaryKeySelective(admin);
 
         MarketAdmin marketAdmin = adminMapper.selectByPrimaryKey(admin.getId());

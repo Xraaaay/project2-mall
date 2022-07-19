@@ -85,7 +85,6 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void update(MarketRole role) {
         checkName(role);
-        // xrw 密码加密
         role.setUpdateTime(new Date());
         roleMapper.updateByPrimaryKeySelective(role);
     }
