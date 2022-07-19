@@ -1,9 +1,11 @@
 package com.cskaoyan.aspect;
 
 import com.cskaoyan.anno.OperationLog;
+import com.cskaoyan.bean.MarketOrder;
+import com.cskaoyan.bean.bo.MarketOrderShipBo;
 import com.cskaoyan.bean.common.BaseRespVo;
-import com.cskaoyan.bean.system.MarketAdmin;
-import com.cskaoyan.bean.system.MarketLog;
+import com.cskaoyan.bean.system.*;
+import com.cskaoyan.mapper.MarketOrderMapper;
 import com.cskaoyan.mapper.system.MarketLogMapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -24,6 +26,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 系统管理模块：操作日志
@@ -37,6 +40,9 @@ public class OperationLogAspect {
 
     @Autowired
     MarketLogMapper logMapper;
+
+    @Autowired
+    MarketOrderMapper orderMapper;
 
     @Pointcut("@annotation(com.cskaoyan.anno.OperationLog)")
     public void logPointcut() {
@@ -65,10 +71,11 @@ public class OperationLogAspect {
         log.setIp(ip);
 
         // 获取管理员信息logout
+        MarketAdmin marketAdmin = null;
         Subject subject = SecurityUtils.getSubject();
         PrincipalCollection principals = subject.getPrincipals();
         if (principals != null) {
-            MarketAdmin marketAdmin = (MarketAdmin) principals.getPrimaryPrincipal();
+            marketAdmin = (MarketAdmin) principals.getPrimaryPrincipal();
             String username = marketAdmin.getUsername();
             log.setAdmin(username);
         }
@@ -82,12 +89,13 @@ public class OperationLogAspect {
         }
         String errmsg = proceed.getErrmsg();
         int errno = proceed.getErrno();
+        Object data = proceed.getData();
 
         // 获取管理员信息login
         if (principals == null) {
             principals = subject.getPrincipals();
             if (principals != null) {
-                MarketAdmin marketAdmin = (MarketAdmin) principals.getPrimaryPrincipal();
+                marketAdmin = (MarketAdmin) principals.getPrimaryPrincipal();
                 String username = marketAdmin.getUsername();
                 log.setAdmin(username);
             }
@@ -98,12 +106,40 @@ public class OperationLogAspect {
             log.setStatus(false);
             log.setResult(errmsg);
             logMapper.insertSelective(log);
-        } else {
-            // 操作状态：成功
-            // xrw 操作结果
-            log.setStatus(true);
-            logMapper.insertSelective(log);
+            return proceed;
         }
+
+        // 操作状态：成功
+        // 获取操作结果
+        Object[] args = joinPoint.getArgs();
+        if ("添加管理员".equals(action)) {
+            // 操作结果：添加管理员名称
+            MarketAdminCreateVo createVo = (MarketAdminCreateVo) data;
+            log.setResult(createVo.getUsername());
+        } else if ("编辑管理员".equals(action)) {
+            // 操作结果：编辑管理员新的名称
+            MarketAdminUpdateVo updateVo = (MarketAdminUpdateVo) data;
+            log.setResult(updateVo.getUsername());
+        } else if ("删除管理员".equals(action)) {
+            // 操作结果：删除管理员名称
+            MarketAdmin deleteAdmin = (MarketAdmin) args[0];
+            log.setResult(deleteAdmin.getUsername());
+        } else if ("订单发货".equals(action)) {
+            // 操作结果：快递单号
+            MarketOrderShipBo shipBo = (MarketOrderShipBo) args[0];
+            Integer orderId = shipBo.getOrderId();
+            MarketOrder marketOrder = orderMapper.selectByPrimaryKey(orderId);
+            log.setResult("订单编号：" + marketOrder.getOrderSn());
+        } else if ("删除订单".equals(action)) {
+            // 操作结果：快递单号
+            Map map = (Map) args[0];
+            Integer orderId = (Integer) map.get("orderId");
+            MarketOrder marketOrder = orderMapper.selectByPrimaryKey(orderId);
+            log.setResult("订单编号：" + marketOrder.getOrderSn());
+        }
+
+        log.setStatus(true);
+        logMapper.insertSelective(log);
 
         return proceed;
     }

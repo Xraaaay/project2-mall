@@ -198,7 +198,7 @@
     set id = #{record.id,jdbcType=INTEGER},
       user_id = #{record.userId,jdbcType=INTEGER},
       keyword = #{record.keyword,jdbcType=VARCHAR},
-      from = #{record.from,jdbcType=VARCHAR},
+      `from` = #{record.from,jdbcType=VARCHAR},
       add_time = #{record.addTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       deleted = #{record.deleted,jdbcType=BIT}

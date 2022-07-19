@@ -6,6 +6,7 @@ import com.cskaoyan.bean.adminauth.LoginUserData;
 import com.cskaoyan.bean.system.*;
 import com.cskaoyan.mapper.system.MarketPermissionMapper;
 import com.cskaoyan.mapper.system.MarketRoleMapper;
+import com.cskaoyan.mapper.system.MarketRolePermissionMapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -28,6 +29,8 @@ public class AdminLoginServiceImpl implements AdminLoginService {
     MarketRoleMapper marketRoleMapper;
     @Autowired
     MarketPermissionMapper marketPermissionMapper;
+    @Autowired
+    MarketRolePermissionMapper marketRolePermissionMapper;
 
     /**
      * 后台管理员登录
@@ -92,6 +95,18 @@ public class AdminLoginServiceImpl implements AdminLoginService {
         permExample.createCriteria().andRoleIdEqualTo(primaryPrincipal.getRoleIds()[0]);
         List<MarketPermission> marketPermissions = marketPermissionMapper.selectByExample(permExample);
 
+        // 记录该管理员应该有的权限
+        ArrayList<String> perms = new ArrayList<>();
+        for (MarketPermission marketPermission : marketPermissions) {
+            // 再根据permission表的permission去role-permission表中找到api()
+            MarketRolePermissionExample rpExample = new MarketRolePermissionExample();
+            rpExample.createCriteria().andIdEqualTo(marketPermission.getPermission());
+            List<MarketRolePermission> mrps = marketRolePermissionMapper.selectByExample(rpExample);
+            for (MarketRolePermission mrp : mrps) {
+                perms.add(mrp.getApi());
+            }
+        }
+
         InfoData infoData = new InfoData();
 
         ArrayList<String> roles = new ArrayList<>();
@@ -100,10 +115,6 @@ public class AdminLoginServiceImpl implements AdminLoginService {
         }
         infoData.setRoles(roles);
 
-        ArrayList<String> perms = new ArrayList<>();
-        for (MarketPermission marketPermission : marketPermissions) {
-            perms.add(marketPermission.getPermission());
-        }
         infoData.setPerms(perms);
 
         infoData.setName(primaryPrincipal.getUsername());

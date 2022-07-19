@@ -52,7 +52,7 @@ public class ShiroConfiguration {
     }
 
     /**
-     * 注册组件,使得权限与handler方法进行绑定
+     * 注册组件,使得权限与handler方法进行绑定 (与授权有关，也未用到)
      * @param securityManager
      * @return org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor
      * @author Zah

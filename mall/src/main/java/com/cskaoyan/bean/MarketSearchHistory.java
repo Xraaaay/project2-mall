@@ -1,7 +1,14 @@
 package com.cskaoyan.bean;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MarketSearchHistory {
     private Integer id;
 
