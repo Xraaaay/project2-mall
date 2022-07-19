@@ -1,6 +1,6 @@
 package com.cskaoyan.service.wx.search;
 
-import com.cskaoyan.bean.wx.WxSearchIndexVO;
+import com.cskaoyan.bean.wx.search.WxSearchIndexVO;
 
 import java.util.List;
 

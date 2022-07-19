@@ -1,4 +1,4 @@
-package com.cskaoyan.controller.wxcomment;
+package com.cskaoyan.controller.wx.wxcomment;
 
 import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.MarketComment;
@@ -7,9 +7,7 @@ import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
 import com.cskaoyan.bean.wx.wxcomment.WXCommentVo;
 import com.cskaoyan.service.wx.wxcomment.CommentWXService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 小程序端的评论
@@ -49,5 +47,16 @@ public class CommentWXController {
     public BaseRespSuccessVo list(MarketComment marketComment, String showType, BaseParam baseParam) {
         IssueAndKeywordListVo commentList=commentService.commentList(marketComment,showType,baseParam);
         return BaseRespSuccessVo.success(commentList);
+    }
+
+    /**
+     * 提交评论
+     * @param marketComment
+     * @return
+     */
+    @PostMapping("post")
+    public BaseRespSuccessVo post(@RequestBody MarketComment marketComment){
+        MarketComment comment=commentService.postComment(marketComment);
+        return BaseRespSuccessVo.success(comment);
     }
 }

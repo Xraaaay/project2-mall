@@ -4,7 +4,7 @@ import com.cskaoyan.bean.common.MarketKeyword;
 import com.cskaoyan.bean.common.MarketKeywordExample;
 import com.cskaoyan.bean.common.MarketSearchHistory;
 import com.cskaoyan.bean.common.MarketSearchHistoryExample;
-import com.cskaoyan.bean.wx.WxSearchIndexVO;
+import com.cskaoyan.bean.wx.search.WxSearchIndexVO;
 import com.cskaoyan.mapper.common.MarketKeywordMapper;
 import com.cskaoyan.mapper.common.MarketSearchHistoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
