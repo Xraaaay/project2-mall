@@ -1,8 +1,8 @@
-package com.cskaoyan.controller.wx.feedback;
+package com.cskaoyan.controller.wx.wxfeedback;
 
 import com.cskaoyan.bean.admin.mallmanagement.BaseRespSuccessVo;
 import com.cskaoyan.bean.common.MarketFeedback;
-import com.cskaoyan.service.wx.feedback.FeedbackWXService;
+import com.cskaoyan.service.wx.wxfeedback.FeedbackWXService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
