@@ -1,10 +1,10 @@
 package com.cskaoyan.config.shiro;
 
-import com.cskaoyan.bean.MarketUser;
-import com.cskaoyan.bean.MarketUserExample;
-import com.cskaoyan.bean.system.MarketAdmin;
-import com.cskaoyan.bean.system.MarketAdminExample;
-import com.cskaoyan.mapper.MarketUserMapper;
+import com.cskaoyan.bean.common.MarketUser;
+import com.cskaoyan.bean.common.MarketUserExample;
+import com.cskaoyan.bean.admin.system.MarketAdmin;
+import com.cskaoyan.bean.admin.system.MarketAdminExample;
+import com.cskaoyan.mapper.common.MarketUserMapper;
 import com.cskaoyan.mapper.system.MarketAdminMapper;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;

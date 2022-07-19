@@ -1,7 +1,7 @@
 package com.cskaoyan.bean.wx;
 
-import com.cskaoyan.bean.MarketKeyword;
-import com.cskaoyan.bean.MarketSearchHistory;
+import com.cskaoyan.bean.common.MarketKeyword;
+import com.cskaoyan.bean.common.MarketSearchHistory;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

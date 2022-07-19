@@ -1,13 +1,12 @@
 package com.cskaoyan.service.wx.search;
 
-import com.cskaoyan.bean.MarketKeyword;
-import com.cskaoyan.bean.MarketKeywordExample;
-import com.cskaoyan.bean.MarketSearchHistory;
-import com.cskaoyan.bean.MarketSearchHistoryExample;
-import com.cskaoyan.bean.system.MarketStorageExample;
+import com.cskaoyan.bean.common.MarketKeyword;
+import com.cskaoyan.bean.common.MarketKeywordExample;
+import com.cskaoyan.bean.common.MarketSearchHistory;
+import com.cskaoyan.bean.common.MarketSearchHistoryExample;
 import com.cskaoyan.bean.wx.WxSearchIndexVO;
-import com.cskaoyan.mapper.MarketKeywordMapper;
-import com.cskaoyan.mapper.MarketSearchHistoryMapper;
+import com.cskaoyan.mapper.common.MarketKeywordMapper;
+import com.cskaoyan.mapper.common.MarketSearchHistoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
