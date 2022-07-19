@@ -38,7 +38,7 @@ public class GoodsWxController {
 
     /**
      * id=1008002
-     * @description 商品类别 todo 待验证
+     * @description 商品类别
      * @author pqk
      * @date 2022/07/19 20:12
      */
@@ -59,4 +59,14 @@ public class GoodsWxController {
         return BaseRespVo.ok(count);
     }
 
+    /**
+     * id=1009024
+     * @description 商品详情 todo
+     * @author pqk
+     * @date 2022/07/19 23:19
+     */
+    @RequestMapping("detail")
+    public BaseRespVo detail(String id){
+        return BaseRespVo.ok(null);
+    }
 }

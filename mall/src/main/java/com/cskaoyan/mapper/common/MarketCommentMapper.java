@@ -28,4 +28,5 @@ public interface MarketCommentMapper {
     int updateByPrimaryKeySelective(MarketComment record);
 
     int updateByPrimaryKey(MarketComment record);
+
 }

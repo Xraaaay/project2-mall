@@ -1,5 +1,6 @@
 package com.cskaoyan.service.admin.mallmanagement;
 
+import com.cskaoyan.bean.admin.comment.bo.CommentBo;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarketOrderDetailPo;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarketOrderListPo;
 import com.cskaoyan.bean.admin.mallmanagement.bo.MarketOrderListBo;
@@ -63,4 +64,13 @@ public interface OrderService {
      * @since 2022/07/17 20:58
      */
     void delete(Integer id);
+
+    /**
+     * @description 商家回复
+     * @return
+     * @param  commentBo
+     * @author pqk
+     * @date 2022/07/19 23:35
+     */
+    void reply(CommentBo commentBo);
 }
