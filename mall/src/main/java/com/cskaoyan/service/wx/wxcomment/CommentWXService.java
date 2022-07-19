@@ -14,4 +14,7 @@ public interface CommentWXService {
     WXCommentVo commentCount(String valueId, String type);
     /*小程序评论列表*/
     IssueAndKeywordListVo commentList(MarketComment marketComment, String showType, BaseParam baseParam);
+    /*小程序的评论提交*/
+    MarketComment postComment(MarketComment marketComment);
+
 }
