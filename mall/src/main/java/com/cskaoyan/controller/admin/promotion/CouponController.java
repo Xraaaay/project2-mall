@@ -1,12 +1,12 @@
 package com.cskaoyan.controller.admin.promotion;
 
 import com.cskaoyan.anno.ParamValidation;
-import com.cskaoyan.bean.MarketCoupon;
-import com.cskaoyan.bean.MarketCouponUser;
+import com.cskaoyan.bean.common.MarketCoupon;
+import com.cskaoyan.bean.common.MarketCouponUser;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
-import com.cskaoyan.service.promotion.CouponService;
+import com.cskaoyan.service.admin.promotion.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;

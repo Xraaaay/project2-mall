@@ -1,11 +1,11 @@
 package com.cskaoyan.aspect;
 
 import com.cskaoyan.anno.OperationLog;
-import com.cskaoyan.bean.MarketOrder;
-import com.cskaoyan.bean.bo.MarketOrderShipBo;
+import com.cskaoyan.bean.common.MarketOrder;
+import com.cskaoyan.bean.admin.mallmanagement.bo.MarketOrderShipBo;
 import com.cskaoyan.bean.common.BaseRespVo;
-import com.cskaoyan.bean.system.*;
-import com.cskaoyan.mapper.MarketOrderMapper;
+import com.cskaoyan.bean.admin.system.*;
+import com.cskaoyan.mapper.common.MarketOrderMapper;
 import com.cskaoyan.mapper.system.MarketLogMapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;

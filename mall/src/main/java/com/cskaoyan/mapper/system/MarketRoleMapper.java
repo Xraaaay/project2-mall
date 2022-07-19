@@ -1,8 +1,8 @@
 package com.cskaoyan.mapper.system;
 
-import com.cskaoyan.bean.system.MarketRole;
-import com.cskaoyan.bean.system.MarketRoleExample;
-import com.cskaoyan.bean.system.MarketRoleOptionsVo;
+import com.cskaoyan.bean.admin.system.MarketRole;
+import com.cskaoyan.bean.admin.system.MarketRoleExample;
+import com.cskaoyan.bean.admin.system.MarketRoleOptionsVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
