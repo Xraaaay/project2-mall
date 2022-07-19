@@ -8,6 +8,7 @@ import com.cskaoyan.bean.po.MarketOrderListPo;
 import com.cskaoyan.bean.bo.MarketOrderListBo;
 import com.cskaoyan.bean.bo.MarketOrderShipBo;
 import com.cskaoyan.service.OrderService;
+import com.cskaoyan.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -101,5 +102,17 @@ public class OrderController {
         Integer orderId = (Integer) map.get("orderId");
         orderService.delete(orderId);
         return BaseRespVo.ok(null);
+    }
+
+    /**
+     * 返回快递列表
+     *
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author changyong
+     * @since 2022/07/19 11:11
+     */
+    @RequestMapping("channel")
+    public BaseRespVo channel() {
+        return BaseRespVo.ok(Constant.channelList);
     }
 }
