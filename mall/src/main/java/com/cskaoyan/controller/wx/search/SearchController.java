@@ -1,7 +1,7 @@
 package com.cskaoyan.controller.wx.search;
 
 import com.cskaoyan.bean.common.BaseRespVo;
-import com.cskaoyan.bean.wx.WxSearchIndexVO;
+import com.cskaoyan.bean.wx.search.WxSearchIndexVO;
 import com.cskaoyan.service.wx.search.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
