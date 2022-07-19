@@ -350,4 +350,18 @@
       deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectCartTotal" resultType="com.cskaoyan.bean.wx.cart.CartTotalEntity">
+    SELECT
+	sum( number ) AS goodsCount,
+	sum( price ) AS goodAmount,
+	( SELECT sum( number ) FROM market_cart WHERE checked = 1 ) AS checkedGoodsCount,
+	( SELECT sum( price ) FROM market_cart WHERE checked = 1 ) AS checkedGoodsAmount
+FROM
+	market_cart
+    </select>
+
+  <select id="selectGoodscount" resultType="java.lang.Integer">
+    	SELECT sum( number ) AS goodsCount FROM market_cart
+  </select>
 </mapper>

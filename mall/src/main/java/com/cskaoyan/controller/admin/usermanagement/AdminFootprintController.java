@@ -9,23 +9,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 用户管理之会员收藏
+ * 用户管理之会员足迹
  *
  * @author Zah
- * @date 2022/07/18 20:00
+ * @date 2022/07/18 20:28
  */
 @RestController
-@RequestMapping("admin/collect")
-public class CollectController {
+@RequestMapping("admin/footprint")
+public class AdminFootprintController {
 
     @Autowired
     UserService userService;
 
     @RequestMapping("list")
-    public BaseRespVo list(BaseParam page,Integer userId,Integer valueId){
+    public BaseRespVo list(BaseParam page,Integer userId,Integer goodsId){
 
-        UserListVo collectList = userService.getCollectList(page, userId, valueId);
+        UserListVo footprintList = userService.getFootprintList(page, userId, goodsId);
 
-        return BaseRespVo.ok(collectList);
+        return BaseRespVo.ok(footprintList);
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2022/07/18 00:13
  */
 @RestController
-public class DashBoardController {
+public class AdminDashBoardController {
 
     @Autowired
     DashBoardService dashBoardService;

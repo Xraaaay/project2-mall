@@ -85,7 +85,7 @@ public class OperationLogAspect {
             proceed = (BaseRespVo) joinPoint.proceed();
         } catch (UnknownAccountException | IncorrectCredentialsException e) {
             log.setAdmin("匿名用户");
-            proceed = BaseRespVo.invalidData("用户名或账号密码不正确");
+            proceed = BaseRespVo.invalidParameter("用户名或账号密码不正确");
         }
         String errmsg = proceed.getErrmsg();
         int errno = proceed.getErrno();
