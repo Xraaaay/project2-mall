@@ -125,7 +125,6 @@ public class OrderServiceImpl implements OrderService {
         //获取order
         MarketOrder marketOrder = marketOrderMapper.selectByPrimaryKey(orderId);
         //赋值
-        //TODO 前端页面 快递公司无数据，无法选择。需更改前端数据
         marketOrder.setShipChannel(shipChannel);
         marketOrder.setShipSn(shipSn);
         Date shipTime = new Date();
