@@ -17,6 +17,8 @@ public interface MarketPermissionMapper {
 
     int insertSelective(MarketPermission record);
 
+    int insertListSelective(List<MarketPermission> permissionList);
+
     List<MarketPermission> selectByExample(MarketPermissionExample example);
 
     List<String > selectPermissionsByExample(MarketPermissionExample example);

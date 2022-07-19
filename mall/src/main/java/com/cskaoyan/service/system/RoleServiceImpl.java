@@ -199,15 +199,16 @@ public class RoleServiceImpl implements RoleService {
         assignedPermissionMapper.deleteByExample(example);
 
         // 新增权限
-        MarketPermission marketPermission = new MarketPermission();
+        List<MarketPermission> permissionList = new ArrayList<>();
         for (String permission : permissions) {
-            String api = systemPermissionMapper.selectApiByPermission(permission);
-            marketPermission.setPermission(api);
+            MarketPermission marketPermission = new MarketPermission();
+            marketPermission.setPermission(permission);
             marketPermission.setRoleId(roleId);
             marketPermission.setAddTime(new Date());
             marketPermission.setUpdateTime(new Date());
-            assignedPermissionMapper.insertSelective(marketPermission);
+            permissionList.add(marketPermission);
         }
+        assignedPermissionMapper.insertListSelective(permissionList);
     }
 
     private void checkName(MarketRole role) {
