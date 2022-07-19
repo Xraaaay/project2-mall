@@ -73,7 +73,7 @@ public class MarketRealm extends AuthorizingRealm {
     }
 
     /**
-     * Shiro的授权信息(未完成)
+     * TODO Shiro的授权信息(未完成)
      *
      * @param principalCollection
      * @return org.apache.shiro.authz.AuthorizationInfo
