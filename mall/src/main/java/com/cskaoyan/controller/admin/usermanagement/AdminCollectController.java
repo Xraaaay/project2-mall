@@ -9,23 +9,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 用户管理之收货地址
+ * 用户管理之会员收藏
  *
  * @author Zah
- * @date 2022/07/18 18:13
+ * @date 2022/07/18 20:00
  */
 @RestController
-@RequestMapping("admin/address")
-public class AddressController {
+@RequestMapping("admin/collect")
+public class AdminCollectController {
 
     @Autowired
     UserService userService;
 
     @RequestMapping("list")
-    public BaseRespVo list(BaseParam page,String name,Integer userId){
+    public BaseRespVo list(BaseParam page,Integer userId,Integer valueId){
 
-        UserListVo addressList = userService.getAddressList(page, name, userId);
+        UserListVo collectList = userService.getCollectList(page, userId, valueId);
 
-        return BaseRespVo.ok(addressList);
+        return BaseRespVo.ok(collectList);
     }
 }
