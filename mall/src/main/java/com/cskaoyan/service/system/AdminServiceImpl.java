@@ -52,8 +52,9 @@ public class AdminServiceImpl implements AdminService {
 
         admin.setAddTime(new Date());
         admin.setUpdateTime(new Date());
-        String password = Md5Utils.getMd5(admin.getPassword());
-        admin.setPassword(password);
+        String password = admin.getPassword();
+        String md5 = Md5Utils.getMd5(password);
+        admin.setPassword(md5);
         adminMapper.insertSelective(admin);
 
         // xrw 赋值工具类

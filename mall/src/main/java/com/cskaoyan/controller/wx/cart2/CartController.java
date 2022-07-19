@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("wx/cart")
 public class CartController {
-    @Autowired
-    CartController cartController;
+    // @Autowired
+    // CartController cartController;
 
     @RequestMapping("checked")
     public BaseRespVo chaecked() {

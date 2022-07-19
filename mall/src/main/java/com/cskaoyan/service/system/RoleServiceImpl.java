@@ -85,18 +85,26 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void update(MarketRole role) {
         checkName(role);
-
+        // xrw 密码加密
         role.setUpdateTime(new Date());
         roleMapper.updateByPrimaryKeySelective(role);
     }
 
+    @Transactional
     @Override
     public void delete(MarketRole role) {
+        // 逻辑删除角色
         MarketRole marketRole = new MarketRole();
         marketRole.setId(role.getId());
         marketRole.setUpdateTime(new Date());
         marketRole.setDeleted(true);
         roleMapper.updateByPrimaryKeySelective(marketRole);
+
+        // 删除角色对应的权限
+        MarketPermissionExample example = new MarketPermissionExample();
+        MarketPermissionExample.Criteria criteria = example.createCriteria();
+        criteria.andRoleIdEqualTo(role.getId());
+        assignedPermissionMapper.deleteByExample(example);
     }
 
     @Transactional
