@@ -1,8 +1,10 @@
 package com.cskaoyan.mapper.common;
 
+import com.cskaoyan.bean.common.GoodsListVoExample;
 import com.cskaoyan.bean.common.MarketGoods;
 import com.cskaoyan.bean.common.MarketGoodsExample;
 import com.cskaoyan.bean.admin.goods.vo.MarketGoodsVo;
+import com.cskaoyan.bean.wx.goods.GoodsListVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -23,6 +25,8 @@ public interface MarketGoodsMapper {
     List<MarketGoods> selectByExampleWithBLOBs(MarketGoodsExample example);
 
     List<MarketGoods> selectByExample(MarketGoodsExample example);
+
+    // List<GoodsListVo> selectByExampleWxVo(GoodsListVoExample example);
 
     MarketGoods selectByPrimaryKey(Integer id);
 
