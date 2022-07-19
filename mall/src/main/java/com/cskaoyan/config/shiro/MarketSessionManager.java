@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class MarketSessionManager extends DefaultWebSessionManager {
 
     // 认证完后之后，把SessionId作为响应结果相应给前端，前端发送请求，通过请求头携带了SessionId
-    private static final String HEADER = "X-CskaoyanMarket-Admin-Token";
+    private static final String MARKET_ADMIN_TOKEN = "X-CskaoyanMarket-Admin-Token";
 
     // 后续还要添加小程序的SessionId的请求头
     private static final String MARKET_WX_TOKEN = "X-CskaoyanMarket-Token";
@@ -34,7 +34,7 @@ public class MarketSessionManager extends DefaultWebSessionManager {
     protected Serializable getSessionId(ServletRequest servletRequest, ServletResponse response) {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String sessionId = request.getHeader(HEADER);
+        String sessionId = request.getHeader(MARKET_ADMIN_TOKEN);
         if (sessionId != null && !"".equals(sessionId)){
             return sessionId;
         }
