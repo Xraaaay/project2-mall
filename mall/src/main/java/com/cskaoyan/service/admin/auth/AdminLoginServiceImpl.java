@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * 登录信息
+ *
  * @author Zah
  * @date 2022/07/18 14:01
  */
@@ -34,8 +35,9 @@ public class AdminLoginServiceImpl implements AdminLoginService {
 
     /**
      * 后台管理员登录
+     *
      * @param token
-     * @return com.cskaoyan.bean.admin.auth.LoginUserData
+     * @return com.cskaoyan.bean.adminauth.LoginUserData
      * @author Zah
      * @date 2022/07/18 14:01
      */
@@ -69,16 +71,17 @@ public class AdminLoginServiceImpl implements AdminLoginService {
 
     /**
      * 管理员登录之后所带的信息
-     * @return com.cskaoyan.bean.admin.auth.InfoData
+     *
+     * @return com.cskaoyan.bean.adminauth.InfoData
      * @author Zah
      * @date 2022/07/18 14:21
      */
     @Override
-    public InfoData adminInfo(){
+    public InfoData adminInfo() {
 
         Subject subject = SecurityUtils.getSubject();
 
-        if (subject.getPrincipals() == null){
+        if (subject.getPrincipals() == null) {
             subject.logout();
             return null;
         }
@@ -86,36 +89,43 @@ public class AdminLoginServiceImpl implements AdminLoginService {
         MarketAdmin primaryPrincipal = (MarketAdmin) subject.getPrincipals().getPrimaryPrincipal();
 
         // 根据rolesId获取role表中的name
-        MarketRoleExample roleExample = new MarketRoleExample();
-        roleExample.createCriteria().andIdEqualTo(primaryPrincipal.getRoleIds()[0]);
-        List<MarketRole> marketRoles = marketRoleMapper.selectByExample(roleExample);
+        ArrayList<String> roles = new ArrayList<>();
+        for (Integer roleId : primaryPrincipal.getRoleIds()) {
+            MarketRoleExample roleExample = new MarketRoleExample();
+            roleExample.createCriteria().andIdEqualTo(roleId);
+            List<MarketRole> marketRoles = marketRoleMapper.selectByExample(roleExample);
+            for (MarketRole marketRole : marketRoles) {
+                roles.add(marketRole.getName());
+            }
+        }
 
         // 根据rolesId获取permission表中的permission
-        MarketPermissionExample permExample = new MarketPermissionExample();
-        permExample.createCriteria().andRoleIdEqualTo(primaryPrincipal.getRoleIds()[0]);
-        List<MarketPermission> marketPermissions = marketPermissionMapper.selectByExample(permExample);
-
-        // 记录该管理员应该有的权限
         ArrayList<String> perms = new ArrayList<>();
-        for (MarketPermission marketPermission : marketPermissions) {
-            // 再根据permission表的permission去role-permission表中找到api()
+        for (Integer roleId : primaryPrincipal.getRoleIds()) {
+            MarketPermissionExample permExample = new MarketPermissionExample();
+            permExample.createCriteria().andRoleIdEqualTo(roleId);
+            List<MarketPermission> marketPermissions = marketPermissionMapper.selectByExample(permExample);
+            for (MarketPermission marketPermission : marketPermissions) {
+                perms.add(marketPermission.getPermission());
+            }
+        }
+
+        // 再根据permission表的permission去role-permission表中找到api()
+        ArrayList<String> permsApi = new ArrayList<>();
+        for (String perm : perms) {
             MarketRolePermissionExample rpExample = new MarketRolePermissionExample();
-            rpExample.createCriteria().andIdEqualTo(marketPermission.getPermission());
+            rpExample.createCriteria().andIdEqualTo(perm);
             List<MarketRolePermission> mrps = marketRolePermissionMapper.selectByExample(rpExample);
             for (MarketRolePermission mrp : mrps) {
-                perms.add(mrp.getApi());
+                permsApi.add(mrp.getApi());
             }
         }
 
         InfoData infoData = new InfoData();
 
-        ArrayList<String> roles = new ArrayList<>();
-        for (MarketRole marketRole : marketRoles) {
-            roles.add(marketRole.getName());
-        }
         infoData.setRoles(roles);
 
-        infoData.setPerms(perms);
+        infoData.setPerms(permsApi);
 
         infoData.setName(primaryPrincipal.getUsername());
 

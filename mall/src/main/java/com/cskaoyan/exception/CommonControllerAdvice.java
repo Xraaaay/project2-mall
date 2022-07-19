@@ -1,6 +1,7 @@
 package com.cskaoyan.exception;
 
 import com.cskaoyan.bean.common.BaseRespVo;
+import com.cskaoyan.controller.wx.auth.WxAuthController;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -21,6 +22,12 @@ public class CommonControllerAdvice {
     @ExceptionHandler(InvalidDataException.class)
     public BaseRespVo invalidData(InvalidDataException exception) {
         return BaseRespVo.invalidData(exception.getMessage());
+    }
+
+    @ExceptionHandler(UnAuthException.class)
+    public BaseRespVo unAuth(UnAuthException exception) {
+        // 重定向到登录界面
+        return WxAuthController.unAuthc();
     }
 
     // 顶级异常处理

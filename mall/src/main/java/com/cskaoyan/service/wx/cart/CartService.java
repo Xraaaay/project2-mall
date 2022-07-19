@@ -3,6 +3,7 @@ package com.cskaoyan.service.wx.cart;
 import com.cskaoyan.bean.wx.cart.WxCartVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  /**
@@ -12,5 +13,20 @@ import java.util.List;
  */
 public interface CartService {
 
-    WxCartVO checked(List<Integer> productIds, Integer isChecked);
+    /**
+     * 显示购物车商品
+     * @author Xrw
+     * @date 2022/7/19 22:03
+     */
+    Map<String, Object> index();
+
+    Map<String, Object> checked(List<Integer> productIds, Integer isChecked);
+
+    WxCartVO delete(List<Integer> productIds);
+
+    Integer goodsCount();
+
+    void update(Map<String, Integer> map);
+
+    Integer addWx(Map<String, Integer> map);
 }
