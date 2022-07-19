@@ -2,8 +2,8 @@ package com.cskaoyan.service.mallmanagement;
 
 import com.cskaoyan.bean.MarketIssue;
 import com.cskaoyan.bean.MarketIssueExample;
-import com.cskaoyan.bean.mallManagement.BaseParam;
-import com.cskaoyan.bean.mallManagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.mallmanagementVo.BaseParam;
+import com.cskaoyan.bean.mallmanagementVo.IssueAndKeywordListVo;
 import com.cskaoyan.mapper.MarketIssueMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -28,7 +28,7 @@ public class IssueServiceImpl implements IssueService {
     /**
      *  获取issue列表
      * @param param
-     * @return com.cskaoyan.bean.mallManagement.IssueAndKeywordListVo
+     * @return com.cskaoyan.bean.mallmanagementVo.IssueAndKeywordListVo
      * @author shn
      * @date 2022/7/16 15:35
      */

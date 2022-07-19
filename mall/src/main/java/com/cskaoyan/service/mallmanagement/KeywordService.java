@@ -1,8 +1,8 @@
 package com.cskaoyan.service.mallmanagement;
 
 import com.cskaoyan.bean.MarketKeyword;
-import com.cskaoyan.bean.mallManagement.BaseParam;
-import com.cskaoyan.bean.mallManagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.mallmanagementVo.BaseParam;
+import com.cskaoyan.bean.mallmanagementVo.IssueAndKeywordListVo;
 
 
 /**

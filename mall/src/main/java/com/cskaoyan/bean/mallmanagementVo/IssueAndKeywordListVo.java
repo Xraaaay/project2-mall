@@ -1,6 +1,4 @@
-package com.cskaoyan.bean.mallManagement;
-
-import com.cskaoyan.bean.MarketIssue;
+package com.cskaoyan.bean.mallmanagementVo;
 
 import java.util.List;
 

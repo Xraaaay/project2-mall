@@ -1,8 +1,8 @@
 package com.cskaoyan.controller.mallmanagement;
 import com.cskaoyan.bean.MarketIssue;
-import com.cskaoyan.bean.mallManagement.BaseParam;
-import com.cskaoyan.bean.mallManagement.BaseRespSuccessVo;
-import com.cskaoyan.bean.mallManagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.mallmanagementVo.BaseParam;
+import com.cskaoyan.bean.mallmanagementVo.BaseRespSuccessVo;
+import com.cskaoyan.bean.mallmanagementVo.IssueAndKeywordListVo;
 import com.cskaoyan.service.mallmanagement.IssueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +53,7 @@ public class IssueController {
     /**
      * 逻辑删除 通用问题
      * @param marketIssue
-     * @return com.cskaoyan.bean.mallManagement.BaseRespSuccessVo
+     * @return com.cskaoyan.bean.mallmanagementVo.BaseRespSuccessVo
      * @author shn
      * @date 2022/7/16 21:21
      */
@@ -66,7 +66,7 @@ public class IssueController {
     /**
      * 添加 通用问题
      * @param marketIssue
-     * @return com.cskaoyan.bean.mallManagement.BaseRespSuccessVo
+     * @return com.cskaoyan.bean.mallmanagementVo.BaseRespSuccessVo
      * @author shn
      * @date 2022/7/17 16:05
      */

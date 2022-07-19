@@ -1,4 +1,4 @@
-package com.cskaoyan.bean.mallManagement;
+package com.cskaoyan.bean.mallmanagementVo;
 
 import lombok.Data;
 

@@ -1,8 +1,8 @@
 package com.cskaoyan.controller.mallmanagement;
 import com.cskaoyan.bean.MarketKeyword;
-import com.cskaoyan.bean.mallManagement.BaseParam;
-import com.cskaoyan.bean.mallManagement.BaseRespSuccessVo;
-import com.cskaoyan.bean.mallManagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.mallmanagementVo.BaseParam;
+import com.cskaoyan.bean.mallmanagementVo.BaseRespSuccessVo;
+import com.cskaoyan.bean.mallmanagementVo.IssueAndKeywordListVo;
 import com.cskaoyan.service.mallmanagement.KeywordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +34,7 @@ public class KeywordController {
     /**
      *  关键词 修改
      * @param marketKeyword
-     * @return com.cskaoyan.bean.mallManagement.BaseRespSuccessVo
+     * @return com.cskaoyan.bean.mallmanagementVo.BaseRespSuccessVo
      * @author shn
      * @date 2022/7/16 20:00
      */
@@ -46,7 +46,7 @@ public class KeywordController {
     /**
      * 逻辑删除 关键词
      * @param marketKeyword
-     * @return com.cskaoyan.bean.mallManagement.BaseRespSuccessVo
+     * @return com.cskaoyan.bean.mallmanagementVo.BaseRespSuccessVo
      * @author shn
      * @date 2022/7/16 21:29
      */
@@ -59,7 +59,7 @@ public class KeywordController {
     /**
      * 关键词 添加
      * @param marketKeyword
-     * @return com.cskaoyan.bean.mallManagement.BaseRespSuccessVo
+     * @return com.cskaoyan.bean.mallmanagementVo.BaseRespSuccessVo
      * @author shn
      * @date 2022/7/17 16:51
      */

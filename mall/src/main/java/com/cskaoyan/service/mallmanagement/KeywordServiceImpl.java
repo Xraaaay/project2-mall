@@ -2,8 +2,8 @@ package com.cskaoyan.service.mallmanagement;
 
 import com.cskaoyan.bean.MarketKeyword;
 import com.cskaoyan.bean.MarketKeywordExample;
-import com.cskaoyan.bean.mallManagement.BaseParam;
-import com.cskaoyan.bean.mallManagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.mallmanagementVo.BaseParam;
+import com.cskaoyan.bean.mallmanagementVo.IssueAndKeywordListVo;
 import com.cskaoyan.mapper.MarketKeywordMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -28,7 +28,7 @@ public class KeywordServiceImpl implements KeywordService {
      * 获取关键词列表
      *
      * @param param
-     * @return com.cskaoyan.bean.mallManagement.IssueAndKeywordListVo
+     * @return com.cskaoyan.bean.mallmanagementVo.IssueAndKeywordListVo
      * @author shn
      * @date 2022/7/16 15:52
      */

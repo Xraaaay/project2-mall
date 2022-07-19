@@ -74,7 +74,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, value_id, type, content, admin_content, user_id, has_picture, pic_urls, star, 
+    id, value_id, `type`, content, admin_content, user_id, has_picture, pic_urls, star,
     add_time, update_time, deleted
   </sql>
   <select id="selectByExample" parameterType="com.cskaoyan.bean.MarketCommentExample" resultMap="BaseResultMap">
