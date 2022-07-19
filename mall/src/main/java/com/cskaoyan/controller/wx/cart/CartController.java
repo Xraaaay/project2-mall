@@ -1,10 +1,13 @@
 package com.cskaoyan.controller.wx.cart;
 
 import com.cskaoyan.bean.common.BaseRespVo;
+import com.cskaoyan.bean.wx.cart.WxCartVO;
 import com.cskaoyan.service.wx.cart.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 购物车
@@ -19,7 +22,9 @@ public class CartController {
     CartService cartService;
 
     @RequestMapping("checked")
-    public BaseRespVo chaecked() {
+    public BaseRespVo checked(List<Integer> productIds, Integer isChecked) {
+        WxCartVO wxCartVO = cartService.checked(productIds,isChecked);
+
 
 
         return BaseRespVo.ok(null);

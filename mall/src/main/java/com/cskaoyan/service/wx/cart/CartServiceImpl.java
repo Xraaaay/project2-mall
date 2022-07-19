@@ -1,6 +1,9 @@
 package com.cskaoyan.service.wx.cart;
 
+import com.cskaoyan.bean.wx.cart.WxCartVO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author lyx
@@ -9,4 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CartServiceImpl implements CartService {
 
+    @Override
+    public WxCartVO checked(List<Integer> productIds, Integer isChecked) {
+        return null;
+    }
 }
