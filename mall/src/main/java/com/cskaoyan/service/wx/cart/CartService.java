@@ -13,9 +13,14 @@ import java.util.Map;
  */
 public interface CartService {
 
-    WxCartVO checked(List<Integer> productIds, Integer isChecked);
+    /**
+     * 显示购物车商品
+     * @author Xrw
+     * @date 2022/7/19 22:03
+     */
+    Map<String, Object> index();
 
-    WxCartVO index();
+    Map<String, Object> checked(List<Integer> productIds, Integer isChecked);
 
     WxCartVO delete(List<Integer> productIds);
 
