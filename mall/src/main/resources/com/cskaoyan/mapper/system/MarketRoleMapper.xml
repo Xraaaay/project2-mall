@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cskaoyan.mapper.system.MarketRoleMapper">
-  <resultMap id="BaseResultMap" type="com.cskaoyan.bean.system.MarketRole">
+  <resultMap id="BaseResultMap" type="com.cskaoyan.bean.admin.system.MarketRole">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="desc" jdbcType="VARCHAR" property="desc" />
@@ -10,7 +10,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="deleted" jdbcType="BIT" property="deleted" />
   </resultMap>
-  <resultMap id="OptionsResultMap" type="com.cskaoyan.bean.system.MarketRoleOptionsVo">
+  <resultMap id="OptionsResultMap" type="com.cskaoyan.bean.admin.system.MarketRoleOptionsVo">
     <id column="id" jdbcType="INTEGER" property="value"/>
     <result column="name" jdbcType="VARCHAR" property="label"/>
   </resultMap>
@@ -75,7 +75,7 @@
   <sql id="Base_Column_List">
     id, name, `desc`, enabled, add_time, update_time, deleted
   </sql>
-  <select id="selectByExample" parameterType="com.cskaoyan.bean.system.MarketRoleExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.cskaoyan.bean.admin.system.MarketRoleExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -89,7 +89,7 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectOptionsByExample" parameterType="com.cskaoyan.bean.system.MarketRoleExample" resultMap="OptionsResultMap">
+  <select id="selectOptionsByExample" parameterType="com.cskaoyan.bean.admin.system.MarketRoleExample" resultMap="OptionsResultMap">
     select
     <if test="distinct">
       distinct
@@ -113,13 +113,13 @@
     delete from market_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.cskaoyan.bean.system.MarketRoleExample">
+  <delete id="deleteByExample" parameterType="com.cskaoyan.bean.admin.system.MarketRoleExample">
     delete from market_role
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.cskaoyan.bean.system.MarketRole">
+  <insert id="insert" parameterType="com.cskaoyan.bean.admin.system.MarketRole">
     insert into market_role (id, name, desc, 
       enabled, add_time, update_time, 
       deleted)
@@ -127,7 +127,7 @@
       #{enabled,jdbcType=BIT}, #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{deleted,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.cskaoyan.bean.system.MarketRole" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.cskaoyan.bean.admin.system.MarketRole" useGeneratedKeys="true" keyProperty="id">
     insert into market_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -176,7 +176,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.cskaoyan.bean.system.MarketRoleExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.cskaoyan.bean.admin.system.MarketRoleExample" resultType="java.lang.Long">
     select count(*) from market_role
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -224,7 +224,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cskaoyan.bean.system.MarketRole">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cskaoyan.bean.admin.system.MarketRole">
     update market_role
     <set>
       <if test="name != null">
@@ -248,7 +248,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cskaoyan.bean.system.MarketRole">
+  <update id="updateByPrimaryKey" parameterType="com.cskaoyan.bean.admin.system.MarketRole">
     update market_role
     set name = #{name,jdbcType=VARCHAR},
       `desc` = #{desc,jdbcType=VARCHAR},

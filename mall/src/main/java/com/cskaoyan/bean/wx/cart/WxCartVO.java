@@ -1,6 +1,7 @@
 package com.cskaoyan.bean.wx.cart;
 
-import com.cskaoyan.bean.MarketCart;
+
+import com.cskaoyan.bean.common.MarketCart;
 
 import java.util.List;
 

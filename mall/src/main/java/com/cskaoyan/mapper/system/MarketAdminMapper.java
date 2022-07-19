@@ -1,8 +1,8 @@
 package com.cskaoyan.mapper.system;
 
-import com.cskaoyan.bean.system.MarketAdmin;
-import com.cskaoyan.bean.system.MarketAdminExample;
-import com.cskaoyan.bean.system.MarketAdminListVo;
+import com.cskaoyan.bean.admin.system.MarketAdmin;
+import com.cskaoyan.bean.admin.system.MarketAdminExample;
+import com.cskaoyan.bean.admin.system.MarketAdminListVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

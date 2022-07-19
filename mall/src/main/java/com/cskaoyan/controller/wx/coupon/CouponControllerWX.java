@@ -1,10 +1,10 @@
 package com.cskaoyan.controller.wx.coupon;
 
-import com.cskaoyan.bean.MarketCoupon;
+import com.cskaoyan.bean.common.MarketCoupon;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
-import com.cskaoyan.service.promotion.CouponService;
+import com.cskaoyan.service.admin.promotion.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
