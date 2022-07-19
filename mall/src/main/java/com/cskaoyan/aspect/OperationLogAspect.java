@@ -98,6 +98,8 @@ public class OperationLogAspect {
                 marketAdmin = (MarketAdmin) principals.getPrimaryPrincipal();
                 String username = marketAdmin.getUsername();
                 log.setAdmin(username);
+            } else {
+                log.setAdmin("匿名用户");
             }
         }
 
