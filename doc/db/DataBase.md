@@ -2,20 +2,21 @@
 
 ## market_ad 广告表
 
-| 字段名      | 类型     | 长度 | not null | 注释                                 |
-| ----------- | -------- | ---- | -------- | ------------------------------------ |
-| id          | int      | 11   | TRUE     |                                      |
-| name        | varchar  | 63   | TRUE     | 广告标题                             |
-| link        | varchar  | 255  | TRUE     | 所广告的商品页面或者活动页面链接地址 |
-| url         | varchar  | 255  | TRUE     | 广告宣传图片                         |
-| position    | tinyint  | 3    | FALSE    | 广告位置：1则是首页                  |
-| content     | varchar  | 255  | FALSE    | 活动内容                             |
-| start_time  | datetime | 0    | FALSE    | 广告开始时间                         |
-| end_time    | datetime | 0    | FALSE    | 广告结束时间                         |
-| enabled     | tinyint  | 1    | FALSE    | 是否启动                             |
-| add_time    | datetime | 0    | FALSE    | 创建时间                             |
-| update_time | datetime | 0    | FALSE    | 更新时间                             |
-| deleted     | tinyint  | 1    | FALSE    | 逻辑删除                             |
+- [ ] | 字段名           | 类型     | 长度 | not null | 注释                                 |
+  | ---------------- | -------- | ---- | -------- | ------------------------------------ |
+  | id               | int      | 11   | TRUE     |                                      |
+  | name             | varchar  | 63   | TRUE     | 广告标题                             |
+  | link             | varchar  | 255  | TRUE     | 所广告的商品页面或者活动页面链接地址 |
+  | url              | varchar  | 255  | TRUE     | 广告宣传图片                         |
+  | position         | tinyint  | 3    | FALSE    | 广告位置：1则是首页                  |
+  | content          | varchar  | 255  | FALSE    | 活动内容                             |
+  | ***start_time*** | datetime | 0    | FALSE    | 广告开始时间                         |
+  | ***end_time***   | datetime | 0    | FALSE    | 广告结束时间                         |
+  | enabled          | tinyint  | 1    | FALSE    | 是否启动                             |
+  | add_time         | datetime | 0    | FALSE    | 创建时间                             |
+  | update_time      | datetime | 0    | FALSE    | 更新时间                             |
+  | deleted          | tinyint  | 1    | FALSE    | 逻辑删除                             |
+
 
 
 
@@ -165,12 +166,12 @@
 | id          | int      | 11   | 0    | TRUE  |                                                              |
 | ----------- | -------- | ---- | ---- | ----- | ------------------------------------------------------------ |
 | name        | varchar  | 63   | 0    | TRUE  | 优惠券名称                                                   |
-| desc        | varchar  | 127  | 0    | FALSE | 优惠券介绍，通常是显示优惠券使用限制文字                     |
+| `desc`      | varchar  | 127  | 0    | FALSE | 优惠券介绍，通常是显示优惠券使用限制文字                     |
 | tag         | varchar  | 63   | 0    | FALSE | 优惠券标签，例如新人专用                                     |
 | total       | int      | 11   | 0    | TRUE  | 优惠券数量，如果是0，则是无限量                              |
 | discount    | decimal  | 10   | 2    | FALSE | 优惠金额，                                                   |
 | min         | decimal  | 10   | 2    | FALSE | 最少消费金额才能使用优惠券。                                 |
-| limit       | smallint | 6    | 0    | FALSE | 用户领券限制数量，如果是0，则是不限制；默认是1，限领一张.    |
+| `limit`     | smallint | 6    | 0    | FALSE | 用户领券限制数量，如果是0，则是不限制；默认是1，限领一张.    |
 | type        | smallint | 6    | 0    | FALSE | 优惠券赠送类型，如果是0则通用券，用户领取；如果是1，则是注册赠券；如果是2，则是优惠券码兑换； |
 | status      | smallint | 6    | 0    | FALSE | 优惠券状态，如果是0则是正常可用；如果是1则是过期; 如果是2则是下架。 |
 | goods_type  | smallint | 6    | 0    | FALSE | 商品限制类型，如果0则全商品，如果是1则是类目限制，如果是2则是商品限制。 |
@@ -540,3 +541,6 @@
 
 
 
+
+
+## market_permissions

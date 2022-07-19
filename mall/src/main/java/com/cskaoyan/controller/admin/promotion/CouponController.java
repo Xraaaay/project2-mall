@@ -1,4 +1,4 @@
-package com.cskaoyan.controller.promotion;
+package com.cskaoyan.controller.admin.promotion;
 
 import com.cskaoyan.anno.ParamValidation;
 import com.cskaoyan.bean.MarketCoupon;
