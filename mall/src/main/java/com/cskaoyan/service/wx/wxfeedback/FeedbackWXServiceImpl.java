@@ -1,10 +1,9 @@
-package com.cskaoyan.service.wx.feedback;
+package com.cskaoyan.service.wx.wxfeedback;
 
 import com.cskaoyan.bean.common.MarketFeedback;
-import com.cskaoyan.bean.common.User;
+import com.cskaoyan.bean.common.MarketUser;
 import com.cskaoyan.mapper.common.MarketFeedbackMapper;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
+import com.cskaoyan.util.GetUserInfoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +28,12 @@ public class FeedbackWXServiceImpl implements FeedbackWXService {
      */
     @Override
     public Integer submitFeedback(MarketFeedback marketFeedback) {
-        //Subject subject = SecurityUtils.getSubject();
-        //User principal = (User) subject.getPrincipals().getPrimaryPrincipal();
-        //marketFeedback.setUsername(principal.getUsername());
-        marketFeedback.setUsername("user123");
-        //marketFeedback.setUserId(principal.getId());
-        marketFeedback.setUserId(1);
+       //shiro 获取用户信息
+        MarketUser principal = GetUserInfoUtil.getUserInfo();
+
+        marketFeedback.setUsername(principal.getUsername());
+        marketFeedback.setUserId(principal.getId());
+
         marketFeedback.setAddTime(new Date());
         marketFeedback.setUpdateTime(new Date());
         int addNum = marketFeedbackMapper.insertSelective(marketFeedback);
