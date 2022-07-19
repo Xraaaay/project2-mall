@@ -1,5 +1,6 @@
 package com.cskaoyan.controller.admin.usermanagement;
 
+import com.cskaoyan.bean.common.MarketUser;
 import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.admin.usermanagement.UserListVo;
@@ -9,24 +10,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 用户管理之搜索历史
+ * 用户管理之会员管理
  *
  * @author Zah
- * @date 2022/07/18 20:53
+ * @date 2022/07/18 17:36
  */
 @RestController
-@RequestMapping("admin/history")
-public class SearchHistoryController {
+@RequestMapping("admin/user")
+public class AdminUserController {
 
     @Autowired
     UserService userService;
 
     @RequestMapping("list")
-    public BaseRespVo list(BaseParam page,Integer userId, String keyword){
+    public BaseRespVo list(BaseParam page,String username,String mobile){
 
-        UserListVo searchHistoryList = userService.getSearchHistoryList(page, userId, keyword);
+        UserListVo userList = userService.getUserList(page, username, mobile);
 
-        return BaseRespVo.ok(searchHistoryList);
+        return BaseRespVo.ok(userList);
+    }
 
+
+    @RequestMapping("detail")
+    public BaseRespVo detail(Integer id){
+
+        MarketUser userDetail = userService.getUserDetail(id);
+
+        return BaseRespVo.ok(userDetail);
     }
 }
