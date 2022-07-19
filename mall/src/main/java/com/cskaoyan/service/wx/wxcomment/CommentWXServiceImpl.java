@@ -1,15 +1,15 @@
 package com.cskaoyan.service.wx.wxcomment;
 
-import com.cskaoyan.bean.MarketComment;
-import com.cskaoyan.bean.MarketCommentExample;
-import com.cskaoyan.bean.MarketUser;
-import com.cskaoyan.bean.mallmanagementVo.BaseParam;
-import com.cskaoyan.bean.mallmanagementVo.IssueAndKeywordListVo;
-import com.cskaoyan.bean.wxcomment.UserInfo;
-import com.cskaoyan.bean.wxcomment.WXCommentVo;
-import com.cskaoyan.bean.wxcomment.InnerListOfCommentVo;
-import com.cskaoyan.mapper.MarketCommentMapper;
-import com.cskaoyan.mapper.MarketUserMapper;
+import com.cskaoyan.bean.common.BaseParam;
+import com.cskaoyan.bean.common.MarketComment;
+import com.cskaoyan.bean.common.MarketCommentExample;
+import com.cskaoyan.bean.common.MarketUser;
+import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.wx.wxcomment.UserInfo;
+import com.cskaoyan.bean.wx.wxcomment.WXCommentVo;
+import com.cskaoyan.bean.wx.wxcomment.InnerListOfCommentVo;
+import com.cskaoyan.mapper.common.MarketCommentMapper;
+import com.cskaoyan.mapper.common.MarketUserMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class CommentWXServiceImpl implements CommentWXService {
      * 评论列表
      * @param valueId
      * @param type
-     * @return com.cskaoyan.bean.wxcomment.WXCommentVo
+     * @return com.cskaoyan.bean.wx.wxcomment.WXCommentVo
      * @author shn
      * @date 2022/7/18 21:15
      */
@@ -63,7 +63,7 @@ public class CommentWXServiceImpl implements CommentWXService {
      * @param marketComment
      * @param showType
      * @param param
-     * @return com.cskaoyan.bean.mallmanagementVo.IssueAndKeywordListVo
+     * @return com.cskaoyan.bean.admin.mallmanagement.vo.IssueAndKeywordListVo
      * @author shn
      * @date 2022/7/18 22:27
      */

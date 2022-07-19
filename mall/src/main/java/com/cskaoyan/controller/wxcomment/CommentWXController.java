@@ -1,10 +1,10 @@
 package com.cskaoyan.controller.wxcomment;
 
-import com.cskaoyan.bean.MarketComment;
-import com.cskaoyan.bean.mallmanagementVo.BaseParam;
-import com.cskaoyan.bean.mallmanagementVo.BaseRespSuccessVo;
-import com.cskaoyan.bean.mallmanagementVo.IssueAndKeywordListVo;
-import com.cskaoyan.bean.wxcomment.WXCommentVo;
+import com.cskaoyan.bean.common.BaseParam;
+import com.cskaoyan.bean.common.MarketComment;
+import com.cskaoyan.bean.admin.mallmanagement.BaseRespSuccessVo;
+import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.wx.wxcomment.WXCommentVo;
 import com.cskaoyan.service.wx.wxcomment.CommentWXService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +27,7 @@ public class CommentWXController {
      *  计算评论
      * @param valueId
      * @param type
-     * @return com.cskaoyan.bean.mallmanagementVo.BaseRespSuccessVo
+     * @return com.cskaoyan.bean.admin.mallmanagement.vo.BaseRespSuccessVo
      * @author shn
      * @date 2022/7/18 21:07
      */
@@ -41,7 +41,7 @@ public class CommentWXController {
      * @param marketComment
      * @param showType
      * @param baseParam
-     * @return com.cskaoyan.bean.mallmanagementVo.BaseRespSuccessVo
+     * @return com.cskaoyan.bean.admin.mallmanagement.vo.BaseRespSuccessVo
      * @author shn
      * @date 2022/7/18 22:24
      */

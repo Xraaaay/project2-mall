@@ -1,11 +1,11 @@
 package com.cskaoyan.controller.wx.topic;
 
-import com.cskaoyan.bean.MarketGoods;
-import com.cskaoyan.bean.MarketTopic;
+import com.cskaoyan.bean.common.MarketGoods;
+import com.cskaoyan.bean.common.MarketTopic;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
-import com.cskaoyan.service.promotion.TopicService;
+import com.cskaoyan.service.admin.promotion.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

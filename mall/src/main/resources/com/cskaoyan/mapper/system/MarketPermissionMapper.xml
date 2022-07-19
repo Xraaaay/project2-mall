@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cskaoyan.mapper.system.MarketPermissionMapper">
-    <resultMap id="BaseResultMap" type="com.cskaoyan.bean.system.MarketPermission">
+    <resultMap id="BaseResultMap" type="com.cskaoyan.bean.admin.system.MarketPermission">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="role_id" jdbcType="INTEGER" property="roleId"/>
         <result column="permission" jdbcType="VARCHAR" property="permission"/>
@@ -74,7 +74,7 @@
             id, role_id, permission, add_time, update_time, deleted
 
     </sql>
-    <select id="selectByExample" parameterType="com.cskaoyan.bean.system.MarketPermissionExample"
+    <select id="selectByExample" parameterType="com.cskaoyan.bean.admin.system.MarketPermissionExample"
             resultMap="BaseResultMap">
         select
         <if test="distinct">
@@ -89,7 +89,7 @@
             order by ${orderByClause}
         </if>
     </select>
-    <select id="selectPermissionsByExample" parameterType="com.cskaoyan.bean.system.MarketPermissionExample"
+    <select id="selectPermissionsByExample" parameterType="com.cskaoyan.bean.admin.system.MarketPermissionExample"
             resultType="string">
         select
         <if test="distinct">
@@ -116,13 +116,13 @@
             where id = #{id,jdbcType=INTEGER}
 
     </delete>
-    <delete id="deleteByExample" parameterType="com.cskaoyan.bean.system.MarketPermissionExample">
+    <delete id="deleteByExample" parameterType="com.cskaoyan.bean.admin.system.MarketPermissionExample">
         delete from market_permission
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </delete>
-    <insert id="insert" parameterType="com.cskaoyan.bean.system.MarketPermission">
+    <insert id="insert" parameterType="com.cskaoyan.bean.admin.system.MarketPermission">
 
             insert into market_permission (id, role_id, permission,
               add_time, update_time, deleted
@@ -132,7 +132,7 @@
               )
 
     </insert>
-    <insert id="insertSelective" parameterType="com.cskaoyan.bean.system.MarketPermission">
+    <insert id="insertSelective" parameterType="com.cskaoyan.bean.admin.system.MarketPermission">
         insert into market_permission
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -175,7 +175,7 @@
             </if>
         </trim>
     </insert>
-    <insert id="insertListSelective" parameterType="com.cskaoyan.bean.system.MarketPermission">
+    <insert id="insertListSelective" parameterType="com.cskaoyan.bean.admin.system.MarketPermission">
         insert into market_permission(role_id,permission,add_time,update_time)
         values
         <foreach collection="list" separator="," item="p">
@@ -201,7 +201,7 @@
             </trim>
         </foreach>
     </insert>
-    <select id="countByExample" parameterType="com.cskaoyan.bean.system.MarketPermissionExample"
+    <select id="countByExample" parameterType="com.cskaoyan.bean.admin.system.MarketPermissionExample"
             resultType="java.lang.Long">
         select count(*) from market_permission
         <if test="_parameter != null">
@@ -246,7 +246,7 @@
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
     </update>
-    <update id="updateByPrimaryKeySelective" parameterType="com.cskaoyan.bean.system.MarketPermission">
+    <update id="updateByPrimaryKeySelective" parameterType="com.cskaoyan.bean.admin.system.MarketPermission">
         update market_permission
         <set>
             <if test="roleId != null">
@@ -267,7 +267,7 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.cskaoyan.bean.system.MarketPermission">
+    <update id="updateByPrimaryKey" parameterType="com.cskaoyan.bean.admin.system.MarketPermission">
 
             update market_permission
             set role_id = #{roleId,jdbcType=INTEGER},

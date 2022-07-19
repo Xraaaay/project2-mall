@@ -1,9 +1,9 @@
 package com.cskaoyan.service.wx.wxcomment;
 
-import com.cskaoyan.bean.MarketComment;
-import com.cskaoyan.bean.mallmanagementVo.BaseParam;
-import com.cskaoyan.bean.mallmanagementVo.IssueAndKeywordListVo;
-import com.cskaoyan.bean.wxcomment.WXCommentVo;
+import com.cskaoyan.bean.common.BaseParam;
+import com.cskaoyan.bean.common.MarketComment;
+import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.wx.wxcomment.WXCommentVo;
 
 /**
  * @author: shn

@@ -1,11 +1,11 @@
 package com.cskaoyan.controller.admin.promotion;
 
 import com.cskaoyan.anno.ParamValidation;
-import com.cskaoyan.bean.MarketTopic;
+import com.cskaoyan.bean.common.MarketTopic;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
-import com.cskaoyan.service.promotion.TopicService;
+import com.cskaoyan.service.admin.promotion.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;

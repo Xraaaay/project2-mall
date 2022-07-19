@@ -4,11 +4,9 @@ import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.wx.WxSearchIndexVO;
 import com.cskaoyan.service.wx.search.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.ws.Service;
 import java.util.List;
 
 /**

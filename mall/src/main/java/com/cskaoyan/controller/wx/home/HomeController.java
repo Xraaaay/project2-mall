@@ -1,7 +1,7 @@
 package com.cskaoyan.controller.wx.home;
 
 import com.cskaoyan.bean.common.BaseRespVo;
-import com.cskaoyan.service.dashboard.HomeService;
+import com.cskaoyan.service.admin.dashboard.HomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

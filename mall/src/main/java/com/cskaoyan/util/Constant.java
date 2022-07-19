@@ -1,7 +1,7 @@
 package com.cskaoyan.util;
 
-import com.cskaoyan.bean.po.HandleOption;
-import com.cskaoyan.bean.po.MarketChannel;
+import com.cskaoyan.bean.admin.mallmanagement.po.HandleOption;
+import com.cskaoyan.bean.admin.mallmanagement.po.MarketChannel;
 
 
 import java.util.HashMap;
