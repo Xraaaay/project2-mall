@@ -7,6 +7,7 @@ import com.cskaoyan.bean.common.MarketCollectExample;
 import com.cskaoyan.bean.common.MarketGoods;
 import com.cskaoyan.bean.common.MarketUser;
 import com.cskaoyan.bean.wx.wxcollect.InnerListOfWXCollectVo;
+
 import com.cskaoyan.mapper.common.MarketCollectMapper;
 import com.cskaoyan.mapper.common.MarketGoodsMapper;
 import com.cskaoyan.util.GetUserInfoUtil;
@@ -51,6 +52,7 @@ public class CollectWXServiceImpl implements CollectWXService {
         //shiro 获取用户信息
         MarketUser user = GetUserInfoUtil.getUserInfo();
         Integer userId = user.getId();
+
         //条件查询
         MarketCollectExample example = new MarketCollectExample();
         MarketCollectExample.Criteria criteria = example.createCriteria();
@@ -62,17 +64,19 @@ public class CollectWXServiceImpl implements CollectWXService {
         List<MarketCollect> collectList = marketCollectMapper.selectByExample(example);
         for (MarketCollect collect : collectList) {
             MarketGoods goods = marketGoodsMapper.selectByPrimaryKey(collect.getValueId());
+            if (goods!=null) {
+                InnerListOfWXCollectVo collectVo = new InnerListOfWXCollectVo();
+                collectVo.setBrief(goods.getBrief());
+                collectVo.setPicUrl(goods.getPicUrl());
+                collectVo.setValueId(collect.getValueId());
+                collectVo.setName(goods.getName());
+                collectVo.setId(collect.getId());
+                collectVo.setType(collect.getType());
+                collectVo.setRetailPrice(goods.getRetailPrice());
+                //list结果
+                collectVos.add(collectVo);
+            }
 
-            InnerListOfWXCollectVo collectVo = new InnerListOfWXCollectVo();
-            collectVo.setBrief(goods.getBrief());
-            collectVo.setPicUrl(goods.getPicUrl());
-            collectVo.setValueId(collect.getValueId());
-            collectVo.setName(goods.getName());
-            collectVo.setId(collect.getId());
-            collectVo.setType(collect.getType());
-            collectVo.setRetailPrice(goods.getRetailPrice());
-            //list结果
-            collectVos.add(collectVo);
         }
         // 会去获得一些分页信息
         PageInfo pageInfo = new PageInfo(collectVos);
@@ -94,10 +98,9 @@ public class CollectWXServiceImpl implements CollectWXService {
     public Integer addCollect(Map map) {
         MarketCollect collect = new MarketCollect();
         //shiro 获取用户信息
-        ///MarketUser userInfo = GetUserInfoUtil.getUserInfo();
-        ///collect.setUserId(userInfo.getId());
-        collect.setUserId(1);
+        MarketUser userInfo = GetUserInfoUtil.getUserInfo();
 
+        collect.setUserId(userInfo.getId());
         collect.setValueId((Integer) map.get("valueId"));
         Integer integer = (Integer) map.get("type");
         Byte type = (byte) integer.intValue();
