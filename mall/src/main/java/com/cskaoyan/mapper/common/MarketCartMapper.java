@@ -1,7 +1,6 @@
 package com.cskaoyan.mapper.common;
 
-import com.cskaoyan.bean.common.MarketCart;
-import com.cskaoyan.bean.common.MarketCartExample;
+import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.cart.CartTotalEntity;
 import org.apache.ibatis.annotations.Param;
 
@@ -32,5 +31,8 @@ public interface MarketCartMapper {
 
     CartTotalEntity selectCartTotal();
 
-    Integer selectGoodscount();
+    Integer selectGoodscount(Integer userId);
+
+
+    // void insertCart(@Param("pro") MarketGoodsProduct marketGoodsProduct, @Param("goods") MarketGoods marketGoods,@Param("user") Integer id);
 }
