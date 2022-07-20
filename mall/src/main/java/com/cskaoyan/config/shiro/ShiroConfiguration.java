@@ -57,7 +57,7 @@ public class  ShiroConfiguration {
      * @author Zah
      * @date 2022/07/20 13:47
      */
-    @Bean
+    // @Bean
     public ShiroFilterFactoryBean wxShiroFilter(DefaultWebSecurityManager securityManager){
 
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -76,7 +76,7 @@ public class  ShiroConfiguration {
         filterChainDefinitionMap.put("/wx/coupon/**","authc");
 
         // 对于没有访问权限的重定向地址
-        shiroFilterFactoryBean.setLoginUrl("/wx/auth/login");
+        shiroFilterFactoryBean.setLoginUrl("/wx/auth/401");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 

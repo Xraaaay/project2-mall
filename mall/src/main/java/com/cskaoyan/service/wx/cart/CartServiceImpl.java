@@ -2,7 +2,10 @@ package com.cskaoyan.service.wx.cart;
 
 
 import com.cskaoyan.bean.common.*;
+import com.cskaoyan.bean.wx.cart.CheckoutBo;
+import com.cskaoyan.bean.wx.cart.CheckoutVo;
 import com.cskaoyan.mapper.common.MarketCartMapper;
+import com.cskaoyan.mapper.common.MarketCouponMapper;
 import com.cskaoyan.mapper.common.MarketGoodsMapper;
 import com.cskaoyan.mapper.common.MarketGoodsProductMapper;
 import com.cskaoyan.util.PrincipalUtil;
@@ -10,11 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author lyx
@@ -28,6 +29,8 @@ public class CartServiceImpl implements CartService {
     MarketGoodsProductMapper marketGoodsProductMapper;
     @Autowired
     MarketGoodsMapper marketGoodsMapper;
+    @Autowired
+    MarketCouponMapper couponMapper;
 
     @Override
     public Map<String, Object> index() {
@@ -53,6 +56,7 @@ public class CartServiceImpl implements CartService {
             } else {
                 marketCart.setChecked(true);
             }
+            marketCart.setUpdateTime(new Date());
 
             MarketCartExample example = new MarketCartExample();
             example.createCriteria().andUserIdEqualTo(userId)
@@ -155,6 +159,28 @@ public class CartServiceImpl implements CartService {
         return statusId;
     }
 
+    @Override
+    public CheckoutVo checkout(CheckoutBo checkoutBo) {
+        Integer cartId = checkoutBo.getCartId();
+        Integer couponId = checkoutBo.getCouponId();
+        Integer userCouponId = checkoutBo.getUserCouponId();
+        Integer addressId = checkoutBo.getAddressId();
+
+        // 商品信息
+        List<MarketCart> checkedCartList = getCheckedCartList();
+        Map<String, Object> cartTotal = getCartTotal(checkedCartList);
+        BigDecimal actualPrice = (BigDecimal) cartTotal.get("checkedGoodsAmount");
+        BigDecimal orderTotalPrice = actualPrice;
+
+        // 优惠信息
+        MarketCoupon coupon = couponMapper.selectByPrimaryKey(couponId);
+        BigDecimal discount = coupon.getDiscount();
+        
+
+
+        return null;
+    }
+
 
     public Map<String, Object> delete(List<Integer> productIds) {
         Integer userId = getMarketUserId();
@@ -201,6 +227,18 @@ public class CartServiceImpl implements CartService {
         MarketCartExample example = new MarketCartExample();
         MarketCartExample.Criteria criteria = example.createCriteria();
         criteria.andDeletedEqualTo(false)
+                .andUserIdEqualTo(userId);
+        // 查询用户所有订单
+        return marketCartMapper.selectByExample(example);
+    }
+
+    private List<MarketCart> getCheckedCartList() {
+        Integer userId = getMarketUserId();
+
+        MarketCartExample example = new MarketCartExample();
+        MarketCartExample.Criteria criteria = example.createCriteria();
+        criteria.andCheckedEqualTo(true)
+                .andDeletedEqualTo(false)
                 .andUserIdEqualTo(userId);
         // 查询用户所有订单
         return marketCartMapper.selectByExample(example);
