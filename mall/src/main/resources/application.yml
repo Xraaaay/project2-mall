@@ -7,3 +7,18 @@ spring:
     active: db,xrw,aliyun
 mybatis:
   type-handlers-package: com.cskaoyan.typehandler
+
+  # redisson
+  application:
+    name: springboot-redisson
+    redis:
+      redisson:
+        config: |
+          singleServerConfig:
+            address: "redis://127.0.0.1:6379"
+            password: "123456"
+            database: 1
+          threads: 0
+          nettyThreads: 0
+          codec: !<org.redisson.codec.FstCodec> {}
+          transportMode: "NIO"

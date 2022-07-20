@@ -1,9 +1,10 @@
 package com.cskaoyan.service.admin.promotion;
 
-import com.cskaoyan.bean.common.MarketCoupon;
-import com.cskaoyan.bean.common.MarketCouponUser;
 import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.CommonData;
+import com.cskaoyan.bean.common.MarketCoupon;
+import com.cskaoyan.bean.common.MarketCouponUser;
+import com.cskaoyan.bean.wx.coupon.MyCouponListVO;
 
 /**
  * 优惠券管理
@@ -84,9 +85,30 @@ public interface CouponService {
      * 用户领取优惠券
      *
      * @param couponId
-     * @return int
+     * @return int 0表示领取成功 740表示已领取完 741表示已经领取过
      * @author fanxing056
      * @date 2022/07/18 22:31
      */
     int receive(Integer couponId);
+
+    /**
+     * 用户个人中心优惠券列表
+     *
+     * @param pageInfo
+     * @param status
+     * @return com.cskaoyan.bean.common.CommonData<com.cskaoyan.bean.wx.coupon.MyCouponListVO>
+     * @author fanxing056
+     * @date 2022/07/19 17:32
+     */
+    CommonData<MyCouponListVO> myList(BasePageInfo pageInfo, Integer status);
+
+    /**
+     * 通过兑换码兑换优惠券
+     *
+     * @param code
+     * @return int
+     * @author fanxing056
+     * @date 2022/07/19 20:09
+     */
+    int exchange(String code);
 }
