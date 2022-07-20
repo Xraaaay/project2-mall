@@ -1,10 +1,10 @@
 package com.cskaoyan.controller.admin.usermanagement;
 
 import com.cskaoyan.bean.admin.mallmanagement.BaseRespSuccessVo;
+import com.cskaoyan.bean.admin.usermanagement.UserListVo;
 import com.cskaoyan.bean.common.MarketUser;
 import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.BaseRespVo;
-import com.cskaoyan.bean.admin.usermanagement.UserListVo;
 import com.cskaoyan.service.admin.usermanagement.UserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
