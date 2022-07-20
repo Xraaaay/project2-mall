@@ -20,6 +20,8 @@ public interface MarketCartMapper {
 
     List<MarketCart> selectByExample(MarketCartExample example);
 
+    Integer selectGoodsCountByExample(MarketCartExample example);
+
     MarketCart selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") MarketCart record, @Param("example") MarketCartExample example);
@@ -32,5 +34,5 @@ public interface MarketCartMapper {
 
     CartTotalEntity selectCartTotal();
 
-    Integer selectGoodscount();
+    Integer selectGoodsCount();
 }

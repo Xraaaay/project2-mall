@@ -12,6 +12,7 @@ import com.cskaoyan.mapper.common.MarketUserMapper;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -25,6 +26,7 @@ import java.util.List;
  * @since 2022/07/16 22:51
  */
 @Component
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
     @Autowired

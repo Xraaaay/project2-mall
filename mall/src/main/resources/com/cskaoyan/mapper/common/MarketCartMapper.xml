@@ -361,7 +361,19 @@ FROM
 	market_cart
     </select>
 
-  <select id="selectGoodscount" resultType="java.lang.Integer">
+  <select id="selectGoodsCount" resultType="java.lang.Integer">
     	SELECT sum( number ) AS goodsCount FROM market_cart
+  </select>
+
+  <select id="selectGoodsCountByExample" parameterType="com.cskaoyan.bean.common.MarketCartExample" resultType="int">
+    select
+    sum (number)
+    from market_cart
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
   </select>
 </mapper>

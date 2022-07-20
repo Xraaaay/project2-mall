@@ -11,6 +11,7 @@ import com.cskaoyan.util.Constant;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -21,6 +22,7 @@ import java.util.List;
  * @since 2022/07/19 10:44
  */
 @Component
+@Transactional
 public class WxOrderServiceImpl implements WxOrderService {
 
     @Autowired
@@ -32,6 +34,16 @@ public class WxOrderServiceImpl implements WxOrderService {
     @Autowired
     MarketCommentMapper marketCommentMapper;
 
+    /**
+     * 返回订单列表
+     *
+     * @param showType
+     * @param page
+     * @param limit
+     * @return com.cskaoyan.bean.wx.order.WxOrderListPo
+     * @author changyong
+     * @since 2022/07/20 11:36
+     */
     @Override
     public WxOrderListPo list(Integer showType, Integer page, Integer limit) {
         //利用工具类Constant，由showType得到相应状态码
@@ -55,26 +67,26 @@ public class WxOrderServiceImpl implements WxOrderService {
         long pages = (total / limit) + 1;
         //分页之后查询
         PageHelper.startPage(page, limit);
-        //1.先查询order表，得到orderList
+        //先查询order表，得到orderList
         List<MarketOrder> orderList = marketOrderMapper.selectByExample(marketOrderExample1);
-        //2.foreach循环 order赋值给orderOfList(orderOfList有成员变量isGroupin，order表中无该数据，不能直接使用orderList)
+        //foreach循环 order赋值给orderOfList(orderOfList有成员变量isGroupin，order表中无该数据，不能直接使用orderList)
         List<OrderOfList> orderOfLists = new LinkedList<>();
         for (MarketOrder order : orderList) {
-            //3.循环里面，由orderId查询OrderGoods表，得到OrderGoodsList
+            //循环里面，由orderId查询OrderGoods表，得到OrderGoodsList
             MarketOrderGoodsExample marketOrderGoodsExample2 = new MarketOrderGoodsExample();
             MarketOrderGoodsExample.Criteria criteria2 = marketOrderGoodsExample2.createCriteria();
             //只有删除订单后，order的goods的deleted=1，所以下面不用加条件“没有被删除”
             criteria2.andOrderIdEqualTo(order.getId());
             //数据库中specifications是String字符串，此处需使用typehandler将其转换为String数组
             List<MarketOrderGoods> orderGoods = marketOrderGoodsMapper.selectByExample(marketOrderGoodsExample2);
-            //4.第二个foreach循环 orderGoods赋值给GoodsOforder，
+            //第二个foreach循环 orderGoods赋值给GoodsOforder，
             // （GoodsOfOrder数据在OrderGoods中都有，也可不进行第二次foreach循环，直接使用OrderGoods）
             List<GoodsOfOrder> goodsOfOrderList = new LinkedList<>();
             for (MarketOrderGoods orderGood : orderGoods) {
                 GoodsOfOrder goodsOfOrder = new GoodsOfOrder(orderGood.getId(), orderGood.getNumber(), orderGood.getGoodsName(), orderGood.getPicUrl(), orderGood.getPrice(), orderGood.getSpecifications());
                 goodsOfOrderList.add(goodsOfOrder);
             }
-            //5.由orderStatus查得handleOption，赋值给Order成员变量
+            //由orderStatus查得handleOption，赋值给Order成员变量
             HandleOption handleOption = null;
             if (order.getOrderStatus() == 401 || order.getOrderStatus() == 402) {
                 //如果已收货
@@ -86,17 +98,24 @@ public class WxOrderServiceImpl implements WxOrderService {
                     handleOption = Constant.handleOptionMap.get(order.getOrderStatus());
                 }
             } else {
-                //TODO  如果状态码是101 未付款，则从map获取不到 为什么
                 handleOption = Constant.handleOptionMap.get(order.getOrderStatus());
             }
             //生成orderOfList，并赋值
             OrderOfList orderOfList = new OrderOfList(order.getActualPrice(), order.getAftersaleStatus(), goodsOfOrderList, handleOption, order.getId(), false, order.getOrderSn(), Constant.orderStatusTextMap.get(order.getOrderStatus()));
             orderOfLists.add(orderOfList);
         }
-        //6.第一个foreach循环结束，List<OrderOfList> 赋值给WxOrderListPo成员变量
+        //第一个foreach循环结束，List<OrderOfList> 赋值给WxOrderListPo成员变量
         return new WxOrderListPo(total, Integer.valueOf((int) pages), limit.longValue(), page, orderOfLists);
     }
 
+    /**
+     * 由orderId返回订单详情
+     *
+     * @param id
+     * @return com.cskaoyan.bean.wx.order.WxOrderDetailPo
+     * @author changyong
+     * @since 2022/07/20 11:36
+     */
     @Override
     public WxOrderDetailPo detail(Integer id) {
         //获取orderGoods
@@ -129,6 +148,14 @@ public class WxOrderServiceImpl implements WxOrderService {
         return new WxOrderDetailPo("", orderGoods, orderOfDetail);
     }
 
+    /**
+     * 用户申请退款
+     *
+     * @param id
+     * @return void
+     * @author changyong
+     * @since 2022/07/20 11:38
+     */
     @Override
     public void refund(Integer id) {
         MarketOrder marketOrder = new MarketOrder();
@@ -138,37 +165,87 @@ public class WxOrderServiceImpl implements WxOrderService {
         marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
     }
 
+    /**
+     * 商品评论
+     *
+     * @param wxOrderCommentBo
+     * @return void
+     * @author changyong
+     * @since 2022/07/20 11:38
+     */
     @Override
     public void comment(WxOrderCommentBo wxOrderCommentBo) {
-        //TODO wxOrderCommentBo应该有orderGoodsId，但没有，导致评价插入失败。
-        // orderGoodsId为orderGoods表id，根据其查询得到orderId，进而得到userId
-        MarketComment marketComment = new MarketComment();
-        marketComment.setValueId(wxOrderCommentBo.getOrderGoodsId());
-        //TODO comment表中字段type和userId不知道如何获取
-        marketComment.setType((byte) 0);
-        marketComment.setContent(marketComment.getAdminContent());
-        marketComment.setUserId(1);
-        marketComment.setHasPicture(wxOrderCommentBo.isHasPicture());
-        marketComment.setPicUrls(wxOrderCommentBo.getPicUrls());
-        marketComment.setStar(wxOrderCommentBo.getStar().shortValue());
-        Date addTime = new Date();
-        marketComment.setAddTime(addTime);
-        marketComment.setUpdateTime(addTime);
-        marketCommentMapper.insertSelective(marketComment);
-        //TODO 评价完成后将订单商品的handleoption改一下，即修改order表，orderGoods表 comment为1
+
+        // orderGoodsId为orderGoods表id，根据其查询得到goodsId，orderId，进而得到userId
+        MarketOrderGoods marketOrderGoods1 = marketOrderGoodsMapper.selectByPrimaryKey(wxOrderCommentBo.getOrderGoodsId());
+        MarketOrder marketOrder1 = marketOrderMapper.selectByPrimaryKey(marketOrderGoods1.getOrderId());
+        Short orderStatus = marketOrder1.getOrderStatus();
+        //如果订单状态码为401,或402，则可以进行评价
+        if ((short) 401 == orderStatus || (short) 402 == orderStatus) {
+            MarketComment marketComment = new MarketComment();
+            marketComment.setValueId(marketOrderGoods1.getGoodsId());
+            marketComment.setUserId(marketOrder1.getUserId());
+            //此处为商品评论，直接将type设为0
+            marketComment.setType((byte) 0);
+            marketComment.setContent(wxOrderCommentBo.getContent());
+            //管理员尚未回复，设为空
+            marketComment.setAdminContent("");
+            marketComment.setHasPicture(wxOrderCommentBo.isHasPicture());
+            marketComment.setPicUrls(wxOrderCommentBo.getPicUrls());
+            marketComment.setStar(wxOrderCommentBo.getStar().shortValue());
+            Date addTime = new Date();
+            marketComment.setAddTime(addTime);
+            marketComment.setUpdateTime(addTime);
+            int affectedRows = marketCommentMapper.insertSelective(marketComment);
+            if (affectedRows == 1) {
+                //评价完成后将订单商品的handleoption改一下，即修改order表，orderGoods表 comment为1
+                //修改orderGoods表 comment为1
+                MarketOrderGoods marketOrderGoods2 = new MarketOrderGoods();
+                marketOrderGoods2.setId(wxOrderCommentBo.getOrderGoodsId());
+                marketOrderGoods2.setComment(1);
+                marketOrderGoods2.setUpdateTime(new Date());
+                marketOrderGoodsMapper.updateByPrimaryKeySelective(marketOrderGoods2);
+                //修改order表，comment为1
+                MarketOrder marketOrder2 = new MarketOrder();
+                marketOrder2.setId(marketOrderGoods1.getOrderId());
+                marketOrder2.setComments((short) 1);
+                marketOrder2.setUpdateTime(new Date());
+                marketOrderMapper.updateByPrimaryKeySelective(marketOrder2);
+            }
+        }
+        //TODO 如果一个订单有多个品类商品，那就有多个“待评价”选项，评价其中一个之后，
+        // order表comments改为1，则该订单的其他品类商品不可再评价，
+        // 怎么破
     }
 
+    /**
+     * 评价前商品数据回显
+     *
+     * @param orderId
+     * @param goodsId
+     * @return com.cskaoyan.bean.common.MarketOrderGoods
+     * @author changyong
+     * @since 2022/07/20 11:40
+     */
     @Override
-    public List<MarketOrderGoods> goods(Integer orderId, Integer goodsId) {
-        //TODO 我和参考页面对比了，返回对象和参考页面一致，但没有显示图片及图片右侧文字
+    public MarketOrderGoods goods(Integer orderId, Integer goodsId) {
         MarketOrderGoodsExample marketOrderGoodsExample = new MarketOrderGoodsExample();
         MarketOrderGoodsExample.Criteria criteria = marketOrderGoodsExample.createCriteria();
         criteria.andOrderIdEqualTo(orderId)
                 .andGoodsIdEqualTo(goodsId);
         List<MarketOrderGoods> marketOrderGoods = marketOrderGoodsMapper.selectByExample(marketOrderGoodsExample);
-        return marketOrderGoods;
+        MarketOrderGoods marketOrderGoods1 = marketOrderGoods.get(0);
+        return marketOrderGoods1;
     }
 
+    /**
+     * 逻辑删除订单
+     *
+     * @param id
+     * @return void
+     * @author changyong
+     * @since 2022/07/20 11:40
+     */
     @Override
     public void delete(Integer id) {
         MarketOrder marketOrder = new MarketOrder();
@@ -180,9 +257,16 @@ public class WxOrderServiceImpl implements WxOrderService {
         if ((short) 102 == orderStatus || (short) 103 == orderStatus || (short) 203 == orderStatus) {
             marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
         }
-
     }
 
+    /**
+     * 用户确认收货
+     *
+     * @param id
+     * @return void
+     * @author changyong
+     * @since 2022/07/20 11:42
+     */
     @Override
     public void confirm(Integer id) {
         MarketOrder marketOrder = new MarketOrder();
@@ -197,5 +281,41 @@ public class WxOrderServiceImpl implements WxOrderService {
         if ((short) 301 == orderStatus) {
             marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
         }
+    }
+
+    /**
+     * 未付款订单取消订单
+     *
+     * @param id
+     * @return void
+     * @author changyong
+     * @since 2022/07/20 11:42
+     */
+    @Override
+    public void cancel(Integer id) {
+        MarketOrder marketOrder = new MarketOrder();
+        marketOrder.setId(id);
+        //TODO 系统取消（103）该怎么做呢
+        marketOrder.setOrderStatus((short) 102);
+        marketOrder.setUpdateTime(new Date());
+        //先获取该订单的状态，如果为 101: '未付款',则可以取消订单
+        Short orderStatus = marketOrderMapper.selectByPrimaryKey(id).getOrderStatus();
+        if ((short) 101 == orderStatus) {
+            marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+        }
+    }
+
+    /**
+     * 提交订单
+     *
+     * @param wxOrderSubmitBo
+     * @return com.cskaoyan.bean.wx.order.WxOrderSubmitPo
+     * @author changyong
+     * @since 2022/07/20 11:44
+     */
+    @Override
+    public WxOrderSubmitPo submit(WxOrderSubmitBo wxOrderSubmitBo) {
+        //TODO 等待wx/goods/detail,wx/cart/goodscount,wx/cart/fastadd,wx/cart/checkout
+        return null;
     }
 }

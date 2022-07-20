@@ -8,6 +8,7 @@ import com.cskaoyan.mapper.common.MarketBrandMapper;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
  * @since 2022/07/16 16:59
  */
 @Component
+@Transactional
 public class BrandServiceImpl implements BrandService {
 
     @Autowired
