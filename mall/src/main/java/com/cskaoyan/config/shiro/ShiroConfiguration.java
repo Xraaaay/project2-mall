@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
  * @date 2022/07/17 21:33
  */
 @Configuration
-public class ShiroConfiguration {
+public class  ShiroConfiguration {
 
     @Bean
     public ShiroFilterFactoryBean shiroFilter(DefaultWebSecurityManager securityManager){
