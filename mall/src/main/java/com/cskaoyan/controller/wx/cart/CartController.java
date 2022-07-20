@@ -5,10 +5,7 @@ import com.cskaoyan.bean.wx.cart.WxCartVO;
 import com.cskaoyan.controller.wx.auth.WxAuthController;
 import com.cskaoyan.service.wx.cart.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +22,7 @@ public class CartController {
     @Autowired
     CartService cartService;
 
-    @RequestMapping("index")
+    @GetMapping("index")
     public BaseRespVo indexWx() {
         Map<String, Object> index = cartService.index();
         if (index == null) {
@@ -55,14 +52,14 @@ public class CartController {
         return BaseRespVo.ok(null);
     }
 
-    @RequestMapping("delete")
+    @PostMapping("delete")
     public BaseRespVo deleteWx(@RequestBody Map<String, Object> map) {
         List<Integer> productIds = (List<Integer>) map.get("productIds");
         Map<String, Object> index = cartService.delete(productIds);
         return BaseRespVo.ok(index);
     }
 
-    @RequestMapping("goodscount")
+    @GetMapping("goodscount")
     public BaseRespVo goodsCountWx() {
         Integer goodsCount = cartService.goodsCount();
         return BaseRespVo.ok(goodsCount);
