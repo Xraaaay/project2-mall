@@ -66,8 +66,19 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Map<String, Object> delete(List<Integer> productIds) {
+        Integer userId = getMarketUserId();
+        // 逻辑删除，修改deleted字段为true
+        for (Integer productId : productIds) {
+            MarketCart cart = new MarketCart();
+            cart.setDeleted(true);
 
-        return null;
+            MarketCartExample example = new MarketCartExample();
+            example.createCriteria().andUserIdEqualTo(userId)
+                    .andProductIdEqualTo(productId);
+            marketCartMapper.updateByExampleSelective(cart, example);
+        }
+
+        return index();
     }
 
     @Transactional
