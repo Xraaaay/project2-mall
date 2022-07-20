@@ -18,14 +18,29 @@ public class CatalogController {
     @Autowired
     CatalogService catalogService;
 
+    /**
+     * 返回类目首页
+     *
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author changyong
+     * @since 2022/07/20 11:51
+     */
     @RequestMapping("index")
-    public BaseRespVo index(){
+    public BaseRespVo index() {
         WxCatalogIndexPo wxCatalogIndexPo = catalogService.index();
         return BaseRespVo.ok(wxCatalogIndexPo);
     }
 
+    /**
+     * 返回当前一级类目包含的二级类目
+     *
+     * @param id
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author changyong
+     * @since 2022/07/20 11:53
+     */
     @RequestMapping("current")
-    public BaseRespVo current(Integer id){
+    public BaseRespVo current(Integer id) {
         WxCatalogIndexPo wxCatalogIndexPo = catalogService.current(id);
         return BaseRespVo.ok(wxCatalogIndexPo);
     }

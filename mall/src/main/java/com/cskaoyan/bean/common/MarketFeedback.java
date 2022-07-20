@@ -19,7 +19,7 @@ public class MarketFeedback {
 
     private Boolean hasPicture;
 
-    private String picUrls;
+    private String[] picUrls;
 
     private Date addTime;
 
@@ -91,12 +91,20 @@ public class MarketFeedback {
         this.hasPicture = hasPicture;
     }
 
-    public String getPicUrls() {
+    public String[] getPicUrls() {
         return picUrls;
     }
 
-    public void setPicUrls(String picUrls) {
-        this.picUrls = picUrls == null ? null : picUrls.trim();
+    public void setPicUrls(String[] picUrls) {
+        //this.picUrls = picUrls == null ? null : picUrls.trim();
+        if (picUrls == null) {
+            this.picUrls =null;
+        }else {
+            for (String picUrl : picUrls) {
+                picUrl.trim();
+            }
+            this.picUrls=picUrls;
+        }
     }
 
     public Date getAddTime() {

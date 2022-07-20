@@ -7,7 +7,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -290,6 +292,24 @@ public class UserServiceImpl implements UserService {
                 page.getLimit(), page.getPage(), marketFeedbacks);
 
         return marketFeedbackUserListVo;
+    }
+
+    /**
+     * 用户信息更新
+     * @param marketUser
+     * @return java.lang.Integer
+     * @author shn
+     * @date 2022/7/20 11:39
+     */
+    @Override
+    @Transactional
+    public Integer updateUser(MarketUser marketUser) {
+        MarketUserExample userExample = new MarketUserExample();
+        MarketUserExample.Criteria criteria = userExample.createCriteria();
+        criteria.andIdEqualTo(marketUser.getId());
+        marketUser.setUpdateTime(new Date());
+        int updateNum = marketUserMapper.updateByExampleSelective(marketUser, userExample);
+        return updateNum;
     }
 
 

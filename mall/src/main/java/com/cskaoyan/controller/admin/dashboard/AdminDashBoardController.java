@@ -3,6 +3,7 @@ package com.cskaoyan.controller.admin.dashboard;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.admin.dashboard.DashBoardVo;
 import com.cskaoyan.service.admin.dashboard.DashBoardService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,11 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2022/07/18 00:13
  */
 @RestController
-public class DashBoardController {
+public class AdminDashBoardController {
 
     @Autowired
     DashBoardService dashBoardService;
-
 
     @RequestMapping("admin/dashboard")
     public BaseRespVo dashBoard(){

@@ -6,6 +6,7 @@ import com.cskaoyan.bean.admin.mallmanagement.po.MarktCategoryListPo;
 import com.cskaoyan.mapper.common.MarketCategoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * @since 2022/07/16 20:57
  */
 @Component
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired

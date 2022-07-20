@@ -2,6 +2,7 @@ package com.cskaoyan.mapper.common;
 
 import com.cskaoyan.bean.common.MarketCart;
 import com.cskaoyan.bean.common.MarketCartExample;
+import com.cskaoyan.bean.wx.cart.CartTotalEntity;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public interface MarketCartMapper {
 
     List<MarketCart> selectByExample(MarketCartExample example);
 
+    Integer selectGoodsCountByExample(MarketCartExample example);
+
     MarketCart selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") MarketCart record, @Param("example") MarketCartExample example);
@@ -28,4 +31,8 @@ public interface MarketCartMapper {
     int updateByPrimaryKeySelective(MarketCart record);
 
     int updateByPrimaryKey(MarketCart record);
+
+    CartTotalEntity selectCartTotal();
+
+    Integer selectGoodsCount();
 }

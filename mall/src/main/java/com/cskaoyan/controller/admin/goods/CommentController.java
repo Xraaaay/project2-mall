@@ -3,6 +3,7 @@ package com.cskaoyan.controller.admin.goods;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.admin.goods.CommentService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ public class CommentController {
      * @author pqk
      * @date 2022/07/17 23:19
      */
+    @RequiresPermissions("admin:comment:list")
     @RequestMapping("list")
     public BaseRespVo list(Integer page,Integer limit,String sort,String order){
         CommonData commonData = commentService.list(page,limit,sort,order);
@@ -39,6 +41,7 @@ public class CommentController {
      * @author pqk
      * @date 2022/07/18 0:10
      */
+    @RequiresPermissions("admin:comment:delete")
     @RequestMapping("delete")
     public BaseRespVo delete(@RequestBody Map map){
         commentService.delete(map);

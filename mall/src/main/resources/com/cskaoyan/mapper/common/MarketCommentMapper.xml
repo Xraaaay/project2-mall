@@ -119,7 +119,7 @@
       #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.cskaoyan.bean.common.MarketComment">
+  <insert id="insertSelective" keyProperty="id" useGeneratedKeys="true" parameterType="com.cskaoyan.bean.common.MarketComment">
     insert into market_comment
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -129,7 +129,7 @@
         value_id,
       </if>
       <if test="type != null">
-        type,
+        `type`,
       </if>
       <if test="content != null">
         content,

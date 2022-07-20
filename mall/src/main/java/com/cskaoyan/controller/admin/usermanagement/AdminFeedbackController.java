@@ -9,24 +9,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 用户管理之搜索历史
+ * 用户管理之意见反馈
  *
  * @author Zah
- * @date 2022/07/18 20:53
+ * @date 2022/07/18 21:23
  */
 @RestController
-@RequestMapping("admin/history")
-public class SearchHistoryController {
+@RequestMapping("admin/feedback")
+public class AdminFeedbackController {
 
     @Autowired
     UserService userService;
 
     @RequestMapping("list")
-    public BaseRespVo list(BaseParam page,Integer userId, String keyword){
+    public BaseRespVo list(BaseParam page,String username, Integer id){
 
-        UserListVo searchHistoryList = userService.getSearchHistoryList(page, userId, keyword);
+        UserListVo feedbackList = userService.getFeedbackList(page, username, id);
 
-        return BaseRespVo.ok(searchHistoryList);
-
+        return BaseRespVo.ok(feedbackList);
     }
 }

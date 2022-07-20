@@ -1,5 +1,7 @@
 package com.cskaoyan.bean.common;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class MarketUser {
@@ -10,7 +12,7 @@ public class MarketUser {
     private String password;
 
     private Byte gender;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT:+8")
     private Date birthday;
 
     private Date lastLoginTime;

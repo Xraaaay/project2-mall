@@ -121,7 +121,7 @@
       #{tel,jdbcType=VARCHAR}, #{isDefault,jdbcType=BIT}, #{addTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.cskaoyan.bean.common.MarketAddress">
+  <insert id="insertSelective" parameterType="com.cskaoyan.bean.common.MarketAddress" useGeneratedKeys="true" keyProperty="id">
     insert into market_address
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

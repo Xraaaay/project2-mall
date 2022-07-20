@@ -1,15 +1,18 @@
 package com.cskaoyan.service.admin.mallmanagement;
 
+import com.cskaoyan.bean.admin.comment.bo.CommentBo;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarketOrderDetailPo;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarketOrderListPo;
 import com.cskaoyan.bean.admin.mallmanagement.bo.MarketOrderListBo;
 import com.cskaoyan.bean.common.*;
+import com.cskaoyan.mapper.common.MarketCommentMapper;
 import com.cskaoyan.mapper.common.MarketOrderGoodsMapper;
 import com.cskaoyan.mapper.common.MarketOrderMapper;
 import com.cskaoyan.mapper.common.MarketUserMapper;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -23,6 +26,7 @@ import java.util.List;
  * @since 2022/07/16 22:51
  */
 @Component
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
@@ -33,6 +37,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     MarketOrderGoodsMapper marketOrderGoodsMapper;
+
+    @Autowired
+    MarketCommentMapper marketCommentMapper;
 
     /**
      * 返回订单列表并根据条件查询
@@ -125,7 +132,6 @@ public class OrderServiceImpl implements OrderService {
         //获取order
         MarketOrder marketOrder = marketOrderMapper.selectByPrimaryKey(orderId);
         //赋值
-        //TODO 前端页面 快递公司无数据，无法选择。需更改前端数据
         marketOrder.setShipChannel(shipChannel);
         marketOrder.setShipSn(shipSn);
         Date shipTime = new Date();
@@ -178,5 +184,21 @@ public class OrderServiceImpl implements OrderService {
         marketOrder.setUpdateTime(new Date());
         //update
         marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+    }
+    /**
+    * @description 回复评论
+    * @author pqk
+    * @date 2022/07/20 0:28
+     */
+    @Override
+    public void reply(CommentBo commentBo) {
+        MarketComment marketComment = new MarketComment();
+        marketComment.setAdminContent(commentBo.getContent());
+        marketComment.setDeleted(true);
+
+        MarketCommentExample marketCommentExample = new MarketCommentExample();
+        MarketCommentExample.Criteria criteria = marketCommentExample.createCriteria();
+        criteria.andIdEqualTo(commentBo.getCommentId());
+        marketCommentMapper.updateByExampleSelective(marketComment,marketCommentExample);
     }
 }

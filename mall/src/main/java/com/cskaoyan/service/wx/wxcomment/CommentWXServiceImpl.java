@@ -1,22 +1,22 @@
 package com.cskaoyan.service.wx.wxcomment;
 
-import com.cskaoyan.bean.common.BaseParam;
-import com.cskaoyan.bean.common.MarketComment;
-import com.cskaoyan.bean.common.MarketCommentExample;
-import com.cskaoyan.bean.common.MarketUser;
+import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
 import com.cskaoyan.bean.wx.wxcomment.UserInfo;
 import com.cskaoyan.bean.wx.wxcomment.WXCommentVo;
 import com.cskaoyan.bean.wx.wxcomment.InnerListOfCommentVo;
 import com.cskaoyan.mapper.common.MarketCommentMapper;
 import com.cskaoyan.mapper.common.MarketUserMapper;
+import com.cskaoyan.util.PrincipalUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,8 +31,10 @@ public class CommentWXServiceImpl implements CommentWXService {
     MarketCommentMapper marketCommentMapper;
     @Autowired
     MarketUserMapper marketUserMapper;
+
     /**
      * 评论列表
+     *
      * @param valueId
      * @param type
      * @return com.cskaoyan.bean.wx.wxcomment.WXCommentVo
@@ -60,6 +62,7 @@ public class CommentWXServiceImpl implements CommentWXService {
 
     /**
      * 评论列表
+     *
      * @param marketComment
      * @param showType
      * @param param
@@ -70,12 +73,11 @@ public class CommentWXServiceImpl implements CommentWXService {
     @Override
     @Transactional
     public IssueAndKeywordListVo commentList(MarketComment marketComment, String showType, BaseParam param) {
-        // 在执行查询之前，可以开启分页
-        // sql语句预编译的过程给你拼接上分页的sql
+
         PageHelper.startPage(param.getPage(), param.getLimit());
 
         MarketCommentExample example = new MarketCommentExample();
-        //example.setOrderByClause(param.getSort() + " " + param.getOrder());
+
         //条件查询
         MarketCommentExample.Criteria criteria = example.createCriteria();
         criteria.andValueIdEqualTo(marketComment.getValueId())
@@ -85,29 +87,50 @@ public class CommentWXServiceImpl implements CommentWXService {
         //查询评论
         List<MarketComment> comments = marketCommentMapper.selectByExample(example);
         //遍历
-        InnerListOfCommentVo listOfCommentVo = new InnerListOfCommentVo();
-        try {
-            for (MarketComment c : comments) {
-                Integer userId = c.getUserId();
-                MarketUser marketUser = marketUserMapper.selectByPrimaryKey(userId);
-                UserInfo userInfo = new UserInfo();
+        for (MarketComment c : comments) {
+            Integer userId = c.getUserId();
+            MarketUser marketUser = marketUserMapper.selectByPrimaryKey(userId);
+            UserInfo userInfo = new UserInfo();
+            if (userInfo!=null) {
                 userInfo.setNickName(marketUser.getNickname());
                 userInfo.setAvatarUrl(marketUser.getAvatar());
+                InnerListOfCommentVo listOfCommentVo = new InnerListOfCommentVo();
                 listOfCommentVo.setUserInfo(userInfo);
-                listOfCommentVo.setAddTime(marketComment.getAddTime());
-                listOfCommentVo.setPicList(marketComment.getPicUrls());
-                listOfCommentVo.setAdminContent(marketComment.getAdminContent());
-                listOfCommentVo.setContent(marketComment.getContent());
+                listOfCommentVo.setAddTime(c.getAddTime());
+                listOfCommentVo.setPicList(c.getPicUrls());
+                listOfCommentVo.setAdminContent(c.getAdminContent());
+                listOfCommentVo.setContent(c.getContent());
                 commentVos.add(listOfCommentVo);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
+        }
         // 会去获得一些分页信息
         PageInfo pageInfo = new PageInfo(commentVos);
         // total是总的数据量 → 是否等于users.length?不是 → 指的是如果不分页的情况下最多会查询出来多少条记录
         IssueAndKeywordListVo issueListVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), param.getLimit(), param.getPage(), commentVos);
         return issueListVo;
     }
+    /**
+     * 提交评论
+     * @param marketComment
+     * @return com.cskaoyan.bean.common.MarketComment
+     * @author shn
+     * @date 2022/7/19 16:13
+     */
+    @Override
+    @Transactional
+    public MarketComment postComment(MarketComment marketComment) {
+        marketComment.setAddTime(new Date());
+        marketComment.setUpdateTime(new Date());
+
+        //shiro 获取用户信息
+        MarketUser user = PrincipalUtil.getUserInfo();
+        marketComment.setUserId(user.getId());
+
+        marketCommentMapper.insertSelective(marketComment);
+        Integer id = marketComment.getId();
+        MarketComment comment = marketCommentMapper.selectByPrimaryKey(id);
+        return comment;
+    }
+
 }
