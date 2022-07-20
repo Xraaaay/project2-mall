@@ -1,5 +1,8 @@
 package com.cskaoyan.service.wx.cart;
 
+import com.cskaoyan.bean.wx.cart.CheckoutBo;
+import com.cskaoyan.bean.wx.cart.CheckoutVo;
+
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +33,7 @@ public interface CartService {
     Map<String, Object> checked(List<Integer> productIds, Integer isChecked);
 
     // lyx
-    void update(Map<String, Integer> map);
+    int update(Map<String, Integer> map);
 
     /**
      * 购物车页面：逻辑删除购物车商品
@@ -50,4 +53,14 @@ public interface CartService {
 
     // lyx
     Integer addWx(Map<String, Integer> map);
+    //lyx
+    int fastaddWx(Map<String, Integer> map);
+
+    /**
+     * 下单后，填写订单
+     *
+     * @author Xrw
+     * @date 2022/7/20 17:32
+     */
+    CheckoutVo checkout(CheckoutBo checkoutBo);
 }

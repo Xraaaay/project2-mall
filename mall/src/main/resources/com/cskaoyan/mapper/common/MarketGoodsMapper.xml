@@ -23,6 +23,30 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="deleted" jdbcType="BIT" property="deleted" />
   </resultMap>
+
+  <resultMap id="BaseResultMapVo" type="com.cskaoyan.bean.admin.goods.vo.MarketGoodsVo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="goods_sn" jdbcType="VARCHAR" property="goodsSn" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="brand_id" jdbcType="INTEGER" property="brandId" />
+    <result column="gallery" jdbcType="VARCHAR" property="gallery" />
+    <result column="keywords" jdbcType="VARCHAR" property="keywords" />
+    <result column="brief" jdbcType="VARCHAR" property="brief" />
+    <result column="is_on_sale" jdbcType="BIT" property="isOnSale" />
+    <result column="sort_order" jdbcType="SMALLINT" property="sortOrder" />
+    <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+    <result column="share_url" jdbcType="VARCHAR" property="shareUrl" />
+    <result column="is_new" jdbcType="BIT" property="isNew" />
+    <result column="is_hot" jdbcType="BIT" property="isHot" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="counter_price" jdbcType="DECIMAL" property="counterPrice" />
+    <result column="retail_price" jdbcType="DECIMAL" property="retailPrice" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+  </resultMap>
+
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cskaoyan.bean.common.MarketGoods">
     <result column="detail" jdbcType="LONGVARCHAR" property="detail" />
   </resultMap>
@@ -109,6 +133,20 @@
     </if>
   </select>
   <select id="selectByExample" parameterType="com.cskaoyan.bean.common.MarketGoodsExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from market_goods
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExampleVo" parameterType="com.cskaoyan.bean.admin.goods.vo.MarketGoodsVo" resultMap="BaseResultMapVo">
     select
     <if test="distinct">
       distinct

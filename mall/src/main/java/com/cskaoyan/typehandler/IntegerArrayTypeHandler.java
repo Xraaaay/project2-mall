@@ -45,9 +45,9 @@ public class IntegerArrayTypeHandler implements TypeHandler<Integer[]> {
 
     // 输出映射过程
     @Override
-    public Integer[] getResult(ResultSet resultSet, String columName) throws SQLException {
+    public Integer[] getResult(ResultSet resultSet, String columnName) throws SQLException {
         // 获得结果
-        String result = resultSet.getString(columName);
+        String result = resultSet.getString(columnName);
         return transfer(result);
     }
 
@@ -70,10 +70,8 @@ public class IntegerArrayTypeHandler implements TypeHandler<Integer[]> {
         // 使用jackson将字符串转换Integer[]
         try {
             integers = objectMapper.readValue(result, Integer[].class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            return integers;
         }
         return integers;
     }

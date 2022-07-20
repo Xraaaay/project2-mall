@@ -367,7 +367,7 @@ FROM
 
   <select id="selectGoodsCountByExample" parameterType="com.cskaoyan.bean.common.MarketCartExample" resultType="int">
     select
-    sum (number)
+    sum(number)
     from market_cart
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

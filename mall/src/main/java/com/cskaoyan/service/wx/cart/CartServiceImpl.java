@@ -1,20 +1,19 @@
 package com.cskaoyan.service.wx.cart;
 
 
+import com.cskaoyan.bean.admin.marketconfig.MarketExpreessVO;
 import com.cskaoyan.bean.common.*;
-import com.cskaoyan.mapper.common.MarketCartMapper;
-import com.cskaoyan.mapper.common.MarketGoodsMapper;
-import com.cskaoyan.mapper.common.MarketGoodsProductMapper;
+import com.cskaoyan.bean.wx.cart.CheckoutBo;
+import com.cskaoyan.bean.wx.cart.CheckoutVo;
+import com.cskaoyan.mapper.common.*;
 import com.cskaoyan.util.PrincipalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author lyx
@@ -28,6 +27,14 @@ public class CartServiceImpl implements CartService {
     MarketGoodsProductMapper marketGoodsProductMapper;
     @Autowired
     MarketGoodsMapper marketGoodsMapper;
+    @Autowired
+    MarketCouponMapper couponMapper;
+    @Autowired
+    MarketCouponUserMapper couponUserMapper;
+    @Autowired
+    MarketAddressMapper addressMapper;
+    @Autowired
+    MarketSystemMapper systemMapper;
 
     @Override
     public Map<String, Object> index() {
@@ -53,6 +60,7 @@ public class CartServiceImpl implements CartService {
             } else {
                 marketCart.setChecked(true);
             }
+            marketCart.setUpdateTime(new Date());
 
             MarketCartExample example = new MarketCartExample();
             example.createCriteria().andUserIdEqualTo(userId)
@@ -65,7 +73,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void update(Map<String, Integer> map) {
+    public int update(Map<String, Integer> map) {
+        int statusId = 0;
         Integer marketUserId = getMarketUserId();
         HashMap<String, Integer> hashMap = new HashMap<>(map);
         Integer productId = hashMap.get("productId");
@@ -73,18 +82,36 @@ public class CartServiceImpl implements CartService {
         Integer number = hashMap.get("number");
         Integer id = hashMap.get("id");
 
+        MarketGoodsProductExample example = new MarketGoodsProductExample();
+        MarketGoodsProductExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(false);
+
+        MarketGoodsProduct marketGoodsProduct = marketGoodsProductMapper.selectByPrimaryKey(productId);
+
         short numbershort = number.shortValue();
+        if (number > marketGoodsProduct.getNumber()) {
+            statusId = 710;
+            return statusId;
+        }
 
 
         MarketCart updateMarketCart = new MarketCart();
         updateMarketCart.setId(id);
         updateMarketCart.setNumber(numbershort);
 
-        MarketCartExample example = new MarketCartExample();
-        MarketCartExample.Criteria criteria = example.createCriteria();
-        criteria.andDeletedEqualTo(false)
+        MarketCartExample exampleCart = new MarketCartExample();
+        MarketCartExample.Criteria criteriaCart = exampleCart.createCriteria();
+        criteriaCart.andDeletedEqualTo(false)
                 .andUserIdEqualTo(marketUserId);
-        marketCartMapper.updateByPrimaryKeySelective(updateMarketCart);
+
+
+        try {
+            marketCartMapper.updateByPrimaryKeySelective(updateMarketCart);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 404;
+        }
+        return 200;
 
 
         // {
@@ -155,6 +182,63 @@ public class CartServiceImpl implements CartService {
         return statusId;
     }
 
+    @Transactional
+    @Override
+    public CheckoutVo checkout(CheckoutBo checkoutBo) {
+        Integer grouponRulesId = checkoutBo.getGrouponRulesId();
+        Integer cartId = checkoutBo.getCartId();
+        Integer couponId = checkoutBo.getCouponId();
+        Integer userCouponId = checkoutBo.getUserCouponId();
+        Integer addressId = checkoutBo.getAddressId();
+
+        // 商品信息
+        List<MarketCart> checkedGoodsList = getCheckedCartList();
+        Map<String, Object> cartTotal = getCartTotal(checkedGoodsList);
+        BigDecimal goodsTotalPrice = (BigDecimal) cartTotal.get("checkedGoodsAmount");
+
+        // 地址
+        MarketAddress checkedAddress = addressMapper.selectByPrimaryKey(addressId);
+
+        // 运费
+        String freightMinStr = systemMapper.selectValueByName("market_express_freight_min");
+        String freightValueStr = systemMapper.selectValueByName("market_express_freight_value");
+        BigDecimal freightMin = new BigDecimal(freightMinStr);
+        BigDecimal freightValue = new BigDecimal(freightValueStr);
+        BigDecimal freightPrice = new BigDecimal(0);
+        if (freightMin.compareTo(goodsTotalPrice) > 0) {
+            freightPrice = freightValue;
+        }
+
+        // 优惠券数量
+        Integer userId = getMarketUserId();
+        MarketCouponUserExample example = new MarketCouponUserExample();
+        example.createCriteria().andUserIdEqualTo(userId)
+                .andStatusEqualTo((short) 0)
+                .andDeletedEqualTo(false);
+        List<MarketCouponUser> marketCouponUsers = couponUserMapper.selectByExample(example);
+        Integer availableCouponLength = marketCouponUsers.size();
+
+        // 优惠信息
+        MarketCoupon coupon = couponMapper.selectByPrimaryKey(couponId);
+        BigDecimal couponPrice = new BigDecimal(0);
+        if (coupon != null) {
+            for (MarketCouponUser couponUser : marketCouponUsers) {
+                if (couponUser.getCouponId().equals(couponId)) {
+                    couponPrice = coupon.getDiscount();
+                }
+            }
+        }
+
+        // 商品总价
+        BigDecimal actualPrice = goodsTotalPrice.subtract(couponPrice).add(freightPrice);
+        BigDecimal orderTotalPrice = actualPrice;
+
+        return new CheckoutVo(grouponRulesId, actualPrice, orderTotalPrice, cartId,
+                userCouponId, couponId, goodsTotalPrice, addressId, 0, checkedAddress,
+                couponPrice, availableCouponLength, freightPrice, checkedGoodsList);
+    }
+
+
 
     public Map<String, Object> delete(List<Integer> productIds) {
         Integer userId = getMarketUserId();
@@ -189,6 +273,67 @@ public class CartServiceImpl implements CartService {
         return goodsCount;
     }
 
+
+    /**
+     * lyx
+     * 立即下单。 减少库存
+     * @param map
+     * @return
+     */
+    @Override
+    public int fastaddWx(Map<String, Integer> map) {
+        //定义一个状态值
+        int statusId = 0;
+        //用来获取是否为当前用户
+        Integer marketUserId = getMarketUserId();
+        //取出需要的参数 从HashMap中
+        HashMap<String, Integer> hashMap = new HashMap<>(map);
+        Integer productId = hashMap.get("productId");
+        Integer goodsId = hashMap.get("goodsId");
+        Integer number = hashMap.get("number");
+        short numbershort = number.shortValue();
+        //同增加购物车相同逻辑
+        //product 的example
+        MarketGoodsProductExample example = new MarketGoodsProductExample();
+        MarketGoodsProductExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(false);
+        //goods 的example
+        MarketGoodsExample goodsExample = new MarketGoodsExample();
+        MarketGoodsExample.Criteria goodscriteria = goodsExample.createCriteria();
+        goodscriteria.andDeletedEqualTo(false);
+        //查询出goods的全部数据
+        MarketGoods marketGoods = marketGoodsMapper.selectByPrimaryKey(goodsId);
+        //查询出producat
+        MarketGoodsProduct marketGoodsProduct = marketGoodsProductMapper.selectByPrimaryKey(productId);
+        //goodSn 强转成 String 因为从商品查出来的goodsSn为Integer类型
+        String goodsSn = Integer.toString(marketGoods.getGoodsSn());
+        //String[]转 String  理由同上
+        String getSpecifications = Arrays.toString(marketGoodsProduct.getSpecifications());
+        //判断库存量是否足够
+        if (number > marketGoodsProduct.getNumber()) {
+            statusId = 711;
+            return statusId;
+        }
+        //吧 cart数据库要用的值送给 marketCart
+        MarketCart marketCart = new MarketCart(null, marketUserId, goodsId, goodsSn,
+                marketGoods.getName(), productId, marketGoodsProduct.getPrice(), numbershort, getSpecifications,
+                true, marketGoodsProduct.getUrl(), marketGoodsProduct.getAddTime(), marketGoodsProduct.getUpdateTime(), false);
+        //插入数据，如果成功就返回200，异常404 数量不足返回 711
+        try {
+            marketCartMapper.insertSelective(marketCart);
+        } catch (Exception e) {
+            statusId = 404;
+            e.printStackTrace();
+            return statusId;
+        }
+        return statusId;
+
+    }
+
+
+
+
+
     /**
      * 获取当前用户的所有订单信息
      *
@@ -201,6 +346,18 @@ public class CartServiceImpl implements CartService {
         MarketCartExample example = new MarketCartExample();
         MarketCartExample.Criteria criteria = example.createCriteria();
         criteria.andDeletedEqualTo(false)
+                .andUserIdEqualTo(userId);
+        // 查询用户所有订单
+        return marketCartMapper.selectByExample(example);
+    }
+
+    private List<MarketCart> getCheckedCartList() {
+        Integer userId = getMarketUserId();
+
+        MarketCartExample example = new MarketCartExample();
+        MarketCartExample.Criteria criteria = example.createCriteria();
+        criteria.andCheckedEqualTo(true)
+                .andDeletedEqualTo(false)
                 .andUserIdEqualTo(userId);
         // 查询用户所有订单
         return marketCartMapper.selectByExample(example);
