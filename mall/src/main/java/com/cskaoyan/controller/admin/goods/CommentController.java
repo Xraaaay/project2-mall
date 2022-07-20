@@ -1,5 +1,8 @@
 package com.cskaoyan.controller.admin.goods;
 
+import com.cskaoyan.bean.admin.mallmanagement.BaseRespSuccessVo;
+import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.admin.goods.CommentService;
@@ -29,11 +32,17 @@ public class CommentController {
      * @author pqk
      * @date 2022/07/17 23:19
      */
-    @RequiresPermissions("admin:comment:list")
-    @RequestMapping("list")
+    //@RequiresPermissions("admin:comment:list")
+    //@RequestMapping("list")
     public BaseRespVo list(Integer page,Integer limit,String sort,String order){
         CommonData commonData = commentService.list(page,limit,sort,order);
         return BaseRespVo.ok(commonData);
+    }
+    @RequiresPermissions("admin:comment:list")
+    @RequestMapping("list")
+    public BaseRespSuccessVo list1(BaseParam param, Integer userId, Integer valueId){
+        IssueAndKeywordListVo listVo = commentService.list1(param,userId,valueId);
+        return BaseRespSuccessVo.success(listVo);
     }
 
     /**

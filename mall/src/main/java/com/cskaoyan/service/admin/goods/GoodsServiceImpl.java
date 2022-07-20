@@ -1,5 +1,7 @@
 package com.cskaoyan.service.admin.goods;
 
+import com.cskaoyan.bean.admin.goods.po.MarketGoodsPo;
+import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.admin.goods.bo.Children;
 import com.cskaoyan.bean.admin.goods.bo.CreateBo;
@@ -84,6 +86,37 @@ public class GoodsServiceImpl implements GoodsService {
         return marketGoodsCommonData;
     }
 
+    /**
+     * 商品列表
+     * @param param
+     * @param marketGoods
+     * @return com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo
+     * @author shn
+     * @date 2022/7/20 17:37
+     */
+    @Override
+    public IssueAndKeywordListVo list1(BaseParam param, MarketGoods marketGoods) {
+        //分页
+        PageHelper.startPage(param.getPage(), param.getLimit());
+        MarketGoodsExample goodsExample = new MarketGoodsExample();
+        MarketGoodsExample.Criteria criteria = goodsExample.createCriteria();
+        //条件查询
+        if (marketGoods.getId() != null) {
+            criteria.andIdEqualTo(marketGoods.getId());
+        }
+        if (marketGoods.getGoodsSn() != null) {
+            criteria.andGoodsSnEqualTo(String.valueOf(marketGoods.getGoodsSn()));
+        }
+        if (marketGoods.getName()!=null) {
+            criteria.andNameLike("%"+marketGoods.getName()+"%");
+        }
+        //查找
+        List<MarketGoods> marketGoodsList = marketGoodsMapper.selectByExample(goodsExample);
+        PageInfo pageInfo = new PageInfo(marketGoodsList);
+        IssueAndKeywordListVo listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), param.getLimit(), param.getPage(), marketGoodsList);
+        return listVo;
+    }
+
     @Override
     public void delete(Integer id) {
         marketGoodsMapper.deleteByPrimaryKey(id);
@@ -95,9 +128,10 @@ public class GoodsServiceImpl implements GoodsService {
     public DetailVo detail(Integer id) {
         // 根据传入id查询到商品详情
         MarketGoods goods = marketGoodsMapper.selectByPrimaryKey(id);
+        String[] galleryArr = goods.getGallery();
 
-        String galleryString = goods.getGallery().replace("[", "").replace("]", "");
-        String[] galleryArr = galleryString.split(",");
+        /*String galleryString = goods.getGallery().replace("[", "").replace("]", "");
+        String[] galleryArr = galleryString.split(",");*/
 
         for (int i = 0; i < galleryArr.length; i++) {
             String replaceAll = galleryArr[i].trim().replaceAll("\"", "");
@@ -275,5 +309,7 @@ public class GoodsServiceImpl implements GoodsService {
         }
 
     }
+
+
 
 }

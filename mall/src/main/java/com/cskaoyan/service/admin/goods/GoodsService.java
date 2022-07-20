@@ -1,10 +1,14 @@
 package com.cskaoyan.service.admin.goods;
 
+import com.cskaoyan.bean.admin.goods.po.MarketGoodsPo;
+import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.admin.goods.vo.CatAndBrandVo;
 import com.cskaoyan.bean.admin.goods.bo.CreateBo;
 import com.cskaoyan.bean.admin.goods.vo.DetailVo;
 import com.cskaoyan.bean.admin.goods.bo.UpdateBo;
+import com.cskaoyan.bean.common.MarketGoods;
 
 /**
  * @author pqk
@@ -68,4 +72,7 @@ public interface GoodsService {
      * @date 2022/07/18 21:34
      */
     void update(UpdateBo updateBo);
+
+    /*商品列表*/
+    IssueAndKeywordListVo list1(BaseParam param, MarketGoods marketGoods);
 }

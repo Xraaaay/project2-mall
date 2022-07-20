@@ -1,14 +1,19 @@
 package com.cskaoyan.controller.admin.goods;
 
+import com.cskaoyan.bean.admin.mallmanagement.BaseRespSuccessVo;
+import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.admin.goods.vo.CatAndBrandVo;
 import com.cskaoyan.bean.admin.goods.bo.CreateBo;
 import com.cskaoyan.bean.admin.goods.vo.DetailVo;
 import com.cskaoyan.bean.admin.goods.bo.UpdateBo;
+import com.cskaoyan.bean.common.MarketGoods;
 import com.cskaoyan.service.admin.goods.GoodsService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,13 +39,29 @@ public class GoodsController {
      * @author pqk
      * @date 2022/07/16 21:18
      */
-    @RequiresPermissions("admin:goods:list")
-    @RequestMapping("list")
+    //@RequiresPermissions("admin:goods:list")
+    //@RequestMapping("list")
     public BaseRespVo list(Integer page,Integer limit,String sort,String order){
         CommonData commonData = goodsService.list(page,limit,sort,order);
         return BaseRespVo.ok(commonData);
     }
-    
+
+    /**
+     * 商品列表
+     * @param param
+     * @param marketGoods
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author shn
+     * @date 2022/7/20 17:32
+     */
+    @RequiresPermissions("admin:goods:list")
+    @GetMapping("list")
+    public BaseRespSuccessVo list1(BaseParam param, MarketGoods marketGoods, Integer goodsId){
+        marketGoods.setId(goodsId);
+        IssueAndKeywordListVo listVo=goodsService.list1(param,marketGoods);
+        return BaseRespSuccessVo.success(listVo);
+    }
+
     /**
      * @description 删除指定商品
      * @author pqk
