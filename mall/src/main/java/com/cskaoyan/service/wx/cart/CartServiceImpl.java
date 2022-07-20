@@ -1,22 +1,11 @@
 package com.cskaoyan.service.wx.cart;
 
+
 import com.cskaoyan.bean.common.*;
-import com.cskaoyan.bean.wx.cart.CartTotalEntity;
-import com.cskaoyan.bean.wx.cart.WxCartVO;
-import com.cskaoyan.exception.InvalidDataException;
-import com.cskaoyan.bean.common.MarketCart;
-import com.cskaoyan.bean.common.MarketCartExample;
-import com.cskaoyan.bean.common.MarketUser;
-import com.cskaoyan.exception.UnAuthException;
 import com.cskaoyan.mapper.common.MarketCartMapper;
-import com.cskaoyan.mapper.common.MarketCategoryMapper;
 import com.cskaoyan.mapper.common.MarketGoodsMapper;
 import com.cskaoyan.mapper.common.MarketGoodsProductMapper;
-import com.cskaoyan.mapper.common.MarketGoodsProductMapper;
-import com.cskaoyan.mapper.common.MarketGoodsSpecificationMapper;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.Subject;
+import com.cskaoyan.util.PrincipalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,10 +28,6 @@ public class CartServiceImpl implements CartService {
     MarketGoodsProductMapper marketGoodsProductMapper;
     @Autowired
     MarketGoodsMapper marketGoodsMapper;
-
-
-    @Autowired
-    MarketGoodsSpecificationMapper specificationMapper;
 
     @Override
     public Map<String, Object> index() {
@@ -168,15 +153,28 @@ public class CartServiceImpl implements CartService {
         //如果成功返回值为 200
         statusId = 200;
         return statusId;
+
+    }
+    public Map<String, Object> delete(List<Integer> productIds) {
+        Integer userId = getMarketUserId();
+        // 逻辑删除，修改deleted字段为true
+        for (Integer productId : productIds) {
+            MarketCart cart = new MarketCart();
+            cart.setDeleted(true);
+
+            MarketCartExample example = new MarketCartExample();
+            example.createCriteria().andUserIdEqualTo(userId)
+                    .andProductIdEqualTo(productId);
+            marketCartMapper.updateByExampleSelective(cart, example);
+        }
+
+        return index();
     }
 
-
-
-
-
-
-
-
+    @Override
+    public Integer goodsCount() {
+        return null;
+    }
 
     /**
      * 获取当前用户的所有订单信息
@@ -202,15 +200,7 @@ public class CartServiceImpl implements CartService {
      * @date 2022/7/19 22:47
      */
     private Integer getMarketUserId() {
-        // 获取userId
-        Subject subject = SecurityUtils.getSubject();
-        PrincipalCollection principals = subject.getPrincipals();
-        if (principals == null) {
-            // 用户sessionId失效，重定向
-            subject.logout();
-            throw new UnAuthException();
-        }
-        MarketUser marketUser = (MarketUser) principals.getPrimaryPrincipal();
+        MarketUser marketUser = PrincipalUtil.getUserInfo();
         return marketUser.getId();
     }
 

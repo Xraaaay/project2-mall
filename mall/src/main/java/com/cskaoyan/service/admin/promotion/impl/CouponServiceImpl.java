@@ -1,21 +1,20 @@
 package com.cskaoyan.service.admin.promotion.impl;
 
-import com.cskaoyan.bean.common.MarketCoupon;
-import com.cskaoyan.bean.common.MarketCouponExample;
-import com.cskaoyan.bean.common.MarketCouponUser;
-import com.cskaoyan.bean.common.MarketCouponUserExample;
-import com.cskaoyan.bean.common.BasePageInfo;
-import com.cskaoyan.bean.common.CommonData;
+import com.cskaoyan.bean.common.*;
+import com.cskaoyan.bean.wx.coupon.MyCouponListVO;
 import com.cskaoyan.mapper.common.MarketCouponMapper;
 import com.cskaoyan.mapper.common.MarketCouponUserMapper;
 import com.cskaoyan.service.admin.promotion.CouponService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Min;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +27,11 @@ import java.util.List;
 
 @Service
 public class CouponServiceImpl implements CouponService {
+
+    public static final Integer RECEIVE_SUCCESS = 0;
+    public static final Integer RECEIVE_NONE = 740;
+    public static final Integer RECEIVE_YET = 741;
+
 
     @Autowired
     MarketCouponMapper couponMapper;
@@ -94,7 +98,7 @@ public class CouponServiceImpl implements CouponService {
         MarketCouponUserExample marketCouponUserExample = new MarketCouponUserExample();
         MarketCouponUserExample.Criteria criteria = marketCouponUserExample.createCriteria();
         marketCouponUserExample.setOrderByClause(basePageInfo.getSort() + " " + basePageInfo.getOrder());
-        criteria.andDeletedEqualTo(false);
+        criteria.andDeletedEqualTo(false).andCouponIdEqualTo(couponId);
         if (userId != null) {
             criteria.andUserIdEqualTo(userId);
         }
@@ -124,11 +128,106 @@ public class CouponServiceImpl implements CouponService {
         return affect;
     }
 
-    // TODO
+    @Transactional
     @Override
     public int receive(Integer couponId) {
 
+        // 获取经过认证之后的用户信息
+        Subject subject = SecurityUtils.getSubject();
+        MarketUser user = (MarketUser) subject.getPrincipals().getPrimaryPrincipal();
 
-        return 0;
+        // 判断优惠券数量 0 表示无限量, -1表示领完了
+        MarketCoupon coupon = couponMapper.selectByPrimaryKey(couponId);
+        @Min(value = 0, message = "优惠券数量输入错误")
+        Integer total = coupon.getTotal();
+        if (total.equals(-1)) {
+            return RECEIVE_NONE;
+        }
+
+        // 判断用户是否已经领取过
+        // 此优惠券的限领数量大于0
+        if (coupon.getLimit() > 0) {
+            // 查找优惠券用户使用表获取当前用户领取过该优惠券的记录
+            MarketCouponUserExample couponUserExample = new MarketCouponUserExample();
+            MarketCouponUserExample.Criteria criteria = couponUserExample.createCriteria();
+            criteria.andDeletedEqualTo(false).
+                    andUserIdEqualTo(user.getId()).
+                    andCouponIdEqualTo(couponId);
+            List<MarketCouponUser> couponUserList = couponUserMapper.selectByExample(couponUserExample);
+            // 已经领取过
+            if (couponUserList.size() >= coupon.getLimit()) {
+                return RECEIVE_YET;
+            }
+        }
+
+        // 领取
+        // 获取有效期
+        Date fromDate;
+        Date toDate;
+        if (coupon.getTimeType().intValue() == 0) {
+            fromDate = new Date();
+            toDate = new Date(System.currentTimeMillis() + coupon.getDays() * 24 * 60 * 60 * 1000);
+        } else {
+            fromDate = coupon.getStartTime();
+            toDate = coupon.getEndTime();
+        }
+
+        // 向优惠券用户使用表新增记录
+        MarketCouponUser couponUser = new MarketCouponUser();
+        couponUser.setUserId(user.getId());
+        couponUser.setCouponId(couponId);
+        couponUser.setStatus((short) 0);
+        couponUser.setStartTime(fromDate);
+        couponUser.setEndTime(toDate);
+        couponUser.setAddTime(new Date());
+        couponUser.setUpdateTime(new Date());
+        couponUser.setDeleted(false);
+        int affectCouponUser = couponUserMapper.insertSelective(couponUser);
+
+        // 更新优惠券表
+        MarketCoupon marketCoupon = new MarketCoupon();
+        marketCoupon.setId(couponId);
+        if (total.equals(1)) {
+            marketCoupon.setTotal(-1);
+        }
+        if (total > 1) {
+            marketCoupon.setTotal(coupon.getTotal() - 1);
+        }
+        marketCoupon.setUpdateTime(new Date());
+
+        int affectCoupon = couponMapper.updateByPrimaryKeySelective(marketCoupon);
+
+        return RECEIVE_SUCCESS;
+    }
+
+    @Override
+    public CommonData<MyCouponListVO> myList(BasePageInfo pageInfo, Integer status) {
+
+        // 获取经过认证之后的用户信息
+        Subject subject = SecurityUtils.getSubject();
+        MarketUser user = (MarketUser) subject.getPrincipals().getPrimaryPrincipal();
+
+        // 开启分页
+        PageHelper.startPage(pageInfo.getPage(), pageInfo.getLimit(), pageInfo.getSort() + " " + pageInfo.getOrder());
+
+        List<MyCouponListVO> couponListVOList = couponMapper.selectUserCouponListByUserIdAndStatus(user.getId(), status);
+
+        PageInfo<MyCouponListVO> listVOPageInfo = new PageInfo<>(couponListVOList);
+        return CommonData.data(listVOPageInfo);
+    }
+
+    @Override
+    public int exchange(String code) {
+
+        // 根据兑换码获取优惠券id
+        MarketCouponExample couponExample = new MarketCouponExample();
+        MarketCouponExample.Criteria criteria = couponExample.createCriteria();
+        criteria.andDeletedEqualTo(false).andCodeEqualTo(code);
+        List<MarketCoupon> couponList = couponMapper.selectByExample(couponExample);
+
+        if (couponList.size() == 1) {
+            return receive(couponList.get(0).getId());
+        }
+        return RECEIVE_NONE;
     }
 }
