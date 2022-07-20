@@ -7,7 +7,7 @@ import com.cskaoyan.bean.wx.wxcomment.WXCommentVo;
 import com.cskaoyan.bean.wx.wxcomment.InnerListOfCommentVo;
 import com.cskaoyan.mapper.common.MarketCommentMapper;
 import com.cskaoyan.mapper.common.MarketUserMapper;
-import com.cskaoyan.util.GetUserInfoUtil;
+import com.cskaoyan.util.PrincipalUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -124,7 +124,7 @@ public class CommentWXServiceImpl implements CommentWXService {
         marketComment.setUpdateTime(new Date());
 
         //shiro 获取用户信息
-        MarketUser user = GetUserInfoUtil.getUserInfo();
+        MarketUser user = PrincipalUtil.getUserInfo();
         marketComment.setUserId(user.getId());
 
         marketCommentMapper.insertSelective(marketComment);
