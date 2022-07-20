@@ -77,8 +77,14 @@ public class CartController {
      * @return
      */
     @RequestMapping("add")
-    public BaseRespVo add(@RequestBody Map<String, Integer> map) {
-        Integer goodsCount = cartService.add(map);
-        return BaseRespVo.ok(null);
+    public BaseRespVo addWx(@RequestBody Map<String, Integer> map) {
+        Integer goodsCount = cartService.addWx(map);
+        if (goodsCount == 200){
+            return BaseRespVo.ok("添加成功");
+        } else if (goodsCount == 711) {
+            return BaseRespVo.ok("数量不足");
+        }else {
+            return BaseRespVo.ok("插入异常");
+        }
     }
 }

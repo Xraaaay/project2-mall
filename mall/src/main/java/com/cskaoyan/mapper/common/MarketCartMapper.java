@@ -1,7 +1,6 @@
 package com.cskaoyan.mapper.common;
 
-import com.cskaoyan.bean.common.MarketCart;
-import com.cskaoyan.bean.common.MarketCartExample;
+import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.cart.CartTotalEntity;
 import org.apache.ibatis.annotations.Param;
 

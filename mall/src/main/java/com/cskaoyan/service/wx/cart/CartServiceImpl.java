@@ -1,10 +1,17 @@
 package com.cskaoyan.service.wx.cart;
 
+import com.cskaoyan.bean.common.*;
+import com.cskaoyan.bean.wx.cart.CartTotalEntity;
+import com.cskaoyan.bean.wx.cart.WxCartVO;
+import com.cskaoyan.exception.InvalidDataException;
 import com.cskaoyan.bean.common.MarketCart;
 import com.cskaoyan.bean.common.MarketCartExample;
 import com.cskaoyan.bean.common.MarketUser;
 import com.cskaoyan.exception.UnAuthException;
 import com.cskaoyan.mapper.common.MarketCartMapper;
+import com.cskaoyan.mapper.common.MarketCategoryMapper;
+import com.cskaoyan.mapper.common.MarketGoodsMapper;
+import com.cskaoyan.mapper.common.MarketGoodsProductMapper;
 import com.cskaoyan.mapper.common.MarketGoodsProductMapper;
 import com.cskaoyan.mapper.common.MarketGoodsSpecificationMapper;
 import org.apache.shiro.SecurityUtils;
@@ -15,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +35,11 @@ import java.util.Map;
 public class CartServiceImpl implements CartService {
     @Autowired
     MarketCartMapper marketCartMapper;
-
     @Autowired
-    MarketGoodsProductMapper productMapper;
+    MarketGoodsProductMapper marketGoodsProductMapper;
+    @Autowired
+    MarketGoodsMapper marketGoodsMapper;
+
 
     @Autowired
     MarketGoodsSpecificationMapper specificationMapper;
@@ -71,6 +81,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void update(Map<String, Integer> map) {
+        MarketUser marketUser = getMarketUser();
         HashMap<String, Integer> hashMap = new HashMap<>(map);
         Integer productId = hashMap.get("productId");
         Integer goodsId = hashMap.get("goodsId");
@@ -86,7 +97,8 @@ public class CartServiceImpl implements CartService {
 
         MarketCartExample example = new MarketCartExample();
         MarketCartExample.Criteria criteria = example.createCriteria();
-        criteria.andDeletedEqualTo(false);
+        criteria.andDeletedEqualTo(false)
+        .andUserIdEqualTo(marketUser.getId());
         marketCartMapper.updateByPrimaryKeySelective(updateMarketCart);
 
 
@@ -100,6 +112,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Transactional
+    /**
+     * lyx
+     * 增加到数据库中，要链接商品表和产品表， 根据商品id 和产品id 求出 两个表的数据
+     * 再插入到购物车类中。 然后使用插入方法给数据库增加数据
+     * @param map
+     * @return
+     */
     @Override
     public Map<String, Object> delete(List<Integer> productIds) {
         Integer userId = getMarketUserId();
@@ -107,14 +126,62 @@ public class CartServiceImpl implements CartService {
         for (Integer productId : productIds) {
             MarketCart cart = new MarketCart();
             cart.setDeleted(true);
+    public Integer addWx(Map<String, Integer> map) {
+         int statusId = 0;
+        MarketUser marketUser = getMarketUser();
+
+        HashMap<String, Integer> hashMap = new HashMap<>(map);
+        Integer productId = hashMap.get("productId");
+        Integer goodsId = hashMap.get("goodsId");
+        Integer number =  hashMap.get("number");
+        short numbershort = number.shortValue();
 
             MarketCartExample example = new MarketCartExample();
             example.createCriteria().andUserIdEqualTo(userId)
                     .andProductIdEqualTo(productId);
             marketCartMapper.updateByExampleSelective(cart, example);
         }
+        MarketGoodsProductExample example = new MarketGoodsProductExample();
+        MarketGoodsProductExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(false);
+
+        MarketGoodsExample goodsExample = new MarketGoodsExample();
+        MarketGoodsExample.Criteria goodscriteria = goodsExample.createCriteria();
+        goodscriteria.andDeletedEqualTo(false);
+
+        MarketGoods marketGoods = marketGoodsMapper.selectByPrimaryKey(goodsId);
+
+        MarketGoodsProduct marketGoodsProduct = marketGoodsProductMapper.selectByPrimaryKey(productId);
+        //goodSn 强转成 String
+        String goodsSn = Integer.toString(marketGoods.getGoodsSn());
+        //String[]转 String
+        String getSpecifications= Arrays.toString(marketGoodsProduct.getSpecifications());
+        //判断库存量是否足够
+        if (number > marketGoodsProduct.getNumber()) {
+            statusId = 711;
+            return statusId;
+        }
+
+
+
+
+
+        MarketCart marketCart = new MarketCart(null, marketUser.getId(), goodsId, goodsSn,
+                marketGoods.getName(), productId, marketGoodsProduct.getPrice(), numbershort, getSpecifications,
+                true, marketGoodsProduct.getUrl(), marketGoodsProduct.getAddTime(), marketGoodsProduct.getUpdateTime(), false);
 
         return index();
+
+        try {
+            marketCartMapper.insertSelective(marketCart);
+        } catch (Exception e) {
+            statusId = 404;
+            e.printStackTrace();
+            return statusId;
+        }
+        //如果成功返回值为 200
+        statusId = 200;
+        return statusId;
     }
 
     @Transactional

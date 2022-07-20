@@ -85,6 +85,8 @@ public class WxAuthController {
         return new BaseRespVo(null, 506, "无操作权限");
     }
 
+
+
     @RequestMapping("index")
     public BaseRespVo index() {
         return BaseRespVo.ok(null);
