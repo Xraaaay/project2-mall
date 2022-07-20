@@ -1,12 +1,10 @@
 package com.cskaoyan.service.wx.search;
 
-import com.cskaoyan.bean.common.MarketKeyword;
-import com.cskaoyan.bean.common.MarketKeywordExample;
-import com.cskaoyan.bean.common.MarketSearchHistory;
-import com.cskaoyan.bean.common.MarketSearchHistoryExample;
+import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.search.WxSearchIndexVO;
 import com.cskaoyan.mapper.common.MarketKeywordMapper;
 import com.cskaoyan.mapper.common.MarketSearchHistoryMapper;
+import com.cskaoyan.util.PrincipalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,17 +73,21 @@ public class SearchServiceImpl implements  SearchService {
 
     @Override
     public void clearhistory() {
-
-
+        Integer userId = getMarketUserId();
         MarketSearchHistoryExample example = new MarketSearchHistoryExample();
         MarketSearchHistoryExample.Criteria criteria = example.createCriteria();
-        criteria.andDeletedEqualTo(false);
+        criteria.andDeletedEqualTo(false)
+        .andUserIdEqualTo(userId);
         List<MarketSearchHistory> marketSearchHistories = marketSearchHistoryMapper.selectByExample(example);
         for (MarketSearchHistory marketSearchHistory : marketSearchHistories) {
             marketSearchHistory.setDeleted(true);
             marketSearchHistoryMapper.updateByExample(marketSearchHistory, example);
         }
 
+    }
 
+    private Integer getMarketUserId() {
+        MarketUser marketUser = PrincipalUtil.getUserInfo();
+        return marketUser.getId();
     }
 }
