@@ -50,4 +50,6 @@ public interface CartService {
 
     // lyx
     Integer addWx(Map<String, Integer> map);
+    //lyx
+    int fastaddWx(Map<String, Integer> map);
 }

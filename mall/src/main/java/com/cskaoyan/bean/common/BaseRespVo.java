@@ -47,7 +47,7 @@ public class BaseRespVo<T> {
 
     public static <T> BaseRespVo invalidNumber(String msg) {
         BaseRespVo baseRespVo = new BaseRespVo();
-        baseRespVo.setErrno(710);
+        baseRespVo.setErrno(711);
         baseRespVo.setErrmsg(msg);
         return baseRespVo;
     }
