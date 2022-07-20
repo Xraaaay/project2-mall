@@ -77,6 +77,7 @@ public class Constant {
 
     static {
         orderStatusTextMap.put((short) 101,"待付款");
+        orderStatusTextMap.put((short) 102,"已取消（用户）");
         orderStatusTextMap.put((short)103,"已取消（系统）");
         orderStatusTextMap.put((short)201,"已付款");
         orderStatusTextMap.put((short)202,"订单取消，退款中");

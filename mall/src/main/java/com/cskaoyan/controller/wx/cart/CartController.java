@@ -35,14 +35,30 @@ public class CartController {
     }
 
     @PostMapping("checked")
-    //接收参数为什么用Mapper 而不用 list<interger> ,Interger ischecked
     public BaseRespVo checkedWx(@RequestBody Map<String, Object> map) {
         List<Integer> productIds = (List<Integer>) map.get("productIds");
         Integer isChecked = (Integer) map.get("isChecked");
         Map<String, Object> index = cartService.checked(productIds, isChecked);
-        // Request processing failed; nested exception is org.springframework.dao.DuplicateKeyException:
-        // com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '140' for key 'PRIMARY'
-        // ; Duplicate entry '140' for key 'PRIMARY'; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '140' for key 'PRIMARY'
+        return BaseRespVo.ok(index);
+    }
+
+    /**
+     * 更新数量，但是好像还要和商品库存保持增减
+     * 再外面修改好数量再uodate
+     * lyx
+     *
+     * @return
+     */
+    @RequestMapping("update")
+    public BaseRespVo update(@RequestBody Map<String, Integer> map) {
+        cartService.update(map);
+        return BaseRespVo.ok(null);
+    }
+
+    @RequestMapping("delete")
+    public BaseRespVo deleteWx(@RequestBody Map<String, Object> map) {
+        List<Integer> productIds = (List<Integer>) map.get("productIds");
+        Map<String, Object> index = cartService.delete(productIds);
         return BaseRespVo.ok(index);
     }
 
@@ -51,7 +67,6 @@ public class CartController {
         Integer goodsCount = cartService.goodsCount();
         return BaseRespVo.ok(goodsCount);
     }
-    // done
 
     /**
      * 有点烦，按说库存等于0就不能加入到购物车，但是它给我的请求参数就没给
@@ -72,29 +87,4 @@ public class CartController {
             return BaseRespVo.ok("插入异常");
         }
     }
-
-    /**
-     * 更新数量，但是好像还要和商品库存保持增减
-     * 再外面修改好数量再uodate
-     * lyx
-     *
-     * @return
-     */
-    @RequestMapping("update")
-    public BaseRespVo update(@RequestBody Map<String, Integer> map) {
-        cartService.update(map);
-        return BaseRespVo.ok(null);
-    }
-
-
-
-    @RequestMapping("delete")
-    public BaseRespVo deleteWx(@RequestBody Map<String, Object> map) {
-        List<Integer> productIds = (List<Integer>) map.get("productIds");
-        WxCartVO wxCartVO = cartService.delete(productIds);
-
-        return BaseRespVo.ok(wxCartVO);
-    }
-
-
 }

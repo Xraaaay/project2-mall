@@ -4,11 +4,16 @@ import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.cart.CartTotalEntity;
 import com.cskaoyan.bean.wx.cart.WxCartVO;
 import com.cskaoyan.exception.InvalidDataException;
+import com.cskaoyan.bean.common.MarketCart;
+import com.cskaoyan.bean.common.MarketCartExample;
+import com.cskaoyan.bean.common.MarketUser;
 import com.cskaoyan.exception.UnAuthException;
 import com.cskaoyan.mapper.common.MarketCartMapper;
 import com.cskaoyan.mapper.common.MarketCategoryMapper;
 import com.cskaoyan.mapper.common.MarketGoodsMapper;
 import com.cskaoyan.mapper.common.MarketGoodsProductMapper;
+import com.cskaoyan.mapper.common.MarketGoodsProductMapper;
+import com.cskaoyan.mapper.common.MarketGoodsSpecificationMapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -35,10 +40,13 @@ public class CartServiceImpl implements CartService {
     @Autowired
     MarketGoodsMapper marketGoodsMapper;
 
+
+    @Autowired
+    MarketGoodsSpecificationMapper specificationMapper;
+
     @Override
     public Map<String, Object> index() {
         List<MarketCart> cartList = getCartList();
-
         Map<String, Object> cartTotal = getCartTotal(cartList);
 
         Map<String, Object> index = new HashMap<>();
@@ -51,12 +59,10 @@ public class CartServiceImpl implements CartService {
     @Transactional
     @Override
     public Map<String, Object> checked(List<Integer> productIds, Integer isChecked) {
-        MarketUser marketUser = getMarketUser();
+        Integer userId = getMarketUserId();
         // 修改勾选状态
         for (Integer productId : productIds) {
             MarketCart marketCart = new MarketCart();
-            marketCart.setUserId(marketUser.getId());
-            marketCart.setProductId(productId);
             if (isChecked == 0) {
                 marketCart.setChecked(false);
             } else {
@@ -64,62 +70,13 @@ public class CartServiceImpl implements CartService {
             }
 
             MarketCartExample example = new MarketCartExample();
-            example.createCriteria().andUserIdEqualTo(marketUser.getId())
-                    .andProductIdEqualTo(productId);
+            example.createCriteria().andUserIdEqualTo(userId)
+                    .andProductIdEqualTo(productId)
+                    .andDeletedEqualTo(false);
             marketCartMapper.updateByExampleSelective(marketCart, example);
         }
 
-        List<MarketCart> cartList = getCartList();
-        Map<String, Object> cartTotal = getCartTotal(cartList);
-
-        Map<String, Object> index = new HashMap<>();
-        index.put("cartList", cartList);
-        index.put("cartTotal", cartTotal);
-
-        return index;
-        // WxCartVO wxCartVO = new WxCartVO();
-        //
-        // MarketCartExample example = new MarketCartExample();
-        // MarketCartExample.Criteria criteria = example.createCriteria();
-        // criteria.andDeletedEqualTo(false);
-        //
-        // List<MarketCart> marketCarts = marketCartMapper.selectByExample(example);
-        // for (MarketCart marketCart : marketCarts) {
-        //     for (Integer productId : productIds) {
-        //         if (productId.equals(marketCart.getProductId())) {
-        //             //改怎麽解決 boolean的传参问题
-        //             MarketCart updateMarketCart = new MarketCart();
-        //             updateMarketCart.setId(marketCart.getId());
-        //
-        //             if (isChecked == 1) {
-        //                 updateMarketCart.setChecked(true);
-        //             } else {
-        //                 updateMarketCart.setChecked(false);
-        //             }
-        //             // marketCartMapper.updateByExample(marketCart, example);
-        //             marketCartMapper.updateByPrimaryKeySelective(updateMarketCart);
-        //         }
-        //     }
-        //
-        //
-        // }
-        // //感觉 我写的好麻烦啊，先全部查，再改，再全部查。   能不能直接根据id插入。 应该可以老师也讲过，但是我不知道什么情况下是不
-        // //不去省略未改变的，
-        // List<MarketCart> marketCartsAgain = marketCartMapper.selectByExample(example);
-        // //开始去求cartTotal
-        // CartTotalEntity cartTotal = marketCartMapper.selectCartTotal();
-        //
-        // wxCartVO.setCartList(marketCartsAgain);
-        // wxCartVO.setCartTotal(cartTotal);
-        //
-        // return wxCartVO;
-    }
-
-    @Override
-    public Integer goodsCount() {
-        MarketUser marketUser = getMarketUser();
-        Integer goodscount = marketCartMapper.selectGoodscount(marketUser.getId());
-        return goodscount;
+        return index();
     }
 
     @Override
@@ -133,8 +90,6 @@ public class CartServiceImpl implements CartService {
 
         short numbershort = number.shortValue();
 
-        //
-
 
         MarketCart updateMarketCart = new MarketCart();
         updateMarketCart.setId(id);
@@ -147,8 +102,16 @@ public class CartServiceImpl implements CartService {
         marketCartMapper.updateByPrimaryKeySelective(updateMarketCart);
 
 
+        // {
+        //     "productId": 255,
+        //         "goodsId": 1181011,
+        //         "number": 4,
+        //         "id": 263
+        // }
+
     }
 
+    @Transactional
     /**
      * lyx
      * 增加到数据库中，要链接商品表和产品表， 根据商品id 和产品id 求出 两个表的数据
@@ -157,6 +120,12 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
+    public Map<String, Object> delete(List<Integer> productIds) {
+        Integer userId = getMarketUserId();
+        // 逻辑删除，修改deleted字段为true
+        for (Integer productId : productIds) {
+            MarketCart cart = new MarketCart();
+            cart.setDeleted(true);
     public Integer addWx(Map<String, Integer> map) {
          int statusId = 0;
         MarketUser marketUser = getMarketUser();
@@ -167,6 +136,11 @@ public class CartServiceImpl implements CartService {
         Integer number =  hashMap.get("number");
         short numbershort = number.shortValue();
 
+            MarketCartExample example = new MarketCartExample();
+            example.createCriteria().andUserIdEqualTo(userId)
+                    .andProductIdEqualTo(productId);
+            marketCartMapper.updateByExampleSelective(cart, example);
+        }
         MarketGoodsProductExample example = new MarketGoodsProductExample();
         MarketGoodsProductExample.Criteria criteria = example.createCriteria();
         criteria.andDeletedEqualTo(false);
@@ -196,6 +170,7 @@ public class CartServiceImpl implements CartService {
                 marketGoods.getName(), productId, marketGoodsProduct.getPrice(), numbershort, getSpecifications,
                 true, marketGoodsProduct.getUrl(), marketGoodsProduct.getAddTime(), marketGoodsProduct.getUpdateTime(), false);
 
+        return index();
 
         try {
             marketCartMapper.insertSelective(marketCart);
@@ -209,42 +184,26 @@ public class CartServiceImpl implements CartService {
         return statusId;
     }
 
+    @Transactional
     @Override
-    public WxCartVO delete(List<Integer> productIds) {
-        WxCartVO wxCartVO = new WxCartVO();
-        MarketUser marketUser = getMarketUser();
-
-
+    public Integer goodsCount() {
+        Integer userId = getMarketUserId();
         MarketCartExample example = new MarketCartExample();
-        MarketCartExample.Criteria criteria = example.createCriteria();
-        criteria.andDeletedEqualTo(false)
-                .andUserIdEqualTo(marketUser.getId());
-        List<MarketCart> marketCarts = marketCartMapper.selectByExample(example);
-        for (MarketCart marketCart : marketCarts) {
-            for (Integer productId : productIds) {
-                if (productId.equals(marketCart.getProductId())) {
-                    //改怎麽解決 boolean的传参问题
-                    MarketCart updateMarketCart = new MarketCart();
+        example.createCriteria().andUserIdEqualTo(userId)
+                .andDeletedEqualTo(false);
 
-                    updateMarketCart.setId(marketCart.getId());
-                    updateMarketCart.setDeleted(true);
+        // 查询当前用户的所有购物车商品总数
+        Integer goodsCount = marketCartMapper.selectGoodsCountByExample(example);
 
-                    // marketCartMapper.updateByExample(marketCart, example);
-                    marketCartMapper.updateByPrimaryKeySelective(updateMarketCart);
-                }
-
-            }
+        if (goodsCount == null) {
+            goodsCount = 0;
         }
-        List<MarketCart> marketCartsAgain = marketCartMapper.selectByExample(example);
-        //开始去求cartTotal
-        CartTotalEntity cartTotal = marketCartMapper.selectCartTotal();
+        return goodsCount;
+    }
 
-        wxCartVO.setCartList(marketCartsAgain);
-        wxCartVO.setCartTotal(cartTotal);
-
-        return wxCartVO;
-
-
+    @Override
+    public Integer add(Map<String, Integer> map) {
+        return null;
     }
 
     /**
@@ -254,23 +213,23 @@ public class CartServiceImpl implements CartService {
      * @date 2022/7/19 22:44
      */
     private List<MarketCart> getCartList() {
-        MarketUser user = getMarketUser();
+        Integer userId = getMarketUserId();
 
         MarketCartExample example = new MarketCartExample();
         MarketCartExample.Criteria criteria = example.createCriteria();
         criteria.andDeletedEqualTo(false)
-                .andUserIdEqualTo(user.getId());
+                .andUserIdEqualTo(userId);
         // 查询用户所有订单
         return marketCartMapper.selectByExample(example);
     }
 
     /**
-     * 获取当前用户
+     * 获取当前用户id
      *
      * @author Xrw
      * @date 2022/7/19 22:47
      */
-    private MarketUser getMarketUser() {
+    private Integer getMarketUserId() {
         // 获取userId
         Subject subject = SecurityUtils.getSubject();
         PrincipalCollection principals = subject.getPrincipals();
@@ -279,7 +238,8 @@ public class CartServiceImpl implements CartService {
             subject.logout();
             throw new UnAuthException();
         }
-        return (MarketUser) principals.getPrimaryPrincipal();
+        MarketUser marketUser = (MarketUser) principals.getPrimaryPrincipal();
+        return marketUser.getId();
     }
 
     /**

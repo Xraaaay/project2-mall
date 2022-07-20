@@ -1,7 +1,10 @@
 package com.cskaoyan.util;
 
+import com.cskaoyan.bean.common.MarketIssue;
 import com.cskaoyan.bean.common.MarketUser;
+import com.cskaoyan.exception.UnAuthException;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 
 /**
@@ -13,7 +16,14 @@ import org.apache.shiro.subject.Subject;
 public class GetUserInfoUtil {
     public static MarketUser getUserInfo(){
         Subject subject = SecurityUtils.getSubject();
-        MarketUser principal = (MarketUser) subject.getPrincipals().getPrimaryPrincipal();
+        PrincipalCollection principals = subject.getPrincipals();
+        if (principals==null) {
+            //session失效，重定向
+            subject.logout();
+            throw new UnAuthException();
+        }
+        MarketUser principal = (MarketUser) principals.getPrimaryPrincipal();
         return principal;
     }
+
 }

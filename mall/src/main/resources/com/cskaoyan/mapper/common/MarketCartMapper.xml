@@ -365,6 +365,18 @@ FROM
     	SELECT sum( number ) AS goodsCount FROM market_cart where user_id = #{userId}
   </select>
 
+  <select id="selectGoodsCountByExample" parameterType="com.cskaoyan.bean.common.MarketCartExample" resultType="int">
+    select
+    sum (number)
+    from market_cart
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+
 <!--  <insert id="insertCart">
       insert into market_cart ( user_id, goods_id,
       goods_sn, goods_name, product_id,
