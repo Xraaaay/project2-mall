@@ -35,36 +35,11 @@ public class CartController {
     }
 
     @PostMapping("checked")
-    //接收参数为什么用Mapper 而不用 list<interger> ,Interger ischecked
     public BaseRespVo checkedWx(@RequestBody Map<String, Object> map) {
         List<Integer> productIds = (List<Integer>) map.get("productIds");
         Integer isChecked = (Integer) map.get("isChecked");
         Map<String, Object> index = cartService.checked(productIds, isChecked);
-        // Request processing failed; nested exception is org.springframework.dao.DuplicateKeyException:
-        // com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '140' for key 'PRIMARY'
-        // ; Duplicate entry '140' for key 'PRIMARY'; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '140' for key 'PRIMARY'
         return BaseRespVo.ok(index);
-    }
-
-    @RequestMapping("goodscount")
-    public BaseRespVo goodsCountWx() {
-        Integer goodsCount = cartService.goodsCount();
-        return BaseRespVo.ok(goodsCount);
-    }
-    // done
-
-    /**
-     * 有点烦，按说库存等于0就不能加入到购物车，但是它给我的请求参数就没给
-     * 库存参数啊。 是我想多了， 应该是。
-     * 还有要插入到数据库中，需要连接goods库 和 product库
-     * lyx
-     *
-     * @return
-     */
-    @RequestMapping("add")
-    public BaseRespVo addWx(@RequestBody Map<String, Integer> map) {
-        Integer goodsCount = cartService.addWx(map);
-        return BaseRespVo.ok(null);
     }
 
     /**
@@ -80,15 +55,30 @@ public class CartController {
         return BaseRespVo.ok(null);
     }
 
-
-
     @RequestMapping("delete")
     public BaseRespVo deleteWx(@RequestBody Map<String, Object> map) {
         List<Integer> productIds = (List<Integer>) map.get("productIds");
-        WxCartVO wxCartVO = cartService.delete(productIds);
-
-        return BaseRespVo.ok(wxCartVO);
+        Map<String, Object> index = cartService.delete(productIds);
+        return BaseRespVo.ok(index);
     }
 
+    @RequestMapping("goodscount")
+    public BaseRespVo goodsCountWx() {
+        Integer goodsCount = cartService.goodsCount();
+        return BaseRespVo.ok(goodsCount);
+    }
 
+    /**
+     * 有点烦，按说库存等于0就不能加入到购物车，但是它给我的请求参数就没给
+     * 库存参数啊。 是我想多了， 应该是。
+     * 还有要插入到数据库中，需要连接goods库 和 product库
+     * lyx
+     *
+     * @return
+     */
+    @RequestMapping("add")
+    public BaseRespVo add(@RequestBody Map<String, Integer> map) {
+        Integer goodsCount = cartService.add(map);
+        return BaseRespVo.ok(null);
+    }
 }

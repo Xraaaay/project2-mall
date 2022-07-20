@@ -3,7 +3,6 @@ package com.cskaoyan.controller.wx.wxcollect;
 import com.cskaoyan.bean.admin.mallmanagement.BaseParam;
 import com.cskaoyan.bean.admin.mallmanagement.BaseRespSuccessVo;
 import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
-import com.cskaoyan.bean.wx.wxcollect.InnerListOfWXCollectVo;
 import com.cskaoyan.service.wx.wxcollect.CollectWXService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
