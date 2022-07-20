@@ -44,6 +44,14 @@ public class BaseRespVo<T> {
         baseRespVo.setErrmsg(msg);
         return baseRespVo;
     }
+
+    public static <T> BaseRespVo invalidNumber(String msg) {
+        BaseRespVo baseRespVo = new BaseRespVo();
+        baseRespVo.setErrno(711);
+        baseRespVo.setErrmsg(msg);
+        return baseRespVo;
+    }
+
     public static <T> BaseRespVo unAuthc() {
         BaseRespVo baseRespVo = new BaseRespVo();
         baseRespVo.setErrno(502);

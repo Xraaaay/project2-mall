@@ -168,6 +168,7 @@ public class WxAuthController {
         Map<String, String> hashMap = new HashMap<>();
         hashMap.put("username", mobile);
         hashMap.put("password", map.get("password"));
+
         return login(hashMap);
     }
 

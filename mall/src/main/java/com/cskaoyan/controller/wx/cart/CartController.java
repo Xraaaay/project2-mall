@@ -1,6 +1,8 @@
 package com.cskaoyan.controller.wx.cart;
 
 import com.cskaoyan.bean.common.BaseRespVo;
+import com.cskaoyan.bean.wx.cart.CheckoutBo;
+import com.cskaoyan.bean.wx.cart.CheckoutVo;
 import com.cskaoyan.bean.wx.cart.WxCartVO;
 import com.cskaoyan.controller.wx.auth.WxAuthController;
 import com.cskaoyan.service.wx.cart.CartService;
@@ -48,8 +50,14 @@ public class CartController {
      */
     @RequestMapping("update")
     public BaseRespVo update(@RequestBody Map<String, Integer> map) {
-        cartService.update(map);
-        return BaseRespVo.ok(null);
+        int msg = cartService.update(map);
+        if (msg == 200){
+            return BaseRespVo.ok("添加成功");
+        } else if (msg == 711) {
+            return BaseRespVo.invalidNumber("库存不足");
+        }else {
+            return BaseRespVo.ok("更新失败");
+        }
     }
 
     @PostMapping("delete")
@@ -79,9 +87,29 @@ public class CartController {
         if (goodsCount == 200){
             return BaseRespVo.ok("添加成功");
         } else if (goodsCount == 711) {
-            return BaseRespVo.ok("数量不足");
+            return BaseRespVo.invalidNumber("库存不足");
+        }else {
+            return BaseRespVo.ok("加入购物车失败");
+        }
+    }
+
+
+    @RequestMapping("fastadd")
+    public BaseRespVo fastadd(@RequestBody Map<String, Integer> map) {
+        int msg = cartService.fastaddWx(map);
+        if (msg == 200){
+            return BaseRespVo.ok("添加成功");
+        } else if (msg == 711) {
+            return BaseRespVo.invalidNumber("库存不足");
         }else {
             return BaseRespVo.ok("插入异常");
         }
+
+    }
+
+    @GetMapping("checkout")
+    public BaseRespVo checkout(CheckoutBo checkoutBo) {
+        CheckoutVo checkoutVo = cartService.checkout(checkoutBo);
+        return BaseRespVo.ok(checkoutVo);
     }
 }

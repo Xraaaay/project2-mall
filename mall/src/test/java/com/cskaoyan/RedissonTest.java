@@ -1,5 +1,6 @@
 package com.cskaoyan;
 
+import com.cskaoyan.typehandler.StringArrayTypeHandler;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
@@ -24,7 +25,14 @@ public class RedissonTest {
     public void testRedisson() {
 
         RBucket<Object> mykey = redissonClient.getBucket("mykey");
-        mykey.set("123465", 10000, TimeUnit.MILLISECONDS);
+        mykey.set("7980", 100000, TimeUnit.MILLISECONDS);
         System.out.println(mykey.get());
+    }
+
+    @Test
+    public void testTransfer() {
+        StringArrayTypeHandler arrayTypeHandler = new StringArrayTypeHandler();
+        String[] transfer = arrayTypeHandler.transfer("");
+        System.out.println(transfer);
     }
 }

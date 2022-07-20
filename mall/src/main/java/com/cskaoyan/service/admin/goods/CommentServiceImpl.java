@@ -1,5 +1,7 @@
 package com.cskaoyan.service.admin.goods;
 
+import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.MarketComment;
 import com.cskaoyan.bean.common.MarketCommentExample;
 import com.cskaoyan.bean.common.CommonData;
@@ -43,6 +45,36 @@ public class CommentServiceImpl implements CommentService {
         return commonData;
     }
 
+    /**
+     * 评论列表
+     *
+     * @param param
+     * @param userId
+     * @param valueId
+     * @return com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo
+     * @author shn
+     * @date 2022/7/20 21:09
+     */
+    @Override
+    public IssueAndKeywordListVo list1(BaseParam param, Integer userId, Integer valueId) {
+        //分页
+        PageHelper.startPage(param.getPage(), param.getLimit());
+
+        //条件查询
+        MarketCommentExample commentExample = new MarketCommentExample();
+        MarketCommentExample.Criteria criteria = commentExample.createCriteria();
+        if (userId!=null) {
+            criteria.andUserIdEqualTo(userId);
+        }
+        if (valueId!=null) {
+            criteria.andValueIdEqualTo(valueId);
+        }
+        List<MarketComment> commentList = marketCommentMapper.selectByExample(commentExample);
+        PageInfo pageInfo = new PageInfo(commentList);
+        IssueAndKeywordListVo listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), param.getLimit(), param.getPage(), commentList);
+        return listVo;
+    }
+
     @Override
     public void delete(Map map) {
         Integer Id = (Integer) map.get("id");
@@ -53,7 +85,9 @@ public class CommentServiceImpl implements CommentService {
         MarketCommentExample.Criteria criteria = marketCommentExample.createCriteria();
         criteria.andIdEqualTo(Id);
 
-        marketCommentMapper.updateByExampleSelective(marketComment,marketCommentExample);
+        marketCommentMapper.updateByExampleSelective(marketComment, marketCommentExample);
         return;
     }
+
+
 }

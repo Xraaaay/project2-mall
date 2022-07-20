@@ -55,7 +55,6 @@ public class ConfigServiceImpl implements ConfigService {
             marketSystemMapper.UpdateExpressConfig(entry.getKey(), entry.getValue());
         }
 
-
     }
 
     @Override

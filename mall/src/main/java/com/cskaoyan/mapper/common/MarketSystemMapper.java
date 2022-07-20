@@ -54,6 +54,8 @@ public interface MarketSystemMapper {
     List<StatOrderRowsVO> selectStatOrder();
 
     List<StatGoodsRowsVO> selectStatGoods();
+
+    String selectValueByName(String keyName);
 }
 
 
