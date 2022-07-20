@@ -2,8 +2,7 @@ package com.cskaoyan.service.admin.promotion.impl;
 
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.coupon.MyCouponListVO;
-import com.cskaoyan.mapper.common.MarketCouponMapper;
-import com.cskaoyan.mapper.common.MarketCouponUserMapper;
+import com.cskaoyan.mapper.common.*;
 import com.cskaoyan.service.admin.promotion.CouponService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.Min;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +38,12 @@ public class CouponServiceImpl implements CouponService {
 
     @Autowired
     MarketCouponUserMapper couponUserMapper;
+
+    @Autowired
+    MarketCartMapper cartMapper;
+
+    @Autowired
+    MarketGoodsMapper goodsMapper;
 
     @Override
     public CommonData<MarketCoupon> query(BasePageInfo basePageInfo, String name, Short type, Short status) {
@@ -229,5 +235,68 @@ public class CouponServiceImpl implements CouponService {
             return receive(couponList.get(0).getId());
         }
         return RECEIVE_NONE;
+    }
+
+    // TODO:优惠券商品限制,当前全部是全场通用
+    // 根据购物车中选中的商品来查询可用优惠券
+    // 条件：状态为可用，商品限制类型
+    @Override
+    public CommonData<MyCouponListVO> selectList(BasePageInfo pageInfo, Integer cartId, Integer grouponRulesId) {
+
+        // 获取经过认证之后的用户信息
+        Subject subject = SecurityUtils.getSubject();
+        MarketUser user = (MarketUser) subject.getPrincipals().getPrimaryPrincipal();
+
+        BigDecimal amount = new BigDecimal(0);
+        if (cartId == 0) {
+            // 当前用户的所有商品
+            // 根据用户id查询购物车商品表
+            MarketCartExample cartExample = new MarketCartExample();
+            MarketCartExample.Criteria criteria = cartExample.createCriteria();
+            criteria.andDeletedEqualTo(false).andUserIdEqualTo(user.getId());
+            List<MarketCart> cartList = cartMapper.selectByExample(cartExample);
+
+            // 所有选中的商品总价
+            BigDecimal temp = new BigDecimal(0);
+            for (MarketCart cart : cartList) {
+                if (cart.getChecked()) {
+                    amount = temp.add(cart.getPrice());
+                    temp = amount;
+                }
+            }
+        } else {
+
+            // 直接下单页面查询可用优惠券
+            // 只有一个商品
+
+            // 根据cartId查询用户id和商品id和购物车中是否选择状态
+            MarketCartExample cartExample = new MarketCartExample();
+            MarketCartExample.Criteria criteria = cartExample.createCriteria();
+            criteria.andDeletedEqualTo(false).andIdEqualTo(cartId);
+            List<MarketCart> cartList = cartMapper.selectByExample(cartExample);
+            if (cartList.size() == 0) {
+                return null;
+            }
+            MarketCart cart = cartList.get(0);
+            Integer userId = cart.getUserId();
+            Integer goodsId = cart.getGoodsId();
+            Boolean checked = cart.getChecked();
+            // 商品货品的价格
+            amount = cart.getPrice();
+
+            // 根据商品id查询商品类目
+        }
+
+        // 当前用户所有可用优惠券
+        CommonData<MyCouponListVO> commonData = myList(pageInfo, 0);
+        // 过滤掉不满足最低消费的
+        List<MyCouponListVO> couponListVOS = commonData.getList();
+        for (int i = 0; i < couponListVOS.size(); i++) {
+            if (couponListVOS.get(i).getMin().compareTo(amount) > 0) {
+                couponListVOS.remove(i);
+            }
+        }
+        commonData.setList(couponListVOS);
+        return commonData;
     }
 }
