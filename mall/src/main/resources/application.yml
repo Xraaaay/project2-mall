@@ -15,7 +15,7 @@ mybatis:
       redisson:
         config: |
           singleServerConfig:
-            address: "redis://127.0.0.1:6379"
+            address: "redis://192.168.3.67:6379"
             password: "123456"
             database: 1
           threads: 0

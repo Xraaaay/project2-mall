@@ -76,7 +76,7 @@ public class WxAuthController {
     }
 
     @RequestMapping("401")
-    public BaseRespVo unAuthc() {
+    public static BaseRespVo unAuthc() {
         return new BaseRespVo(null, 501, "请登录");
     }
 
