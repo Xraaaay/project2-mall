@@ -2,6 +2,7 @@ package com.cskaoyan.controller.admin.mallmanagement;
 
 
 import com.cskaoyan.anno.OperationLog;
+import com.cskaoyan.bean.admin.comment.bo.CommentBo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarketOrderDetailPo;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarketOrderListPo;
@@ -114,5 +115,16 @@ public class OrderController {
     @RequestMapping("channel")
     public BaseRespVo channel() {
         return BaseRespVo.ok(Constant.channelList);
+    }
+
+    /**
+     * @description 商家回复
+     * @author pqk
+     * @date 2022/07/19 23:35
+     */
+    @RequestMapping("reply")
+    public BaseRespVo reply(@RequestBody CommentBo commentBo){
+        orderService.reply(commentBo);
+        return BaseRespVo.ok(null);
     }
 }

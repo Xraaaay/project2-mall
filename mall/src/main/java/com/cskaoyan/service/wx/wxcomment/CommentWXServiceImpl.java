@@ -1,17 +1,17 @@
 package com.cskaoyan.service.wx.wxcomment;
 
-import com.cskaoyan.bean.common.BaseParam;
-import com.cskaoyan.bean.common.MarketComment;
-import com.cskaoyan.bean.common.MarketCommentExample;
-import com.cskaoyan.bean.common.MarketUser;
+import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
 import com.cskaoyan.bean.wx.wxcomment.UserInfo;
 import com.cskaoyan.bean.wx.wxcomment.WXCommentVo;
 import com.cskaoyan.bean.wx.wxcomment.InnerListOfCommentVo;
 import com.cskaoyan.mapper.common.MarketCommentMapper;
 import com.cskaoyan.mapper.common.MarketUserMapper;
+import com.cskaoyan.util.GetUserInfoUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,12 +74,11 @@ public class CommentWXServiceImpl implements CommentWXService {
     @Override
     @Transactional
     public IssueAndKeywordListVo commentList(MarketComment marketComment, String showType, BaseParam param) {
-        // 在执行查询之前，可以开启分页
-        // sql语句预编译的过程给你拼接上分页的sql
+
         PageHelper.startPage(param.getPage(), param.getLimit());
 
         MarketCommentExample example = new MarketCommentExample();
-        //example.setOrderByClause(param.getSort() + " " + param.getOrder());
+
         //条件查询
         MarketCommentExample.Criteria criteria = example.createCriteria();
         criteria.andValueIdEqualTo(marketComment.getValueId())
@@ -93,15 +92,18 @@ public class CommentWXServiceImpl implements CommentWXService {
             Integer userId = c.getUserId();
             MarketUser marketUser = marketUserMapper.selectByPrimaryKey(userId);
             UserInfo userInfo = new UserInfo();
-            userInfo.setNickName(marketUser.getNickname());
-            userInfo.setAvatarUrl(marketUser.getAvatar());
-            InnerListOfCommentVo listOfCommentVo = new InnerListOfCommentVo();
-            listOfCommentVo.setUserInfo(userInfo);
-            listOfCommentVo.setAddTime(c.getAddTime());
-            listOfCommentVo.setPicList(c.getPicUrls());
-            listOfCommentVo.setAdminContent(c.getAdminContent());
-            listOfCommentVo.setContent(c.getContent());
-            commentVos.add(listOfCommentVo);
+            if (userInfo!=null) {
+                userInfo.setNickName(marketUser.getNickname());
+                userInfo.setAvatarUrl(marketUser.getAvatar());
+                InnerListOfCommentVo listOfCommentVo = new InnerListOfCommentVo();
+                listOfCommentVo.setUserInfo(userInfo);
+                listOfCommentVo.setAddTime(c.getAddTime());
+                listOfCommentVo.setPicList(c.getPicUrls());
+                listOfCommentVo.setAdminContent(c.getAdminContent());
+                listOfCommentVo.setContent(c.getContent());
+                commentVos.add(listOfCommentVo);
+            }
+
         }
         // 会去获得一些分页信息
         PageInfo pageInfo = new PageInfo(commentVos);
@@ -121,6 +123,11 @@ public class CommentWXServiceImpl implements CommentWXService {
     public MarketComment postComment(MarketComment marketComment) {
         marketComment.setAddTime(new Date());
         marketComment.setUpdateTime(new Date());
+
+        //shiro 获取用户信息
+        MarketUser user = GetUserInfoUtil.getUserInfo();
+        marketComment.setUserId(user.getId());
+
         marketCommentMapper.insertSelective(marketComment);
         Integer id = marketComment.getId();
         MarketComment comment = marketCommentMapper.selectByPrimaryKey(id);

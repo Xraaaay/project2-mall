@@ -1,4 +1,4 @@
-package com.cskaoyan.service.wx.feedback;
+package com.cskaoyan.service.wx.wxfeedback;
 
 import com.cskaoyan.bean.common.MarketFeedback;
 
