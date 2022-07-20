@@ -18,8 +18,15 @@ import java.util.LinkedHashMap;
 @Configuration
 public class  ShiroConfiguration {
 
+    /**
+     * Admin的Shiro的Filter
+     * @param securityManager
+     * @return org.apache.shiro.spring.web.ShiroFilterFactoryBean
+     * @author Zah
+     * @date 2022/07/20 13:47
+     */
     @Bean
-    public ShiroFilterFactoryBean shiroFilter(DefaultWebSecurityManager securityManager){
+    public ShiroFilterFactoryBean adminShiroFilter(DefaultWebSecurityManager securityManager){
 
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
@@ -27,17 +34,49 @@ public class  ShiroConfiguration {
         // 提供Filter链
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 
+        // 后台系统的filter
         filterChainDefinitionMap.put("/admin/auth/login","anon");
         filterChainDefinitionMap.put("/admin/auth/info","anon");
         filterChainDefinitionMap.put("/admin/auth/401","anon");
 
         // admin开头的请求,都要经过认证才行(等待开发完成在做拦截，把anon改成authc)
-        filterChainDefinitionMap.put("/wx/**","anon");
         filterChainDefinitionMap.put("/admin/**","authc");
-
 
         // 对于没有访问权限的重定向地址
         shiroFilterFactoryBean.setLoginUrl("/admin/auth/401");
+
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+
+        return shiroFilterFactoryBean;
+    }
+
+    /**
+     * WX的Shiro的Filter
+     * @param securityManager
+     * @return org.apache.shiro.spring.web.ShiroFilterFactoryBean
+     * @author Zah
+     * @date 2022/07/20 13:47
+     */
+    @Bean
+    public ShiroFilterFactoryBean wxShiroFilter(DefaultWebSecurityManager securityManager){
+
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
+
+        // 提供Filter链
+        LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+
+        // 小程序的认证请求
+        filterChainDefinitionMap.put("/wx/user/index","authc");
+        filterChainDefinitionMap.put("/wx/cart/**","authc");
+        filterChainDefinitionMap.put("/wx/collect/**","authc");
+        filterChainDefinitionMap.put("/wx/address/**","authc");
+        filterChainDefinitionMap.put("/wx/order/**","authc");
+        filterChainDefinitionMap.put("/wx/footprint/**","authc");
+        filterChainDefinitionMap.put("/wx/coupon/**","authc");
+
+        // 对于没有访问权限的重定向地址
+        shiroFilterFactoryBean.setLoginUrl("/wx/auth/login");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 

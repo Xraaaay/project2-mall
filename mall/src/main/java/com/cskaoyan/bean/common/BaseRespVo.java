@@ -50,4 +50,10 @@ public class BaseRespVo<T> {
         baseRespVo.setErrmsg("认证失败");
         return baseRespVo;
     }
+    public static BaseRespVo noPermission() {
+        BaseRespVo baseRespVo = new BaseRespVo();
+        baseRespVo.setErrno(506);
+        baseRespVo.setErrmsg("无操作权限");
+        return baseRespVo;
+    }
 }
