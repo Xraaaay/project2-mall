@@ -29,7 +29,7 @@ public interface CartService {
      */
     Map<String, Object> checked(List<Integer> productIds, Integer isChecked);
 
-    // TODO
+    // lyx
     void update(Map<String, Integer> map);
 
     /**
@@ -48,6 +48,6 @@ public interface CartService {
      */
     Integer goodsCount();
 
-    // TODO
+    // lyx
     Integer addWx(Map<String, Integer> map);
 }

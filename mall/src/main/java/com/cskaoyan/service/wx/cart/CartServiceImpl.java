@@ -153,8 +153,9 @@ public class CartServiceImpl implements CartService {
         //如果成功返回值为 200
         statusId = 200;
         return statusId;
-
     }
+
+
     public Map<String, Object> delete(List<Integer> productIds) {
         Integer userId = getMarketUserId();
         // 逻辑删除，修改deleted字段为true
@@ -171,9 +172,21 @@ public class CartServiceImpl implements CartService {
         return index();
     }
 
+    @Transactional
     @Override
     public Integer goodsCount() {
-        return null;
+        Integer userId = getMarketUserId();
+        MarketCartExample example = new MarketCartExample();
+        example.createCriteria().andUserIdEqualTo(userId)
+                .andDeletedEqualTo(false);
+
+        // 查询当前用户的所有购物车商品总数
+        Integer goodsCount = marketCartMapper.selectGoodsCountByExample(example);
+
+        if (goodsCount == null) {
+            goodsCount = 0;
+        }
+        return goodsCount;
     }
 
     /**
