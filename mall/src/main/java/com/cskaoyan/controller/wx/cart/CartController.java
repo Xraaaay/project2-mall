@@ -1,6 +1,8 @@
 package com.cskaoyan.controller.wx.cart;
 
 import com.cskaoyan.bean.common.BaseRespVo;
+import com.cskaoyan.bean.wx.cart.CheckoutBo;
+import com.cskaoyan.bean.wx.cart.CheckoutVo;
 import com.cskaoyan.bean.wx.cart.WxCartVO;
 import com.cskaoyan.controller.wx.auth.WxAuthController;
 import com.cskaoyan.service.wx.cart.CartService;
@@ -100,10 +102,14 @@ public class CartController {
         } else if (msg == 711) {
             return BaseRespVo.invalidNumber("库存不足");
         }else {
-            return BaseRespVo.ok("下单失败");
+            return BaseRespVo.ok("插入异常");
         }
 
     }
 
-
+    @GetMapping("checkout")
+    public BaseRespVo checkout(CheckoutBo checkoutBo) {
+        CheckoutVo checkoutVo = cartService.checkout(checkoutBo);
+        return BaseRespVo.ok(checkoutVo);
+    }
 }

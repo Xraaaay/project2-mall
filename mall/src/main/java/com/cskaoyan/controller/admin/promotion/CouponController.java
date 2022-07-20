@@ -7,6 +7,7 @@ import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.admin.promotion.CouponService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -37,6 +38,7 @@ public class CouponController {
      * @author fanxing056
      * @date 2022/07/16 16:19
      */
+    @RequiresPermissions("admin:coupon:list")
     @GetMapping("/list")
     public BaseRespVo list(BasePageInfo pageInfo, String name, Short type, Short status) {
 
@@ -52,6 +54,7 @@ public class CouponController {
      * @author fanxing056
      * @date 2022/07/16 16:52
      */
+    @RequiresPermissions("admin:coupon:create")
     @ParamValidation
     @PostMapping("/create")
     public BaseRespVo create(@RequestBody @Validated MarketCoupon coupon, BindingResult bindingResult) {
@@ -68,6 +71,7 @@ public class CouponController {
      * @author fanxing056
      * @date 2022/07/16 17:22
      */
+    @RequiresPermissions("admin:coupon:read")
     @GetMapping("/read")
     public BaseRespVo read(Integer id) {
 
@@ -91,6 +95,7 @@ public class CouponController {
      * @author fanxing056
      * @date 2022/07/16 17:37
      */
+    @RequiresPermissions("admin:coupon:listuser")
     @GetMapping("/listuser")
     public BaseRespVo listUser(BasePageInfo pageInfo, Integer couponId, Integer userId, Short status) {
 
@@ -106,6 +111,7 @@ public class CouponController {
      * @author fanxing056
      * @date 2022/07/16 18:14
      */
+    @RequiresPermissions("admin:coupon:update")
     @ParamValidation
     @PostMapping("/update")
     public BaseRespVo update(@RequestBody @Validated MarketCoupon coupon, BindingResult bindingResult) {
@@ -114,6 +120,7 @@ public class CouponController {
         return BaseRespVo.ok(coupon);
     }
 
+    @RequiresPermissions("admin:coupon:delete")
     @PostMapping("/delete")
     public BaseRespVo delete(@RequestBody MarketCoupon coupon) {
 

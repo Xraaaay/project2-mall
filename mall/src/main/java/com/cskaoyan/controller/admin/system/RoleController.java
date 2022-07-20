@@ -10,6 +10,7 @@ import com.cskaoyan.bean.admin.system.SystemPermissions;
 import com.cskaoyan.exception.InvalidParamException;
 import com.cskaoyan.service.admin.system.RoleService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,7 @@ public class RoleController {
     @Autowired
     RoleService roleService;
 
+    @RequiresPermissions("admin:role:list")
     @RequestMapping("list")
     public BaseRespVo list(BasePageInfo info, String name) {
         CommonData<MarketRole> roleList = roleService.list(info, name);
@@ -40,6 +42,7 @@ public class RoleController {
         return BaseRespVo.ok(optionList);
     }
 
+    @RequiresPermissions("admin:role:create")
     @RequestMapping("create")
     public BaseRespVo create(@RequestBody MarketRole role) {
         checkRoleName(role.getName());
@@ -47,6 +50,7 @@ public class RoleController {
         return BaseRespVo.ok(createVo);
     }
 
+    @RequiresPermissions("admin:role:update")
     @RequestMapping("update")
     public BaseRespVo update(@RequestBody MarketRole role) {
         checkRoleName(role.getName());
@@ -54,18 +58,21 @@ public class RoleController {
         return BaseRespVo.ok(null);
     }
 
+    @RequiresPermissions("admin:role:delete")
     @RequestMapping("delete")
     public BaseRespVo delete(@RequestBody MarketRole role) {
         roleService.delete(role);
         return BaseRespVo.ok(null);
     }
 
+    @RequiresPermissions("admin:role:permission:get")
     @GetMapping("permissions")
     public BaseRespVo getPermissions(Integer roleId) {
         Map<String, Object> map = roleService.getPermissions(roleId);
         return BaseRespVo.ok(map);
     }
 
+    @RequiresPermissions("admin:role:permission:update")
     @PostMapping("permissions")
     public BaseRespVo setPermissions(@RequestBody Map map) {
         Integer roleId = (Integer) map.get("roleId");

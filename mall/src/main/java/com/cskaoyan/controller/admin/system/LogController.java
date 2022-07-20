@@ -5,6 +5,7 @@ import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.admin.system.MarketLog;
 import com.cskaoyan.service.admin.system.LogService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ public class LogController {
     @Autowired
     LogService logService;
 
+    @RequiresPermissions("admin:log:list")
     @RequestMapping("list")
     public BaseRespVo list(BasePageInfo info, String name) {
         CommonData<MarketLog> logList = logService.list(info, name);

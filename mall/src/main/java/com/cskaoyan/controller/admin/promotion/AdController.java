@@ -7,6 +7,7 @@ import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.admin.promotion.AdService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +36,7 @@ public class AdController {
      * @author fanxing056
      * @date 2022/07/17 20:38
      */
+    @RequiresPermissions("admin:ad:list")
     @GetMapping("/list")
     public BaseRespVo list(BasePageInfo pageInfo, String name, String content) {
 
@@ -49,6 +51,7 @@ public class AdController {
      * @author fanxing056
      * @date 2022/07/16 14:43
      */
+    @RequiresPermissions("admin:ad:create")
     @ParamValidation
     @PostMapping("/create")
     public BaseRespVo create(@RequestBody @Validated MarketAd ad, BindingResult bindingResult) {
@@ -65,6 +68,7 @@ public class AdController {
      * @author fanxing056
      * @date 2022/07/16 15:27
      */
+    @RequiresPermissions("admin:ad:delete")
     @PostMapping("/delete")
     public BaseRespVo delete(@RequestBody MarketAd ad) {
 
@@ -80,6 +84,7 @@ public class AdController {
      * @author fanxing056
      * @date 2022/07/16 15:39
      */
+    @RequiresPermissions("admin:ad:update")
     @ParamValidation
     @PostMapping("/update")
     public BaseRespVo update(@RequestBody @Validated MarketAd ad, BindingResult bindingResult) {

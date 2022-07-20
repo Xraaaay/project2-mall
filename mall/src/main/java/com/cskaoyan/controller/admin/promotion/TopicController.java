@@ -6,6 +6,7 @@ import com.cskaoyan.bean.common.BasePageInfo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.service.admin.promotion.TopicService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -38,6 +39,7 @@ public class TopicController {
      * @author fanxing056
      * @date 2022/07/16 21:13
      */
+    @RequiresPermissions("admin:topic:list")
     @GetMapping("/list")
     public BaseRespVo list(BasePageInfo pageInfo, String title, String subtitle) {
 
@@ -54,6 +56,7 @@ public class TopicController {
      * @author fanxing056
      * @date 2022/07/16 22:05
      */
+    @RequiresPermissions("admin:topic:read")
     @GetMapping("/read")
     public BaseRespVo read(Integer id) {
 
@@ -69,6 +72,7 @@ public class TopicController {
      * @author fanxing056
      * @date 2022/07/16 22:14
      */
+    @RequiresPermissions("admin:topic:create")
     @ParamValidation
     @PostMapping("/create")
     public BaseRespVo create(@RequestBody @Validated MarketTopic topic, BindingResult bindingResult) {
@@ -85,6 +89,7 @@ public class TopicController {
      * @author fanxing056
      * @date 2022/07/16 22:39
      */
+    @RequiresPermissions("admin:topic:update")
     @ParamValidation
     @PostMapping("/update")
     public BaseRespVo update(@RequestBody @Validated MarketTopic topic, BindingResult bindingResult) {
@@ -101,6 +106,7 @@ public class TopicController {
      * @author fanxing056
      * @date 2022/07/16 22:45
      */
+    @RequiresPermissions("admin:topic:delete")
     @PostMapping("/delete")
     public BaseRespVo delete(@RequestBody MarketTopic topic) {
 
@@ -120,6 +126,7 @@ public class TopicController {
      * @author fanxing056
      * @date 2022/07/16 23:00
      */
+    @RequiresPermissions("admin:topic:batch-delete")
     @PostMapping("/batch-delete")
     public BaseRespVo batchDelete(@RequestBody Map<String, List<Integer>> map) {
 

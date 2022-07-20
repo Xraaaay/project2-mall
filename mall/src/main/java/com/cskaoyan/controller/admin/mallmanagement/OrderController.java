@@ -10,6 +10,7 @@ import com.cskaoyan.bean.admin.mallmanagement.bo.MarketOrderListBo;
 import com.cskaoyan.bean.admin.mallmanagement.bo.MarketOrderShipBo;
 import com.cskaoyan.service.admin.mallmanagement.OrderService;
 import com.cskaoyan.util.Constant;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,7 @@ public class OrderController {
      * @author changyong
      * @since 2022/07/17 18:17
      */
+    @RequiresPermissions("admin:order:list")
     @RequestMapping("list")
     public BaseRespVo<MarketOrderListPo> list(MarketOrderListBo marketOrderListBo) {
         MarketOrderListPo list = orderService.list(marketOrderListBo);
@@ -66,6 +68,7 @@ public class OrderController {
      */
     // AOP 订单操作日志xrw
     @OperationLog(action = "订单发货", type = 2)
+    @RequiresPermissions("admin:order:ship")
     @RequestMapping("ship")
     public BaseRespVo ship(@RequestBody MarketOrderShipBo marketOrderShipBo) {
         orderService.ship(marketOrderShipBo.getOrderId(), marketOrderShipBo.getShipChannel(), marketOrderShipBo.getShipSn());
@@ -80,6 +83,7 @@ public class OrderController {
      * @author changyong
      * @since 2022/07/17 18:13
      */
+    @RequiresPermissions("admin:order:refund")
     @RequestMapping("refund")
     public BaseRespVo refund(@RequestBody Map map) {
         Integer orderId = (Integer) map.get("orderId");
@@ -98,6 +102,7 @@ public class OrderController {
      */
     // AOP 订单操作日志xrw
     @OperationLog(action = "删除订单", type = 2)
+    @RequiresPermissions("admin:order:delete")
     @RequestMapping("delete")
     public BaseRespVo delete(@RequestBody Map map) {
         Integer orderId = (Integer) map.get("orderId");
@@ -122,6 +127,7 @@ public class OrderController {
      * @author pqk
      * @date 2022/07/19 23:35
      */
+    @RequiresPermissions("admin:order:reply")
     @RequestMapping("reply")
     public BaseRespVo reply(@RequestBody CommentBo commentBo){
         orderService.reply(commentBo);
