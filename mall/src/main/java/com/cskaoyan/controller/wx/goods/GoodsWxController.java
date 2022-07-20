@@ -3,6 +3,7 @@ package com.cskaoyan.controller.wx.goods;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.wx.goods.CategoryWxVo;
+import com.cskaoyan.bean.wx.goods.detail.DetailWxVo;
 import com.cskaoyan.bean.wx.goods.ListWxBo;
 import com.cskaoyan.bean.wx.goods.PageInfoDataVo;
 import com.cskaoyan.service.wx.goods.GoodsWxService;
@@ -61,12 +62,27 @@ public class GoodsWxController {
 
     /**
      * id=1009024
-     * @description 商品详情 todo
+     * @description 商品详情 // TODO: 2022/7/20
      * @author pqk
      * @date 2022/07/19 23:19
      */
     @RequestMapping("detail")
     public BaseRespVo detail(String id){
-        return BaseRespVo.ok(null);
+        int i = Integer.parseInt(id);
+        DetailWxVo detailWxVo = goodsWxService.detail(i);
+        return BaseRespVo.ok(detailWxVo);
+    }
+
+    /**
+     * id=1181089
+     * @description 相关商品 // todo 待测试
+     * @author pqk
+     * @date 2022/07/20 14:02
+     */
+    @RequestMapping("related")
+    public BaseRespVo related(String id){
+        int i = Integer.parseInt(id);
+        CommonData commonData = goodsWxService.related(i);
+        return BaseRespVo.ok(commonData);
     }
 }

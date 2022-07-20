@@ -44,6 +44,26 @@ public class GoodsServiceImpl implements GoodsService {
         if (page != null || limit != 0) {
             PageHelper.startPage(page, limit);
         }
+        if (page==null&limit==0){
+            MarketGoodsExample example = new MarketGoodsExample();
+            MarketGoodsExample.Criteria criteria = example.createCriteria();
+            example.setOrderByClause(sort + " " + order);
+            // 根据条件查询到 商品列表集合
+            List<MarketGoodsVo> marketGoods = marketGoodsMapper.selectByExampleVo(example);
+            // 创建2级VO
+            CommonData<MarketGoodsVo> marketGoodsCommonData = new CommonData<>();
+
+            PageInfo<MarketGoodsVo> marketGoodsPageInfo = new PageInfo<>(marketGoods);
+
+            marketGoodsCommonData.setTotal((int)marketGoodsPageInfo.getTotal());
+            marketGoodsCommonData.setLimit(marketGoodsPageInfo.getPageSize());
+            marketGoodsCommonData.setList(marketGoods);
+            marketGoodsCommonData.setPage(marketGoodsPageInfo.getPageNum());
+            marketGoodsCommonData.setPages(marketGoodsPageInfo.getPages());
+
+            return marketGoodsCommonData;
+        }
+
 
         MarketGoodsExample example = new MarketGoodsExample();
         MarketGoodsExample.Criteria criteria = example.createCriteria();
