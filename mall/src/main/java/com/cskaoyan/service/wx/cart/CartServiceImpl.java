@@ -163,6 +163,7 @@ public class CartServiceImpl implements CartService {
         return statusId;
     }
 
+    @Transactional
     @Override
     public CheckoutVo checkout(CheckoutBo checkoutBo) {
         Integer grouponRulesId = checkoutBo.getGrouponRulesId();
@@ -174,15 +175,7 @@ public class CartServiceImpl implements CartService {
         // 商品信息
         List<MarketCart> checkedGoodsList = getCheckedCartList();
         Map<String, Object> cartTotal = getCartTotal(checkedGoodsList);
-        BigDecimal actualPrice = (BigDecimal) cartTotal.get("checkedGoodsAmount");
-        BigDecimal orderTotalPrice = actualPrice;
-
-        // 优惠信息
-        MarketCoupon coupon = couponMapper.selectByPrimaryKey(couponId);
-        BigDecimal couponPrice = new BigDecimal(0);
-        if (coupon != null) {
-            couponPrice = coupon.getDiscount();
-        }
+        BigDecimal goodsTotalPrice = (BigDecimal) cartTotal.get("checkedGoodsAmount");
 
         // 地址
         MarketAddress checkedAddress = addressMapper.selectByPrimaryKey(addressId);
@@ -193,12 +186,9 @@ public class CartServiceImpl implements CartService {
         BigDecimal freightMin = new BigDecimal(freightMinStr);
         BigDecimal freightValue = new BigDecimal(freightValueStr);
         BigDecimal freightPrice = new BigDecimal(0);
-        if (freightMin.compareTo(actualPrice) > 0) {
+        if (freightMin.compareTo(goodsTotalPrice) > 0) {
             freightPrice = freightValue;
         }
-
-        // 商品总价
-        BigDecimal goodsTotalPrice = actualPrice.subtract(couponPrice).add(freightPrice);
 
         // 优惠券数量
         Integer userId = getMarketUserId();
@@ -208,6 +198,21 @@ public class CartServiceImpl implements CartService {
                 .andDeletedEqualTo(false);
         List<MarketCouponUser> marketCouponUsers = couponUserMapper.selectByExample(example);
         Integer availableCouponLength = marketCouponUsers.size();
+
+        // 优惠信息
+        MarketCoupon coupon = couponMapper.selectByPrimaryKey(couponId);
+        BigDecimal couponPrice = new BigDecimal(0);
+        if (coupon != null) {
+            for (MarketCouponUser couponUser : marketCouponUsers) {
+                if (couponUser.getCouponId().equals(couponId)) {
+                    couponPrice = coupon.getDiscount();
+                }
+            }
+        }
+
+        // 商品总价
+        BigDecimal actualPrice = goodsTotalPrice.subtract(couponPrice).add(freightPrice);
+        BigDecimal orderTotalPrice = actualPrice;
 
         return new CheckoutVo(grouponRulesId, actualPrice, orderTotalPrice, cartId,
                 userCouponId, couponId, goodsTotalPrice, addressId, 0, checkedAddress,
