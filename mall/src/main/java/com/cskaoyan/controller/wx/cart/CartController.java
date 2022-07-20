@@ -51,8 +51,14 @@ public class CartController {
      */
     @RequestMapping("update")
     public BaseRespVo update(@RequestBody Map<String, Integer> map) {
-        cartService.update(map);
-        return BaseRespVo.ok(null);
+        int msg = cartService.update(map);
+        if (msg == 200){
+            return BaseRespVo.ok("添加成功");
+        } else if (msg == 710) {
+            return BaseRespVo.invalidNumber("库存不足");
+        }else {
+            return BaseRespVo.ok("更新失败");
+        }
     }
 
     @RequestMapping("delete")
@@ -81,8 +87,8 @@ public class CartController {
         Integer goodsCount = cartService.addWx(map);
         if (goodsCount == 200){
             return BaseRespVo.ok("添加成功");
-        } else if (goodsCount == 711) {
-            return BaseRespVo.ok("数量不足");
+        } else if (goodsCount == 710) {
+            return BaseRespVo.invalidNumber("库存不足");
         }else {
             return BaseRespVo.ok("插入异常");
         }

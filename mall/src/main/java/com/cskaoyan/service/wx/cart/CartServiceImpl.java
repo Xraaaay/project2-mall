@@ -65,7 +65,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void update(Map<String, Integer> map) {
+    public int update(Map<String, Integer> map) {
+        int statusId = 0;
         Integer marketUserId = getMarketUserId();
         HashMap<String, Integer> hashMap = new HashMap<>(map);
         Integer productId = hashMap.get("productId");
@@ -73,18 +74,36 @@ public class CartServiceImpl implements CartService {
         Integer number = hashMap.get("number");
         Integer id = hashMap.get("id");
 
+        MarketGoodsProductExample example = new MarketGoodsProductExample();
+        MarketGoodsProductExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(false);
+
+        MarketGoodsProduct marketGoodsProduct = marketGoodsProductMapper.selectByPrimaryKey(productId);
+
         short numbershort = number.shortValue();
+        if (number > marketGoodsProduct.getNumber()) {
+            statusId = 711;
+            return statusId;
+        }
 
 
         MarketCart updateMarketCart = new MarketCart();
         updateMarketCart.setId(id);
         updateMarketCart.setNumber(numbershort);
 
-        MarketCartExample example = new MarketCartExample();
-        MarketCartExample.Criteria criteria = example.createCriteria();
-        criteria.andDeletedEqualTo(false)
+        MarketCartExample exampleCart = new MarketCartExample();
+        MarketCartExample.Criteria criteriaCart = exampleCart.createCriteria();
+        criteriaCart.andDeletedEqualTo(false)
                 .andUserIdEqualTo(marketUserId);
-        marketCartMapper.updateByPrimaryKeySelective(updateMarketCart);
+
+
+        try {
+            marketCartMapper.updateByPrimaryKeySelective(updateMarketCart);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 404;
+        }
+        return 200;
 
 
         // {
