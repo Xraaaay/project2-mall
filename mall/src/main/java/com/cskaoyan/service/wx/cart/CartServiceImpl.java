@@ -81,7 +81,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void update(Map<String, Integer> map) {
-        MarketUser marketUser = getMarketUser();
+        Integer marketUserId = getMarketUserId();
         HashMap<String, Integer> hashMap = new HashMap<>(map);
         Integer productId = hashMap.get("productId");
         Integer goodsId = hashMap.get("goodsId");
@@ -98,7 +98,7 @@ public class CartServiceImpl implements CartService {
         MarketCartExample example = new MarketCartExample();
         MarketCartExample.Criteria criteria = example.createCriteria();
         criteria.andDeletedEqualTo(false)
-        .andUserIdEqualTo(marketUser.getId());
+                .andUserIdEqualTo(marketUserId);
         marketCartMapper.updateByPrimaryKeySelective(updateMarketCart);
 
 
@@ -120,27 +120,20 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    public Map<String, Object> delete(List<Integer> productIds) {
-        Integer userId = getMarketUserId();
-        // 逻辑删除，修改deleted字段为true
-        for (Integer productId : productIds) {
-            MarketCart cart = new MarketCart();
-            cart.setDeleted(true);
     public Integer addWx(Map<String, Integer> map) {
-         int statusId = 0;
-        MarketUser marketUser = getMarketUser();
+        int statusId = 0;
+        Integer marketUserId = getMarketUserId();
 
         HashMap<String, Integer> hashMap = new HashMap<>(map);
         Integer productId = hashMap.get("productId");
         Integer goodsId = hashMap.get("goodsId");
-        Integer number =  hashMap.get("number");
+        Integer number = hashMap.get("number");
         short numbershort = number.shortValue();
 
-            MarketCartExample example = new MarketCartExample();
-            example.createCriteria().andUserIdEqualTo(userId)
-                    .andProductIdEqualTo(productId);
-            marketCartMapper.updateByExampleSelective(cart, example);
-        }
+       /* MarketCartExample example = new MarketCartExample();
+        example.createCriteria().andUserIdEqualTo(marketUserId)
+                .andProductIdEqualTo(productId);
+        marketCartMapper.updateByExampleSelective(cart, example);*/
         MarketGoodsProductExample example = new MarketGoodsProductExample();
         MarketGoodsProductExample.Criteria criteria = example.createCriteria();
         criteria.andDeletedEqualTo(false);
@@ -155,22 +148,15 @@ public class CartServiceImpl implements CartService {
         //goodSn 强转成 String
         String goodsSn = Integer.toString(marketGoods.getGoodsSn());
         //String[]转 String
-        String getSpecifications= Arrays.toString(marketGoodsProduct.getSpecifications());
+        String getSpecifications = Arrays.toString(marketGoodsProduct.getSpecifications());
         //判断库存量是否足够
         if (number > marketGoodsProduct.getNumber()) {
             statusId = 711;
             return statusId;
         }
-
-
-
-
-
-        MarketCart marketCart = new MarketCart(null, marketUser.getId(), goodsId, goodsSn,
+        MarketCart marketCart = new MarketCart(null, marketUserId, goodsId, goodsSn,
                 marketGoods.getName(), productId, marketGoodsProduct.getPrice(), numbershort, getSpecifications,
                 true, marketGoodsProduct.getUrl(), marketGoodsProduct.getAddTime(), marketGoodsProduct.getUpdateTime(), false);
-
-        return index();
 
         try {
             marketCartMapper.insertSelective(marketCart);
@@ -184,27 +170,13 @@ public class CartServiceImpl implements CartService {
         return statusId;
     }
 
-    @Transactional
-    @Override
-    public Integer goodsCount() {
-        Integer userId = getMarketUserId();
-        MarketCartExample example = new MarketCartExample();
-        example.createCriteria().andUserIdEqualTo(userId)
-                .andDeletedEqualTo(false);
 
-        // 查询当前用户的所有购物车商品总数
-        Integer goodsCount = marketCartMapper.selectGoodsCountByExample(example);
 
-        if (goodsCount == null) {
-            goodsCount = 0;
-        }
-        return goodsCount;
-    }
 
-    @Override
-    public Integer add(Map<String, Integer> map) {
-        return null;
-    }
+
+
+
+
 
     /**
      * 获取当前用户的所有订单信息

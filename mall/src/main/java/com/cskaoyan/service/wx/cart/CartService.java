@@ -49,5 +49,5 @@ public interface CartService {
     Integer goodsCount();
 
     // TODO
-    Integer add(Map<String, Integer> map);
+    Integer addWx(Map<String, Integer> map);
 }
