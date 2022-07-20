@@ -3,7 +3,7 @@ package com.cskaoyan.service.wx.wxfeedback;
 import com.cskaoyan.bean.common.MarketFeedback;
 import com.cskaoyan.bean.common.MarketUser;
 import com.cskaoyan.mapper.common.MarketFeedbackMapper;
-import com.cskaoyan.util.GetUserInfoUtil;
+import com.cskaoyan.util.PrincipalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +29,7 @@ public class FeedbackWXServiceImpl implements FeedbackWXService {
     @Override
     public Integer submitFeedback(MarketFeedback marketFeedback) {
        //shiro 获取用户信息
-        MarketUser principal = GetUserInfoUtil.getUserInfo();
+        MarketUser principal = PrincipalUtil.getUserInfo();
 
         marketFeedback.setUsername(principal.getUsername());
         marketFeedback.setUserId(principal.getId());

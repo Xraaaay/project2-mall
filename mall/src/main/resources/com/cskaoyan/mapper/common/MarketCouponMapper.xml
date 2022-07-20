@@ -444,4 +444,23 @@
       deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectUserCouponListByUserIdAndStatus" parameterType="java.lang.Integer" resultType="com.cskaoyan.bean.wx.coupon.MyCouponListVO">
+    select
+    u.id as id,
+    u.coupon_id as cid,
+    c.name as name,
+    c.`desc` as `desc`,
+    c.tag as tag,
+    c.min as min,
+    c.discount as discount,
+    u.start_time as startTime,
+    u.end_time as endTime
+
+    from market_coupon as c
+    left join market_coupon_user as u on u.coupon_id = c.id
+    <where>
+      u.user_id = #{userId} and u.status = #{status}
+    </where>
+  </select>
 </mapper>

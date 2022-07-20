@@ -66,7 +66,8 @@ public class MarketRealm extends AuthorizingRealm {
             //TODO 查询User表中的信息
             MarketUserExample marketUserExample = new MarketUserExample();
             MarketUserExample.Criteria criteria = marketUserExample.createCriteria();
-            criteria.andUsernameEqualTo(username);
+            // criteria.andUsernameEqualTo(username);
+            criteria.andMobileEqualTo(username);
             List<MarketUser> marketUsers = marketUserMapper.selectByExample(marketUserExample);
             if(marketUsers.size()==1){
                 MarketUser marketUser = marketUsers.get(0);

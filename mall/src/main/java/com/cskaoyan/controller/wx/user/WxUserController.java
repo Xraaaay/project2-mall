@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**用户部分
+/**
+ * 用户部分
+ *
  * @author changyong
  * @since 2022/07/18 16:36
  */
@@ -18,8 +20,15 @@ public class WxUserController {
     @Autowired
     WxUserService wxUserService;
 
+    /**
+     * 返回个人中心首页
+     *
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author changyong
+     * @since 2022/07/20 11:53
+     */
     @RequestMapping("index")
-    public BaseRespVo index(){
+    public BaseRespVo index() {
         WxUserIndexOrderPo wxUserIndexOrderPo = wxUserService.index();
         return BaseRespVo.ok(wxUserIndexOrderPo);
     }

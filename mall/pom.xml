@@ -101,11 +101,17 @@
             <version>4.0.3</version>
         </dependency>
 
-
         <!--HibernateValidator参数校验-->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
+        </dependency>
+
+        <!--Redisson-->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.17.4</version>
         </dependency>
 
     </dependencies>

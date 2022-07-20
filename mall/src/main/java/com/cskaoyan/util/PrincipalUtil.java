@@ -13,7 +13,7 @@ import org.apache.shiro.subject.Subject;
  * @author shn
  * @date 2022/07/19 21:38
  */
-public class GetUserInfoUtil {
+public class PrincipalUtil {
     public static MarketUser getUserInfo(){
         Subject subject = SecurityUtils.getSubject();
         PrincipalCollection principals = subject.getPrincipals();

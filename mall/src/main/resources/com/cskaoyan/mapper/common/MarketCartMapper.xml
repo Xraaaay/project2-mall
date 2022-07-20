@@ -361,8 +361,8 @@ FROM
 	market_cart
     </select>
 
-  <select id="selectGoodsCount" resultType="java.lang.Integer">
-    	SELECT sum( number ) AS goodsCount FROM market_cart
+  <select id="selectGoodscount" resultType="java.lang.Integer">
+    	SELECT sum( number ) AS goodsCount FROM market_cart where user_id = #{userId}
   </select>
 
   <select id="selectGoodsCountByExample" parameterType="com.cskaoyan.bean.common.MarketCartExample" resultType="int">
@@ -376,4 +376,17 @@ FROM
       order by ${orderByClause}
     </if>
   </select>
+
+<!--  <insert id="insertCart">
+      insert into market_cart ( user_id, goods_id,
+      goods_sn, goods_name, product_id,
+      price, number, specifications,
+      checked, pic_url, add_time,
+      update_time, deleted)
+    values (#{user}, #{goods.id},
+      #{goods.goodsSn}, #{goods.name}, #{pro.id},
+      #{pro.price}, #{pro.number}, #{pro.specifications},
+      `true`, #{pro.picUrl}, #{pro.addTime},
+      #{pro.updateTime}, #{deleted})
+  </insert>-->
 </mapper>
