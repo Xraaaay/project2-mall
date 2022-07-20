@@ -1,5 +1,8 @@
 package com.cskaoyan.service.wx.cart;
 
+import com.cskaoyan.bean.wx.cart.CheckoutBo;
+import com.cskaoyan.bean.wx.cart.CheckoutVo;
+
 import java.util.List;
 import java.util.Map;
 
@@ -50,4 +53,12 @@ public interface CartService {
 
     // lyx
     Integer addWx(Map<String, Integer> map);
+
+    /**
+     * 下单后，填写订单
+     *
+     * @author Xrw
+     * @date 2022/7/20 17:32
+     */
+    CheckoutVo checkout(CheckoutBo checkoutBo);
 }

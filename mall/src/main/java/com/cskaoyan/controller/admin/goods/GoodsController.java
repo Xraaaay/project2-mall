@@ -1,19 +1,13 @@
 package com.cskaoyan.controller.admin.goods;
 
-import com.cskaoyan.bean.admin.goods.po.MarketGoodsPo;
-import com.cskaoyan.bean.admin.mallmanagement.BaseRespSuccessVo;
-import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
-import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.admin.goods.vo.CatAndBrandVo;
 import com.cskaoyan.bean.admin.goods.bo.CreateBo;
 import com.cskaoyan.bean.admin.goods.vo.DetailVo;
 import com.cskaoyan.bean.admin.goods.bo.UpdateBo;
-import com.cskaoyan.bean.common.MarketGoods;
 import com.cskaoyan.service.admin.goods.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +33,8 @@ public class GoodsController {
      * @author pqk
      * @date 2022/07/16 21:18
      */
-    // @RequestMapping("list")
+    @RequiresPermissions("admin:goods:list")
+    @RequestMapping("list")
     public BaseRespVo list(Integer page,Integer limit,String sort,String order){
         CommonData commonData = goodsService.list(page,limit,sort,order);
         return BaseRespVo.ok(commonData);
@@ -59,12 +54,13 @@ public class GoodsController {
         IssueAndKeywordListVo listVo=goodsService.list1(param,marketGoods);
         return BaseRespSuccessVo.success(listVo);
     }
-    
+
     /**
      * @description 删除指定商品
      * @author pqk
      * @date 2022/07/16 22:37 
      */
+    @RequiresPermissions("admin:goods:delete")
     @RequestMapping("delete")
     public BaseRespVo delete(@RequestBody Map map){
         Integer id = (Integer) map.get("id");
@@ -99,6 +95,7 @@ public class GoodsController {
      * @author pqk
      * @date 2022/07/18 14:56
      */
+    @RequiresPermissions("admin:goods:create")
     @RequestMapping("create")
     public BaseRespVo create(@RequestBody CreateBo createBo) {
         goodsService.create(createBo);
@@ -110,6 +107,7 @@ public class GoodsController {
      * @author pqk
      * @date 2022/07/18 21:32
      */
+    @RequiresPermissions("admin:goods:update")
     @RequestMapping("update")
     public BaseRespVo update(@RequestBody UpdateBo updateBo){
         goodsService.update(updateBo);

@@ -4,6 +4,7 @@ import com.cskaoyan.bean.common.MarketCategory;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarktCategoryListPo;
 import com.cskaoyan.service.admin.mallmanagement.CategoryService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ public class CategoryController {
      * @author changyong
      * @since 2022/07/16 22:33
      */
+    @RequiresPermissions("admin:category:list")
     @RequestMapping("list")
     public BaseRespVo<MarktCategoryListPo> list() {
         MarktCategoryListPo marktCategoryListPo = categoryService.list();
@@ -41,6 +43,7 @@ public class CategoryController {
      * @author changyong
      * @since 2022/07/16 22:32
      */
+    @RequiresPermissions("admin:category:update")
     @RequestMapping("update")
     public BaseRespVo update(@RequestBody MarketCategory marketCategory) {
         categoryService.update(marketCategory);
@@ -55,6 +58,7 @@ public class CategoryController {
      * @author changyong
      * @since 2022/07/16 22:31
      */
+    @RequiresPermissions("admin:category:delete")
     @RequestMapping("delete")
     public BaseRespVo delete(@RequestBody MarketCategory marketCategory) {
         categoryService.delete(marketCategory);
@@ -69,6 +73,7 @@ public class CategoryController {
      * @author changyong
      * @since 2022/07/17 19:25
      */
+    @RequiresPermissions("admin:category:create")
     @RequestMapping("create")
     public BaseRespVo create(@RequestBody MarketCategory marketCategory) {
         MarketCategory marketCategory1 = categoryService.create(marketCategory);

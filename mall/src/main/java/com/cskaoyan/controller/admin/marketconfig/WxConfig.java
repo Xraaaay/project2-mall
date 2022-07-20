@@ -6,6 +6,7 @@ import com.cskaoyan.bean.admin.marketconfig.MarketWxBO;
 import com.cskaoyan.bean.admin.marketconfig.MarketWxVO;
 import com.cskaoyan.service.admin.marketconfig.ConfigService;
 import com.cskaoyan.util.BeanToMapUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class WxConfig {
     @Autowired
     ConfigService configService;
 
+    @RequiresPermissions("admin:config:wx:list")
     @GetMapping("wx")
     public BaseRespVo wx() {
         // List<MarketWxVO> marketWxVOS = configService.wx1();
@@ -34,6 +36,7 @@ public class WxConfig {
 
     }
 
+    @RequiresPermissions("admin:config:wx:updateConfigs")
     @PostMapping("wx")
     public BaseRespVo express(@RequestBody MarketWxBO marketWxBO) throws IllegalAccessException {
         Map<String, String> map = BeanToMapUtil.beanToMap(marketWxBO);

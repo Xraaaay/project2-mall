@@ -168,7 +168,7 @@
 | name        | varchar  | 63   | 0    | TRUE  | 优惠券名称                                                   |
 | `desc`      | varchar  | 127  | 0    | FALSE | 优惠券介绍，通常是显示优惠券使用限制文字                     |
 | tag         | varchar  | 63   | 0    | FALSE | 优惠券标签，例如新人专用                                     |
-| total       | int      | 11   | 0    | TRUE  | 优惠券数量，如果是0，则是无限量                              |
+| total       | int      | 11   | 0    | TRUE  | 优惠券数量，如果是0，则是无限量(如果是-1， 领完了)           |
 | discount    | decimal  | 10   | 2    | FALSE | 优惠金额，                                                   |
 | min         | decimal  | 10   | 2    | FALSE | 最少消费金额才能使用优惠券。                                 |
 | `limit`     | smallint | 6    | 0    | FALSE | 用户领券限制数量，如果是0，则是不限制；默认是1，限领一张.    |
