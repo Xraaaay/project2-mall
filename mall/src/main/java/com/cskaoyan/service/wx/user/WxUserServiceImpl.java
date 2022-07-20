@@ -1,13 +1,18 @@
 package com.cskaoyan.service.wx.user;
 
 
+import com.cskaoyan.bean.common.MarketOrder;
 import com.cskaoyan.bean.common.MarketOrderExample;
 import com.cskaoyan.bean.admin.mallmanagement.po.OrderPo;
 import com.cskaoyan.bean.admin.mallmanagement.po.WxUserIndexOrderPo;
+import com.cskaoyan.bean.common.MarketOrderGoodsExample;
+import com.cskaoyan.mapper.common.MarketOrderGoodsMapper;
 import com.cskaoyan.mapper.common.MarketOrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author changyong
@@ -20,6 +25,9 @@ public class WxUserServiceImpl implements WxUserService {
     @Autowired
     MarketOrderMapper marketOrderMapper;
 
+    @Autowired
+    MarketOrderGoodsMapper marketOrderGoodsMapper;
+
     /**
      * 返回个人中心首页
      *
@@ -29,12 +37,26 @@ public class WxUserServiceImpl implements WxUserService {
      */
     @Override
     public WxUserIndexOrderPo index() {
+
+
+        //TODO 页面显示的数量是所有订单的商品总数，需先查出所有order，再foreach，得到所有商品总数
         //获取未付款订单数量
         MarketOrderExample marketOrderExample1 = new MarketOrderExample();
         MarketOrderExample.Criteria criteria1 = marketOrderExample1.createCriteria();
         criteria1.andOrderStatusEqualTo((short) 101)
                 .andDeletedEqualTo(false);
-        long unpaid = marketOrderMapper.countByExample(marketOrderExample1);
+        // long unpaid = marketOrderMapper.countByExample(marketOrderExample1);
+        long unpaid = 0L;
+        List<MarketOrder> marketOrderList1 = marketOrderMapper.selectByExample(marketOrderExample1);
+        for (int i = 0; i < marketOrderList1.size(); i++) {
+            MarketOrderGoodsExample marketOrderGoodsExample = new MarketOrderGoodsExample();
+            MarketOrderGoodsExample.Criteria criteria = marketOrderGoodsExample.createCriteria();
+            criteria.andOrderIdEqualTo(marketOrderList1.get(i).getId())
+                    .andDeletedEqualTo(false);
+            long l = marketOrderGoodsMapper.countByExample(marketOrderGoodsExample);
+            unpaid = unpaid + l;
+        }
+
         //获取未发货订单数量
         MarketOrderExample marketOrderExample2 = new MarketOrderExample();
         MarketOrderExample.Criteria criteria2 = marketOrderExample2.createCriteria();

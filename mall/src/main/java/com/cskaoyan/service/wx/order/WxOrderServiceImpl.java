@@ -9,6 +9,9 @@ import com.cskaoyan.mapper.common.MarketOrderGoodsMapper;
 import com.cskaoyan.mapper.common.MarketOrderMapper;
 import com.cskaoyan.util.Constant;
 import com.github.pagehelper.PageHelper;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,9 +49,17 @@ public class WxOrderServiceImpl implements WxOrderService {
      */
     @Override
     public WxOrderListPo list(Integer showType, Integer page, Integer limit) {
-        //利用工具类Constant，由showType得到相应状态码
         MarketOrderExample marketOrderExample1 = new MarketOrderExample();
         MarketOrderExample.Criteria criteria1 = marketOrderExample1.createCriteria();
+        //获取当前登录的userId
+        Subject subject = SecurityUtils.getSubject();
+        PrincipalCollection principals = subject.getPrincipals();
+        if (principals == null) {
+            subject.logout();
+        }
+        MarketUser primaryPrincipal = (MarketUser) principals.getPrimaryPrincipal();
+        criteria1.andUserIdEqualTo(primaryPrincipal.getId());
+        //利用工具类Constant，由showType得到相应状态码
         if (showType == 4) {
             Integer orderStatus = Constant.showTypeMap.get(showType);
             //showType=4 对应已收货待评价的订单
@@ -158,11 +169,14 @@ public class WxOrderServiceImpl implements WxOrderService {
      */
     @Override
     public void refund(Integer id) {
-        MarketOrder marketOrder = new MarketOrder();
-        marketOrder.setId(id);
-        marketOrder.setOrderStatus((short) 202);
-        marketOrder.setUpdateTime(new Date());
-        marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+        //获取order，再获取orderStatus，为201（即未发货状态），可以申请退款
+        MarketOrder marketOrder = marketOrderMapper.selectByPrimaryKey(id);
+        if ((short) 201 == marketOrder.getOrderStatus()) {
+            marketOrder.setOrderStatus((short) 202);
+            marketOrder.setUpdateTime(new Date());
+            marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+        }
+
     }
 
     /**
@@ -175,6 +189,12 @@ public class WxOrderServiceImpl implements WxOrderService {
      */
     @Override
     public void comment(WxOrderCommentBo wxOrderCommentBo) {
+        //TODO order表中“comments”字段表示该订单中未评价商品数量，
+        // 如果订单中还有未评价商品，则状态码仍为401或402，handleOption中comment为true
+
+        //TODO 如果一个订单有多个品类商品，那就有多个“待评价”选项，评价其中一个之后，
+        // order表comments改为1，则该订单的其他品类商品不可再评价，
+        // 怎么破
 
         // orderGoodsId为orderGoods表id，根据其查询得到goodsId，orderId，进而得到userId
         MarketOrderGoods marketOrderGoods1 = marketOrderGoodsMapper.selectByPrimaryKey(wxOrderCommentBo.getOrderGoodsId());
@@ -198,24 +218,22 @@ public class WxOrderServiceImpl implements WxOrderService {
             marketComment.setUpdateTime(addTime);
             int affectedRows = marketCommentMapper.insertSelective(marketComment);
             if (affectedRows == 1) {
-                //评价完成后将订单商品的handleoption改一下，即修改order表，orderGoods表 comment为1
-                //修改orderGoods表 comment为1
+                //评价完成后将修改order表，orderGoods表
+                //修改orderGoods表 '订单商品评论，如果是-1，则超期不能评价；如果是0，则可以评价；如果其他值，则是comment表里面的评论ID
                 MarketOrderGoods marketOrderGoods2 = new MarketOrderGoods();
                 marketOrderGoods2.setId(wxOrderCommentBo.getOrderGoodsId());
-                marketOrderGoods2.setComment(1);
+                marketOrderGoods2.setComment(marketComment.getId());
                 marketOrderGoods2.setUpdateTime(new Date());
                 marketOrderGoodsMapper.updateByPrimaryKeySelective(marketOrderGoods2);
-                //修改order表，comment为1
                 MarketOrder marketOrder2 = new MarketOrder();
                 marketOrder2.setId(marketOrderGoods1.getOrderId());
-                marketOrder2.setComments((short) 1);
+                //order表中“comments”字段表示该订单中未评价商品数量，应该将comment-1
+                marketOrder2.setComments((short) (marketOrder1.getOrderStatus()-1));
                 marketOrder2.setUpdateTime(new Date());
                 marketOrderMapper.updateByPrimaryKeySelective(marketOrder2);
             }
         }
-        //TODO 如果一个订单有多个品类商品，那就有多个“待评价”选项，评价其中一个之后，
-        // order表comments改为1，则该订单的其他品类商品不可再评价，
-        // 怎么破
+
     }
 
     /**
@@ -252,9 +270,9 @@ public class WxOrderServiceImpl implements WxOrderService {
         marketOrder.setId(id);
         marketOrder.setDeleted(true);
         marketOrder.setUpdateTime(new Date());
-        //先获取该订单的状态，如果为 102: '用户取消', 103: '系统取消', 203: '已退款'，则可以删除订单
+        //先获取该订单的状态，如果为 102: '用户取消', 103: '系统取消', 203: '已退款'，401：'用户收货'，402：'系统收货'，则可以删除订单
         Short orderStatus = marketOrderMapper.selectByPrimaryKey(id).getOrderStatus();
-        if ((short) 102 == orderStatus || (short) 103 == orderStatus || (short) 203 == orderStatus) {
+        if ((short) 102 == orderStatus || (short) 103 == orderStatus || (short) 203 == orderStatus|| (short) 401 == orderStatus|| (short) 402 == orderStatus) {
             marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
         }
     }
@@ -316,6 +334,7 @@ public class WxOrderServiceImpl implements WxOrderService {
     @Override
     public WxOrderSubmitPo submit(WxOrderSubmitBo wxOrderSubmitBo) {
         //TODO 等待wx/goods/detail,wx/cart/goodscount,wx/cart/fastadd,wx/cart/checkout
+        // 需要修改购物车、商品库存、优惠券数量
         return null;
     }
 }
