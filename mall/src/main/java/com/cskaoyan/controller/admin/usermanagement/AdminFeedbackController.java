@@ -4,6 +4,7 @@ import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.admin.usermanagement.UserListVo;
 import com.cskaoyan.service.admin.usermanagement.UserService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ public class AdminFeedbackController {
     @Autowired
     UserService userService;
 
+    @RequiresPermissions("admin:feedback:list")
     @RequestMapping("list")
     public BaseRespVo list(BaseParam page,String username, Integer id){
 

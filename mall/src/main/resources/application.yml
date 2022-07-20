@@ -5,7 +5,6 @@ server:
 spring:
   profiles:
     active: db,xrw,aliyun
-  # redisson
   application:
     name: springboot-redisson
     redis:

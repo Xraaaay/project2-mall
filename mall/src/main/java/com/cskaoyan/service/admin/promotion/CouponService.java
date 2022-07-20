@@ -111,4 +111,17 @@ public interface CouponService {
      * @date 2022/07/19 20:09
      */
     int exchange(String code);
+
+
+    /**
+     * 下单页面选择优惠券
+     *
+     * @param basePageInfo
+     * @param cartId
+     * @param grouponRulesId
+     * @return com.cskaoyan.bean.common.CommonData<com.cskaoyan.bean.wx.coupon.MyCouponListVO>
+     * @author fanxing056
+     * @date 2022/07/20 16:09
+     */
+    CommonData<MyCouponListVO> selectList(BasePageInfo basePageInfo, Integer cartId, Integer grouponRulesId);
 }

@@ -102,9 +102,23 @@ public class CouponControllerWX {
         }
     }
 
+    /**
+     * 下单页面选择优惠券
+     *
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author fanxing056
+     * @date 2022/07/20 15:43
+     */
     @GetMapping("/selectlist")
-    public BaseRespVo selectList() {
+    public BaseRespVo selectList(Integer cartId, Integer grouponRulesId) {
 
+        BasePageInfo basePageInfo = new BasePageInfo();
+        basePageInfo.setPage(1);
+        basePageInfo.setLimit(8);
+        // 面值大的放上面
+        basePageInfo.setSort("discount");
+        basePageInfo.setOrder("desc");
+        CommonData<MyCouponListVO> commonData = couponService.selectList(basePageInfo, cartId, grouponRulesId);
 
         return BaseRespVo.ok(null);
     }
