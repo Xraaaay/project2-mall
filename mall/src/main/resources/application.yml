@@ -5,9 +5,6 @@ server:
 spring:
   profiles:
     active: db,xrw,aliyun
-mybatis:
-  type-handlers-package: com.cskaoyan.typehandler
-
   # redisson
   application:
     name: springboot-redisson
@@ -22,3 +19,5 @@ mybatis:
           nettyThreads: 0
           codec: !<org.redisson.codec.FstCodec> {}
           transportMode: "NIO"
+mybatis:
+  type-handlers-package: com.cskaoyan.typehandler

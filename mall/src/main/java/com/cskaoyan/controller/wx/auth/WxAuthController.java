@@ -44,6 +44,12 @@ public class WxAuthController {
     public BaseRespVo login(@RequestBody Map map) throws Exception {
         // 此处的username是手机号
         String username = (String) map.get("username");
+
+        // 正则验证
+        if (!username.matches("^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$")) {
+            throw new InvalidDataException("请输入正确的账户");
+        }
+
         String originalPassword = (String) map.get("password");
 
         // 将密码通过MD5进行加密
