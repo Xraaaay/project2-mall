@@ -4,7 +4,7 @@ import com.cskaoyan.bean.admin.usermanagement.UserListVo;
 import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.controller.wx.auth.WxAuthController;
-import com.cskaoyan.service.wx.wxfootprint.FootprintService;
+import com.cskaoyan.service.wx.footprint.FootprintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

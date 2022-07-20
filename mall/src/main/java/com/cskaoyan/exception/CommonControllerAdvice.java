@@ -2,6 +2,7 @@ package com.cskaoyan.exception;
 
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.controller.wx.auth.WxAuthController;
+import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -34,5 +35,10 @@ public class CommonControllerAdvice {
     // @ExceptionHandler(Throwable.class)
     public BaseRespVo commonException(Throwable throwable) {
         return BaseRespVo.invalidData("参数异常");
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public BaseRespVo noPermission(){
+        return BaseRespVo.noPermission();
     }
 }
