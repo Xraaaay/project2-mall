@@ -24,7 +24,7 @@ public class RedissonTest {
     public void testRedisson() {
 
         RBucket<Object> mykey = redissonClient.getBucket("mykey");
-        mykey.set("123465", 10000, TimeUnit.MILLISECONDS);
+        mykey.set("7980", 100000, TimeUnit.MILLISECONDS);
         System.out.println(mykey.get());
     }
 }
