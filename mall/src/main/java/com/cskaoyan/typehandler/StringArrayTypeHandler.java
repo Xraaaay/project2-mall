@@ -40,9 +40,9 @@ public class StringArrayTypeHandler implements TypeHandler<String[]> {
 
     // 输出映射过程
     @Override
-    public String[] getResult(ResultSet resultSet, String columName) throws SQLException {
+    public String[] getResult(ResultSet resultSet, String columnName) throws SQLException {
         // 获得结果
-        String result = resultSet.getString(columName);
+        String result = resultSet.getString(columnName);
         return transfer(result);
     }
 
@@ -60,15 +60,13 @@ public class StringArrayTypeHandler implements TypeHandler<String[]> {
         return transfer(result);
     }
 
-    private String[] transfer(String result) {
+    public String[] transfer(String result) {
         String[] strings = new String[0];
         // 使用jackson将字符串转换String[]
         try {
             strings = objectMapper.readValue(result, String[].class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            return strings;
         }
         return strings;
     }
