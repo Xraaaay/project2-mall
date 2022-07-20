@@ -10,7 +10,7 @@ import com.cskaoyan.bean.wx.wxcollect.InnerListOfWXCollectVo;
 
 import com.cskaoyan.mapper.common.MarketCollectMapper;
 import com.cskaoyan.mapper.common.MarketGoodsMapper;
-import com.cskaoyan.util.GetUserInfoUtil;
+import com.cskaoyan.util.PrincipalUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class CollectWXServiceImpl implements CollectWXService {
         //分页
         PageHelper.startPage(param.getPage(), param.getLimit());
         //shiro 获取用户信息
-        MarketUser user = GetUserInfoUtil.getUserInfo();
+        MarketUser user = PrincipalUtil.getUserInfo();
         Integer userId = user.getId();
 
         //条件查询
@@ -98,7 +98,7 @@ public class CollectWXServiceImpl implements CollectWXService {
     public Integer addCollect(Map map) {
         MarketCollect collect = new MarketCollect();
         //shiro 获取用户信息
-        MarketUser userInfo = GetUserInfoUtil.getUserInfo();
+        MarketUser userInfo = PrincipalUtil.getUserInfo();
 
         collect.setUserId(userInfo.getId());
         collect.setValueId((Integer) map.get("valueId"));

@@ -81,5 +81,6 @@ public interface UserService {
      */
     UserListVo getFeedbackList(BaseParam page,String username,Integer id);
 
-
+    /*更新用户信息*/
+    Integer updateUser(MarketUser marketUser);
 }
