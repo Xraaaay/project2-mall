@@ -86,24 +86,24 @@ public class WxAuthController {
         return BaseRespVo.ok(null);
     }
 
-    @RequestMapping("info")
-    public BaseRespVo info(String token) {
-
-
-        //开发完shiro之后，再整合
-        InfoData infoData = new InfoData();
-        infoData.setName("admin123");
-
-        //根据primaryPrincipal做查询
-        infoData.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
-        ArrayList<String> roles = new ArrayList<>();
-        roles.add("超级管理员");
-        infoData.setRoles(roles);
-        ArrayList<String> perms = new ArrayList<>();
-        perms.add("*");
-        infoData.setPerms(perms);
-
-
-        return BaseRespVo.ok(infoData);
-    }
+    // @RequestMapping("info")
+    // public BaseRespVo info(String token) {
+    //
+    //
+    //     //开发完shiro之后，再整合
+    //     InfoData infoData = new InfoData();
+    //     infoData.setName("admin123");
+    //
+    //     //根据primaryPrincipal做查询
+    //     infoData.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+    //     ArrayList<String> roles = new ArrayList<>();
+    //     roles.add("超级管理员");
+    //     infoData.setRoles(roles);
+    //     ArrayList<String> perms = new ArrayList<>();
+    //     perms.add("*");
+    //     infoData.setPerms(perms);
+    //
+    //
+    //     return BaseRespVo.ok(infoData);
+    // }
 }

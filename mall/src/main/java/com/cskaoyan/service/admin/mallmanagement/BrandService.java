@@ -50,5 +50,13 @@ public interface BrandService {
      */
     MarketBrand create(MarketBrandCreateBo marketBrandCreateBo);
 
+    /**
+     * 前台  返回品牌详情
+     *
+     * @param id
+     * @return com.cskaoyan.bean.common.MarketBrand
+     * @author changyong
+     * @since 2022/07/20 8:52
+     */
     MarketBrand detail(Integer id);
 }
