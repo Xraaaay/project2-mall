@@ -5,6 +5,7 @@ import com.cskaoyan.bean.admin.marketconfig.MarketOrderBO;
 import com.cskaoyan.bean.admin.marketconfig.MarketOrderVO;
 import com.cskaoyan.service.admin.marketconfig.ConfigService;
 import com.cskaoyan.util.BeanToMapUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class OrderConfig {
     @Autowired
     ConfigService configService;
 
+    @RequiresPermissions("admin:config:order:list")
     @GetMapping("order")
     public BaseRespVo order() {
         List<MarketOrderVO> marketOrderVO = configService.order1();
@@ -32,6 +34,7 @@ public class OrderConfig {
 
     }
 
+    @RequiresPermissions("admin:config:order:updateConfigs")
     @PostMapping("order")
     public BaseRespVo express(@RequestBody MarketOrderBO orderBO) throws IllegalAccessException {
         Map<String, String> map = BeanToMapUtil.beanToMap(orderBO);

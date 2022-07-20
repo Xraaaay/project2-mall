@@ -5,6 +5,7 @@ import com.cskaoyan.bean.admin.marketconfig.MarketExpreessBO;
 import com.cskaoyan.bean.admin.marketconfig.MarketExpreessVO;
 import com.cskaoyan.service.admin.marketconfig.ConfigService;
 import com.cskaoyan.util.BeanToMapUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +25,15 @@ public class ExpressConfig {
     @Autowired
     ConfigService configService;
 
+    @RequiresPermissions("admin:config:express:list")
     @GetMapping("express")
     public BaseRespVo express() {
         List<MarketExpreessVO> marketExpressVO = configService.express1();
         Map<String, String> map = marketExpressVO.stream().collect(Collectors.toMap(MarketExpreessVO::getKey_name, MarketExpreessVO::getKey_value));
         return BaseRespVo.ok(map);
     }
+
+    @RequiresPermissions("admin:config:express:updateConfigs")
     @PostMapping("express")
     public BaseRespVo express(@RequestBody MarketExpreessBO expreessBO) throws IllegalAccessException {
         Map<String, String> map = BeanToMapUtil.beanToMap(expreessBO);

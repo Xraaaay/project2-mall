@@ -6,6 +6,7 @@ import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.admin.usermanagement.UserListVo;
 import com.cskaoyan.service.admin.usermanagement.UserService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ public class AdminUserController {
     @Autowired
     UserService userService;
 
+    @RequiresPermissions("admin:user:list")
     @RequestMapping("list")
     public BaseRespVo list(BaseParam page,String username,String mobile){
 
@@ -33,7 +35,7 @@ public class AdminUserController {
         return BaseRespVo.ok(userList);
     }
 
-
+    @RequiresPermissions("admin:user:detail")
     @RequestMapping("detail")
     public BaseRespVo detail(Integer id){
 
@@ -49,6 +51,7 @@ public class AdminUserController {
      * @author shn
      * @date 2022/7/20 11:37
      */
+    @RequiresPermissions("admin:user:update")
     @PostMapping("update")
     public BaseRespSuccessVo userUpdate(@RequestBody MarketUser marketUser) {
         Integer updateNum=userService.updateUser(marketUser);

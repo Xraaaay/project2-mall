@@ -4,6 +4,7 @@ import com.cskaoyan.bean.admin.mallmanagement.BaseParam;
 import com.cskaoyan.bean.admin.mallmanagement.BaseRespSuccessVo;
 import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
 import com.cskaoyan.service.admin.mallmanagement.KeywordService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class KeywordController {
      * @author shn
      * @date 2022/7/16 15:48
      */
+    @RequiresPermissions("admin:keyword:list")
     @GetMapping("list")
     public BaseRespSuccessVo list(BaseParam param,String keyword,String url){
         IssueAndKeywordListVo keywordList=keywordService.keywordlist(param,keyword,url);
@@ -38,6 +40,7 @@ public class KeywordController {
      * @author shn
      * @date 2022/7/16 20:00
      */
+    @RequiresPermissions("admin:keyword:update")
     @PostMapping("update")
     public BaseRespSuccessVo update(@RequestBody MarketKeyword marketKeyword){
         MarketKeyword keyword=keywordService.updateKeyword(marketKeyword);
@@ -50,6 +53,7 @@ public class KeywordController {
      * @author shn
      * @date 2022/7/16 21:29
      */
+    @RequiresPermissions("admin:keyword:delete")
     @PostMapping("delete")
     public BaseRespSuccessVo delete(@RequestBody MarketKeyword marketKeyword){
         keywordService.deleteKeyword(marketKeyword);
@@ -63,6 +67,7 @@ public class KeywordController {
      * @author shn
      * @date 2022/7/17 16:51
      */
+    @RequiresPermissions("admin:keyword:create")
     @PostMapping("create")
     public BaseRespSuccessVo create(@RequestBody MarketKeyword marketKeyword) {
         MarketKeyword keyword=keywordService.addKeyword(marketKeyword);

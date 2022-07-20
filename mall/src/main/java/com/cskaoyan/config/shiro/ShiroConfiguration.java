@@ -76,7 +76,7 @@ public class  ShiroConfiguration {
         filterChainDefinitionMap.put("/wx/coupon/**","authc");
 
         // 对于没有访问权限的重定向地址
-        shiroFilterFactoryBean.setLoginUrl("/wx/auth/login");
+        shiroFilterFactoryBean.setLoginUrl("/wx/auth/401");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
@@ -93,7 +93,7 @@ public class  ShiroConfiguration {
     }
 
     /**
-     * 注册组件,使得权限与handler方法进行绑定 (与授权有关，也未用到)
+     * 注册组件,使得权限与handler方法进行绑定
      * @param securityManager
      * @return org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor
      * @author Zah

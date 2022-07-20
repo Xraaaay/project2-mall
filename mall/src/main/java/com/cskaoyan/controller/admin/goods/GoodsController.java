@@ -7,6 +7,7 @@ import com.cskaoyan.bean.admin.goods.bo.CreateBo;
 import com.cskaoyan.bean.admin.goods.vo.DetailVo;
 import com.cskaoyan.bean.admin.goods.bo.UpdateBo;
 import com.cskaoyan.service.admin.goods.GoodsService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ public class GoodsController {
      * @author pqk
      * @date 2022/07/16 21:18
      */
+    @RequiresPermissions("admin:goods:list")
     @RequestMapping("list")
     public BaseRespVo list(Integer page,Integer limit,String sort,String order){
         CommonData commonData = goodsService.list(page,limit,sort,order);
@@ -44,6 +46,7 @@ public class GoodsController {
      * @author pqk
      * @date 2022/07/16 22:37 
      */
+    @RequiresPermissions("admin:goods:delete")
     @RequestMapping("delete")
     public BaseRespVo delete(@RequestBody Map map){
         Integer id = (Integer) map.get("id");
@@ -78,6 +81,7 @@ public class GoodsController {
      * @author pqk
      * @date 2022/07/18 14:56
      */
+    @RequiresPermissions("admin:goods:create")
     @RequestMapping("create")
     public BaseRespVo create(@RequestBody CreateBo createBo) {
         goodsService.create(createBo);
@@ -89,6 +93,7 @@ public class GoodsController {
      * @author pqk
      * @date 2022/07/18 21:32
      */
+    @RequiresPermissions("admin:goods:update")
     @RequestMapping("update")
     public BaseRespVo update(@RequestBody UpdateBo updateBo){
         goodsService.update(updateBo);

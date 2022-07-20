@@ -5,6 +5,7 @@ import com.cskaoyan.bean.admin.mallmanagement.bo.MarketBrandCreateBo;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarketBrandListPo;
 import com.cskaoyan.service.admin.mallmanagement.BrandService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,7 @@ public class BrandController {
      * @author changyong
      * @since 2022/07/16 18:16
      */
+    @RequiresPermissions("admin:brand:list")
     @RequestMapping("list")
     public BaseRespVo<MarketBrandListPo> list(Integer page, Integer limit, Integer id, String name, String sort, String order) {
         MarketBrandListPo marketBrandListPo = brandService.list(page, limit, id, name, sort, order);
@@ -50,6 +52,7 @@ public class BrandController {
      * @author changyong
      * @since 2022/07/16 20:41
      */
+    @RequiresPermissions("admin:brand:update")
     @RequestMapping("update")
     public BaseRespVo<MarketBrand> update(@RequestBody MarketBrand marketBrand) {
         MarketBrand update = brandService.update(marketBrand);
@@ -64,6 +67,7 @@ public class BrandController {
      * @author changyong
      * @since 2022/07/17 18:22
      */
+    @RequiresPermissions("admin:brand:delete")
     @RequestMapping("delete")
     public BaseRespVo delete(@RequestBody MarketBrand marketBrand) {
         brandService.delete(marketBrand);
@@ -78,6 +82,7 @@ public class BrandController {
      * @author changyong
      * @since 2022/07/17 19:09
      */
+    @RequiresPermissions("admin:brand:create")
     @RequestMapping("create")
     public BaseRespVo create(@RequestBody MarketBrandCreateBo marketBrandCreateBo) {
         MarketBrand marketBrand = brandService.create(marketBrandCreateBo);
