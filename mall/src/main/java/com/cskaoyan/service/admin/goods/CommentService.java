@@ -1,5 +1,7 @@
 package com.cskaoyan.service.admin.goods;
 
+import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
+import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.CommonData;
 
 import java.util.Map;
@@ -31,4 +33,6 @@ public interface CommentService {
      * @date 2022/07/18 0:13
      */
     void delete(Map map);
+    /*评论列表*/
+    IssueAndKeywordListVo list1(BaseParam param, Integer userId, Integer valueId);
 }
