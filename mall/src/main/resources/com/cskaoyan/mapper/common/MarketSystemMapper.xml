@@ -273,4 +273,8 @@
   <select id="selectStatGoods" resultType="com.cskaoyan.bean.admin.marketconfig.StatGoodsRowsVO">
    select  count(DISTINCT order_id) as orders ,sum(number) as products, sum(number * price) as amount, DATE_FORMAT(add_time, "%Y-%m-%d") as day from market_order_goods where id !=0 group by day  order by day ASC
   </select>
+
+  <select id="selectValueByName" resultType="java.lang.String">
+    select key_value from market_system where key_name=#{keyName}
+  </select>
 </mapper>

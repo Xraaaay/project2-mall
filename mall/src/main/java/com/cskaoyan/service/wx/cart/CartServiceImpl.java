@@ -1,13 +1,11 @@
 package com.cskaoyan.service.wx.cart;
 
 
+import com.cskaoyan.bean.admin.marketconfig.MarketExpreessVO;
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.cart.CheckoutBo;
 import com.cskaoyan.bean.wx.cart.CheckoutVo;
-import com.cskaoyan.mapper.common.MarketCartMapper;
-import com.cskaoyan.mapper.common.MarketCouponMapper;
-import com.cskaoyan.mapper.common.MarketGoodsMapper;
-import com.cskaoyan.mapper.common.MarketGoodsProductMapper;
+import com.cskaoyan.mapper.common.*;
 import com.cskaoyan.util.PrincipalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +29,12 @@ public class CartServiceImpl implements CartService {
     MarketGoodsMapper marketGoodsMapper;
     @Autowired
     MarketCouponMapper couponMapper;
+    @Autowired
+    MarketCouponUserMapper couponUserMapper;
+    @Autowired
+    MarketAddressMapper addressMapper;
+    @Autowired
+    MarketSystemMapper systemMapper;
 
     @Override
     public Map<String, Object> index() {
@@ -161,24 +165,53 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CheckoutVo checkout(CheckoutBo checkoutBo) {
+        Integer grouponRulesId = checkoutBo.getGrouponRulesId();
         Integer cartId = checkoutBo.getCartId();
         Integer couponId = checkoutBo.getCouponId();
         Integer userCouponId = checkoutBo.getUserCouponId();
         Integer addressId = checkoutBo.getAddressId();
 
         // 商品信息
-        List<MarketCart> checkedCartList = getCheckedCartList();
-        Map<String, Object> cartTotal = getCartTotal(checkedCartList);
+        List<MarketCart> checkedGoodsList = getCheckedCartList();
+        Map<String, Object> cartTotal = getCartTotal(checkedGoodsList);
         BigDecimal actualPrice = (BigDecimal) cartTotal.get("checkedGoodsAmount");
         BigDecimal orderTotalPrice = actualPrice;
 
         // 优惠信息
         MarketCoupon coupon = couponMapper.selectByPrimaryKey(couponId);
-        BigDecimal discount = coupon.getDiscount();
-        
+        BigDecimal couponPrice = new BigDecimal(0);
+        if (coupon != null) {
+            couponPrice = coupon.getDiscount();
+        }
 
+        // 地址
+        MarketAddress checkedAddress = addressMapper.selectByPrimaryKey(addressId);
 
-        return null;
+        // 运费
+        String freightMinStr = systemMapper.selectValueByName("market_express_freight_min");
+        String freightValueStr = systemMapper.selectValueByName("market_express_freight_value");
+        BigDecimal freightMin = new BigDecimal(freightMinStr);
+        BigDecimal freightValue = new BigDecimal(freightValueStr);
+        BigDecimal freightPrice = new BigDecimal(0);
+        if (freightMin.compareTo(actualPrice) > 0) {
+            freightPrice = freightValue;
+        }
+
+        // 商品总价
+        BigDecimal goodsTotalPrice = actualPrice.subtract(couponPrice).add(freightPrice);
+
+        // 优惠券数量
+        Integer userId = getMarketUserId();
+        MarketCouponUserExample example = new MarketCouponUserExample();
+        example.createCriteria().andUserIdEqualTo(userId)
+                .andStatusEqualTo((short) 0)
+                .andDeletedEqualTo(false);
+        List<MarketCouponUser> marketCouponUsers = couponUserMapper.selectByExample(example);
+        Integer availableCouponLength = marketCouponUsers.size();
+
+        return new CheckoutVo(grouponRulesId, actualPrice, orderTotalPrice, cartId,
+                userCouponId, couponId, goodsTotalPrice, addressId, 0, checkedAddress,
+                couponPrice, availableCouponLength, freightPrice, checkedGoodsList);
     }
 
 

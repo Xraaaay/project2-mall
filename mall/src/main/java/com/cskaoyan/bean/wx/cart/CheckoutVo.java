@@ -2,6 +2,7 @@ package com.cskaoyan.bean.wx.cart;
 
 import com.cskaoyan.bean.common.MarketAddress;
 import com.cskaoyan.bean.common.MarketCart;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @author Xrw
  * @date 2022/7/20 16:04
  */
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class CheckoutVo {
@@ -41,6 +43,6 @@ public class CheckoutVo {
     private Integer availableCouponLength;
     // 运费
     private BigDecimal freightPrice;
-    // 已勾选的商品列表1
+    // 已勾选的商品列表
     private List<MarketCart> checkedGoodsList;
 }
