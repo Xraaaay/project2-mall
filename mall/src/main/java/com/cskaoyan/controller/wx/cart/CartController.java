@@ -78,7 +78,7 @@ public class CartController {
      */
     @RequestMapping("add")
     public BaseRespVo addWx(@RequestBody Map<String, Integer> map) {
-        Integer goodsCount = cartService.addWx(map);
+        Integer goodsCount = cartService.add(map);
         if (goodsCount == 200){
             return BaseRespVo.ok("添加成功");
         } else if (goodsCount == 711) {
