@@ -1,11 +1,14 @@
 package com.cskaoyan.config.shiro;
 
+import com.cskaoyan.bean.admin.system.MarketPermission;
+import com.cskaoyan.bean.admin.system.MarketPermissionExample;
 import com.cskaoyan.bean.common.MarketUser;
 import com.cskaoyan.bean.common.MarketUserExample;
 import com.cskaoyan.bean.admin.system.MarketAdmin;
 import com.cskaoyan.bean.admin.system.MarketAdminExample;
 import com.cskaoyan.mapper.common.MarketUserMapper;
 import com.cskaoyan.mapper.system.MarketAdminMapper;
+import com.cskaoyan.mapper.system.MarketPermissionMapper;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -31,6 +34,9 @@ public class MarketRealm extends AuthorizingRealm {
     @Autowired
     MarketUserMapper marketUserMapper;
 
+    @Autowired
+    MarketPermissionMapper marketPermissionMapper;
+
     /**
      * Shiro的认证信息
      *
@@ -42,10 +48,10 @@ public class MarketRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
 
-        //UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+
         String type = ((MarketToken) authenticationToken).getType();
         String username = (String) authenticationToken.getPrincipal();
-        //String username = token.getUsername();
+
         if ("admin".equals(type)) {
             // 根据用户名查询数据库中对应的管理员信息
             MarketAdminExample example = new MarketAdminExample();
@@ -73,7 +79,7 @@ public class MarketRealm extends AuthorizingRealm {
     }
 
     /**
-     * Shiro的授权信息(未完成)
+     * Shiro的授权信息
      *
      * @param principalCollection
      * @return org.apache.shiro.authz.AuthorizationInfo
@@ -85,12 +91,26 @@ public class MarketRealm extends AuthorizingRealm {
 
         MarketAdmin principal = (MarketAdmin) principalCollection.getPrimaryPrincipal();
 
-        // 根据用户信息查询出对应的权限列表
-        //  List<String> getPermissions = getPermissionsByUsername(principal);
+        // 根据用户信息里的role-id到permission表中拿到permission信息（拿到钥匙）
+        List<MarketPermission> marketPermissions = null;
+        for (Integer roleId : principal.getRoleIds()) {
+
+            MarketPermissionExample permissionExample = new MarketPermissionExample();
+
+            permissionExample.createCriteria().andRoleIdEqualTo(roleId);
+
+            marketPermissions = marketPermissionMapper.selectByExample(permissionExample);
+        }
+
+
 
         // 把权限信息放入授权信息中
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        // simpleAuthorizationInfo.addStringPermissions(getPermissions);
+
+        for (MarketPermission marketPermission : marketPermissions) {
+
+            simpleAuthorizationInfo.addStringPermission(marketPermission.getPermission());
+        }
 
         return simpleAuthorizationInfo;
     }
