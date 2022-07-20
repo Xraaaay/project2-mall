@@ -77,8 +77,6 @@ public class SearchServiceImpl implements  SearchService {
     public void clearhistory() {
 
 
-
-
         MarketSearchHistoryExample example = new MarketSearchHistoryExample();
         MarketSearchHistoryExample.Criteria criteria = example.createCriteria();
         criteria.andDeletedEqualTo(false);
