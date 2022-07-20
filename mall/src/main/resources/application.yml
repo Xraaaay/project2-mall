@@ -5,20 +5,20 @@ server:
 spring:
   profiles:
     active: db,xrw,aliyun
+    # redisson
+    application:
+      name: springboot-redisson
+      redis:
+        redisson:
+          config: |
+            singleServerConfig:
+              address: "redis://192.168.3.67:6379"
+              password: "123456"
+              database: 1
+            threads: 0
+            nettyThreads: 0
+            codec: !<org.redisson.codec.FstCodec> {}
+            transportMode: "NIO"
 mybatis:
   type-handlers-package: com.cskaoyan.typehandler
 
-  # redisson
-  application:
-    name: springboot-redisson
-    redis:
-      redisson:
-        config: |
-          singleServerConfig:
-            address: "redis://192.168.3.67:6379"
-            password: "123456"
-            database: 1
-          threads: 0
-          nettyThreads: 0
-          codec: !<org.redisson.codec.FstCodec> {}
-          transportMode: "NIO"
