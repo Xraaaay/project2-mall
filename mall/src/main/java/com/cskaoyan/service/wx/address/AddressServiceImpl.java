@@ -138,6 +138,8 @@ public class AddressServiceImpl implements AddressService{
 
     /**
      * 逻辑上删除收货地址，把delete从0（false）标记为1(true)
+     *
+     * 如果删掉的是带有默认地址标记的，其他地址中的任意一个也不会变成默认地址，看看是否能优化
      * @param id
      * @return void
      * @author Zah
@@ -148,9 +150,12 @@ public class AddressServiceImpl implements AddressService{
 
         MarketAddressExample addressExample = new MarketAddressExample();
 
+        MarketAddress marketAddress = new MarketAddress();
+        marketAddress.setDeleted(true);
+
         addressExample.createCriteria().andIdEqualTo(id);
 
-        marketAddressMapper.updateByExampleSelective(new MarketAddress(id,true),addressExample);
+        marketAddressMapper.updateByExampleSelective(marketAddress,addressExample);
 
     }
 

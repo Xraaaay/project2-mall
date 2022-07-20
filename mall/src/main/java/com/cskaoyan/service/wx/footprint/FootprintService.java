@@ -1,4 +1,4 @@
-package com.cskaoyan.service.wx.wxfootprint;
+package com.cskaoyan.service.wx.footprint;
 
 import com.cskaoyan.bean.admin.usermanagement.UserListVo;
 import com.cskaoyan.bean.common.BaseParam;

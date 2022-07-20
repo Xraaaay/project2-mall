@@ -1,10 +1,8 @@
 package com.cskaoyan.bean.common;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -39,11 +37,6 @@ public class MarketAddress {
 
     public MarketAddress(Boolean isDefault) {
         this.isDefault = isDefault;
-    }
-
-    public MarketAddress(Integer id, Boolean deleted) {
-        this.id = id;
-        this.deleted = deleted;
     }
 
     // public Integer getId() {

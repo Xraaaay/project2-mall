@@ -2,6 +2,9 @@ package com.cskaoyan.exception;
 
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.controller.wx.auth.WxAuthController;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -30,9 +33,19 @@ public class CommonControllerAdvice {
         return WxAuthController.unAuthc();
     }
 
+    @ExceptionHandler({UnknownAccountException.class, IncorrectCredentialsException.class})
+    public BaseRespVo invalidUsernamePassword(Exception exception) {
+        return BaseRespVo.invalidParameter("用户名或账号密码不正确");
+    }
+
     // 顶级异常处理
     // @ExceptionHandler(Throwable.class)
     public BaseRespVo commonException(Throwable throwable) {
         return BaseRespVo.invalidData("参数异常");
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public BaseRespVo noPermission(){
+        return BaseRespVo.noPermission();
     }
 }

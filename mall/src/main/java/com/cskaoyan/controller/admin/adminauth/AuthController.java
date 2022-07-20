@@ -94,10 +94,10 @@ public class AuthController {
         return new BaseRespVo(null, 501, "请登录");
     }
 
-    @RequestMapping("403")
-    public BaseRespVo noPermissiom() {
-        return new BaseRespVo(null, 506, "无操作权限");
-    }
+    // @RequestMapping("403")
+    // public BaseRespVo noPermissiom() {
+    //     return new BaseRespVo(null, 506, "无操作权限");
+    // }
 
     @RequestMapping("index")
     public BaseRespVo index() {

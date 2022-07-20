@@ -101,4 +101,11 @@ public class CouponControllerWX {
             return BaseRespVo.ok("兑换成功");
         }
     }
+
+    @GetMapping("/selectlist")
+    public BaseRespVo selectList() {
+
+
+        return BaseRespVo.ok(null);
+    }
 }

@@ -113,12 +113,8 @@ public class AdminLoginServiceImpl implements AdminLoginService {
         // 再根据permission表的permission去role-permission表中找到api()
         ArrayList<String> permsApi = new ArrayList<>();
         for (String perm : perms) {
-            MarketRolePermissionExample rpExample = new MarketRolePermissionExample();
-            rpExample.createCriteria().andIdEqualTo(perm);
-            List<MarketRolePermission> mrps = marketRolePermissionMapper.selectByExample(rpExample);
-            for (MarketRolePermission mrp : mrps) {
-                permsApi.add(mrp.getApi());
-            }
+            String api = marketRolePermissionMapper.selectApiByPermission(perm);
+            permsApi.add(api);
         }
 
         InfoData infoData = new InfoData();

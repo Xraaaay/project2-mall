@@ -92,26 +92,18 @@ public class MarketRealm extends AuthorizingRealm {
 
         MarketAdmin principal = (MarketAdmin) principalCollection.getPrimaryPrincipal();
 
-        // 根据用户信息里的role-id到permission表中拿到permission信息（拿到钥匙）
-        List<MarketPermission> marketPermissions = null;
+        // 根据用户信息里的role-id到permission表中拿到permission信息
+        List<String> permissions = null;
         for (Integer roleId : principal.getRoleIds()) {
-
             MarketPermissionExample permissionExample = new MarketPermissionExample();
-
             permissionExample.createCriteria().andRoleIdEqualTo(roleId);
-
-            marketPermissions = marketPermissionMapper.selectByExample(permissionExample);
+            permissions = marketPermissionMapper.selectPermissionsByExample(permissionExample);
         }
-
-
 
         // 把权限信息放入授权信息中
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
 
-        for (MarketPermission marketPermission : marketPermissions) {
-
-            simpleAuthorizationInfo.addStringPermission(marketPermission.getPermission());
-        }
+        simpleAuthorizationInfo.addStringPermissions(permissions);
 
         return simpleAuthorizationInfo;
     }
