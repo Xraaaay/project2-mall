@@ -10,8 +10,7 @@ import com.cskaoyan.mapper.common.MarketUserMapper;
 import com.cskaoyan.util.GetUserInfoUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
