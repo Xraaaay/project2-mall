@@ -26,5 +26,5 @@ public class MyCouponListVO {
     Date endTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Date startTime;
-    boolean available = false;
+    boolean available = true;
 }

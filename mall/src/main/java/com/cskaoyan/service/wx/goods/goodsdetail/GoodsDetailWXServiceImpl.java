@@ -7,16 +7,15 @@ import com.cskaoyan.bean.wx.goods.detail.goodsdetail.MarketCommentVo;
 import com.cskaoyan.bean.wx.goods.detail.goodsdetail.Specification;
 import com.cskaoyan.mapper.common.*;
 import com.cskaoyan.service.wx.auth.AccountServiceImpl;
+import com.github.pagehelper.PageHelper;
 import com.sun.xml.bind.v2.model.core.ID;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -57,6 +56,9 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
     @Autowired
     MarketCollectMapper marketCollectMapper;
 
+    @Autowired
+    MarketFootprintMapper marketFootprintMapper;
+
     @Override
     public GoodsDetailVO detail(Integer goodsId) {
         // attribute
@@ -66,6 +68,8 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
 
         //comment
         // 根据商品id查询评论
+        // 分页
+        PageHelper.startPage(1, 2, "add_time desc");
         Comment comment = new Comment();
         List<MarketCommentVo> marketCommentVos = new ArrayList<>();
         MarketCommentExample marketCommentExample = new MarketCommentExample();
@@ -149,10 +153,13 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
         int userHasCollect = 0;
         Subject subject = SecurityUtils.getSubject();
         MarketUser user = null;
-        if (subject == null) {
-            user = (MarketUser) subject.getPrincipals().getPrimaryPrincipal();
-        }
-        if (user != null) {
+        PrincipalCollection principals = subject.getPrincipals();
+        if (principals != null) {
+            user = (MarketUser) principals.getPrimaryPrincipal();
+            // 加入足迹
+            MarketFootprint marketFootprint = new MarketFootprint(null, user.getId(), goodsId, new Date(), new Date(), false);
+            marketFootprintMapper.insertSelective(marketFootprint);
+            // userHasCollect
             MarketCollectExample marketCollectExample = new MarketCollectExample();
             marketCollectExample.createCriteria().
                     andDeletedEqualTo(false).
