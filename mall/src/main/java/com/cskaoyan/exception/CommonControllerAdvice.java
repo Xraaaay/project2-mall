@@ -29,7 +29,7 @@ public class CommonControllerAdvice {
 
     @ExceptionHandler(UnAuthException.class)
     public BaseRespVo unAuth(UnAuthException exception) {
-        // 重定向到登录界面
+        // 跳转到登录界面
         return WxAuthController.unAuthc();
     }
 

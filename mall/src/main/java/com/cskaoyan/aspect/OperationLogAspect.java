@@ -103,8 +103,8 @@ public class OperationLogAspect {
             }
         }
 
+        // 操作状态：失败
         if (errno != 0) {
-            // 操作状态：失败
             log.setStatus(false);
             log.setResult(errmsg);
             logMapper.insertSelective(log);
@@ -127,13 +127,13 @@ public class OperationLogAspect {
             MarketAdmin deleteAdmin = (MarketAdmin) args[0];
             log.setResult(deleteAdmin.getUsername());
         } else if ("订单发货".equals(action)) {
-            // 操作结果：快递单号
+            // 操作结果：订单编号
             MarketOrderShipBo shipBo = (MarketOrderShipBo) args[0];
             Integer orderId = shipBo.getOrderId();
             MarketOrder marketOrder = orderMapper.selectByPrimaryKey(orderId);
             log.setResult("订单编号：" + marketOrder.getOrderSn());
         } else if ("删除订单".equals(action)) {
-            // 操作结果：快递单号
+            // 操作结果：订单编号
             Map map = (Map) args[0];
             Integer orderId = (Integer) map.get("orderId");
             MarketOrder marketOrder = orderMapper.selectByPrimaryKey(orderId);
