@@ -72,15 +72,18 @@ public class GoodsWxServiceImpl implements GoodsWxService {
     @Override
     @Transactional
     public PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order) {
-        //将用户输入关键词加入历史表中
-        Subject subject = SecurityUtils.getSubject();
-        MarketUser primaryPrincipal = (MarketUser) subject.getPrincipals().getPrimaryPrincipal();
-        MarketSearchHistory marketSearchHistory = new MarketSearchHistory();
-        marketSearchHistory.setAddTime(new Date());
-        marketSearchHistory.setFrom("wx");
-        marketSearchHistory.setKeyword(keyword);
-        marketSearchHistory.setUserId(primaryPrincipal.getId());
-        marketSearchHistoryMapper.insertSelective(marketSearchHistory);
+        //如果没有关键词输入就不加入
+        if (keyword!=null){
+            //将用户输入关键词加入历史表中
+            Subject subject = SecurityUtils.getSubject();
+            MarketUser primaryPrincipal = (MarketUser) subject.getPrincipals().getPrimaryPrincipal();
+            MarketSearchHistory marketSearchHistory = new MarketSearchHistory();
+            marketSearchHistory.setAddTime(new Date());
+            marketSearchHistory.setFrom("wx");
+            marketSearchHistory.setKeyword(keyword);
+            marketSearchHistory.setUserId(primaryPrincipal.getId());
+            marketSearchHistoryMapper.insertSelective(marketSearchHistory);
+        }
 
 
         Integer categoryId = listWxBo.getCategoryId();
@@ -89,11 +92,6 @@ public class GoodsWxServiceImpl implements GoodsWxService {
 
         PageHelper.startPage(page,limit);
 
-        //三级类目  注释是备选方法 封装json数据可以但是懒得匹配映射
-        // GoodsListVoExample goodsListVoExample = new GoodsListVoExample();
-        // GoodsListVoExample.Criteria criteria = goodsListVoExample.createCriteria();
-        // criteria.andCategoryIdEqualTo(categoryId);
-        // List<GoodsListVo> list = marketGoodsMapper.selectByExample(goodsListVoExample);
 
         //根据类目id找到属于这个品类下商品
         MarketGoodsExample marketGoodsExample = new MarketGoodsExample();
