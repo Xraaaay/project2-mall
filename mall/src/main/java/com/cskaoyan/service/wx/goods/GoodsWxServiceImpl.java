@@ -71,18 +71,21 @@ public class GoodsWxServiceImpl implements GoodsWxService {
 
     @Override
     @Transactional
-    public PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order) {
+    public PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order,Integer brandId) {
         //如果没有关键词输入就不加入
         if (keyword!=null){
             //将用户输入关键词加入历史表中
             Subject subject = SecurityUtils.getSubject();
-            MarketUser primaryPrincipal = (MarketUser) subject.getPrincipals().getPrimaryPrincipal();
-            MarketSearchHistory marketSearchHistory = new MarketSearchHistory();
-            marketSearchHistory.setAddTime(new Date());
-            marketSearchHistory.setFrom("wx");
-            marketSearchHistory.setKeyword(keyword);
-            marketSearchHistory.setUserId(primaryPrincipal.getId());
-            marketSearchHistoryMapper.insertSelective(marketSearchHistory);
+            PrincipalCollection principals = subject.getPrincipals();
+            if (principals!=null){
+                MarketUser primaryPrincipal = (MarketUser) principals.getPrimaryPrincipal();
+                MarketSearchHistory marketSearchHistory = new MarketSearchHistory();
+                marketSearchHistory.setAddTime(new Date());
+                marketSearchHistory.setFrom("wx");
+                marketSearchHistory.setKeyword(keyword);
+                marketSearchHistory.setUserId(primaryPrincipal.getId());
+                marketSearchHistoryMapper.insertSelective(marketSearchHistory);
+            }
         }
 
 
@@ -91,12 +94,15 @@ public class GoodsWxServiceImpl implements GoodsWxService {
         Integer page = listWxBo.getPage();
 
         PageHelper.startPage(page,limit);
-
-
         //根据类目id找到属于这个品类下商品
         MarketGoodsExample marketGoodsExample = new MarketGoodsExample();
         MarketGoodsExample.Criteria criteria = marketGoodsExample.createCriteria();
-        criteria.andCategoryIdEqualTo(categoryId);
+        if (categoryId!=null){
+            criteria.andCategoryIdEqualTo(categoryId);
+        }
+        if (brandId!=null){
+            criteria.andBrandIdEqualTo(brandId);
+        }
         List<MarketGoods> list = marketGoodsMapper.selectByExample(marketGoodsExample);
 
 
@@ -129,28 +135,47 @@ public class GoodsWxServiceImpl implements GoodsWxService {
         MarketGoodsExample marketGoodsExample = new MarketGoodsExample();
         MarketGoodsExample.Criteria criteria = marketGoodsExample.createCriteria();
         criteria.andCategoryIdEqualTo(categoryId);
+        PageHelper.startPage(1,6);
         List<MarketGoodsVo> marketGoodsVos = marketGoodsMapper.selectByExampleVo(marketGoodsExample);
         PageInfo<MarketGoodsVo> marketGoodsVoPageInfo = new PageInfo<>(marketGoodsVos);
 
-        // CommonData<MarketGoodsVo> marketGoodsVoCommonData = new CommonData<>();
+        //相关商品 显示
+        CommonData<MarketGoodsVo> commonData = new CommonData<>();
+        commonData.setTotal((int) marketGoodsVoPageInfo.getTotal());
+        commonData.setPages(marketGoodsVoPageInfo.getPages());
+        commonData.setPage(marketGoodsVoPageInfo.getPageNum());
+        commonData.setLimit(6);
+        commonData.setList(marketGoodsVoPageInfo.getList());
 
-        CommonData data = CommonData.data(marketGoodsVoPageInfo);
-
-        return data;
+        return commonData;
     }
 
     @Override
     @Transactional
     public DetailWxVo detail(int i) {
+        DetailWxVo detailWxVo = new DetailWxVo();
+
         //获取用户id
         Subject subject = SecurityUtils.getSubject();
-        MarketUser primaryPrincipal = (MarketUser) subject.getPrincipals().getPrimaryPrincipal();
-        Integer userId = primaryPrincipal.getId();
-        //加入足迹
-        MarketFootprint marketFootprint = new MarketFootprint(null, userId, i, new Date(), null, false);
-        marketFootprintMapper.insertSelective(marketFootprint);
+        PrincipalCollection principals = subject.getPrincipals();
+        if (principals != null) {
+            MarketUser primaryPrincipal = (MarketUser) principals.getPrimaryPrincipal();
+            Integer userId = primaryPrincipal.getId();
+            //加入足迹
+            MarketFootprint marketFootprint = new MarketFootprint(null, userId, i, new Date(), null, false);
+            marketFootprintMapper.insertSelective(marketFootprint);
 
-        DetailWxVo detailWxVo = new DetailWxVo();
+            //userHasCollect
+            MarketCollectExample marketCollectExample = new MarketCollectExample();
+            MarketCollectExample.Criteria collectExampleCriteria = marketCollectExample.createCriteria();
+            collectExampleCriteria.andValueIdEqualTo(i);
+            collectExampleCriteria.andUserIdEqualTo(userId);
+
+            List<MarketCollect> marketCollects = marketCollectMapper.selectByExample(marketCollectExample);
+            if (marketCollects.size()==1){
+                detailWxVo.setUserHasCollect(true);
+            }
+        }
 
         //specificationList → valueList → specification
         MarketGoodsSpecificationExample marketGoodsSpecificationExample = new MarketGoodsSpecificationExample();
@@ -205,17 +230,6 @@ public class GoodsWxServiceImpl implements GoodsWxService {
         //issue
         List<MarketIssue> marketIssues = marketIssueMapper.selectByExample(null);
         detailWxVo.setIssue(marketIssues);
-
-        //userHasCollect
-        MarketCollectExample marketCollectExample = new MarketCollectExample();
-        MarketCollectExample.Criteria collectExampleCriteria = marketCollectExample.createCriteria();
-        collectExampleCriteria.andValueIdEqualTo(i);
-        collectExampleCriteria.andUserIdEqualTo(userId);
-
-        List<MarketCollect> marketCollects = marketCollectMapper.selectByExample(marketCollectExample);
-        if (marketCollects.size()==1){
-            detailWxVo.setUserHasCollect(true);
-        }
 
 
         //shareImage

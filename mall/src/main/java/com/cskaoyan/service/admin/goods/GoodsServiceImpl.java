@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * 商品信息模块
- * 
+ *
  * @author pqk
  * @since 2022/07/16 21:14
  */
@@ -57,7 +57,7 @@ public class GoodsServiceImpl implements GoodsService {
 
         PageInfo<MarketGoods> marketGoodsPageInfo = new PageInfo<>(marketGoods);
 
-        marketGoodsCommonData.setTotal((int)marketGoodsPageInfo.getTotal());
+        marketGoodsCommonData.setTotal((int) marketGoodsPageInfo.getTotal());
         marketGoodsCommonData.setLimit(marketGoodsPageInfo.getPageSize());
         marketGoodsCommonData.setList(marketGoods);
         marketGoodsCommonData.setPage(marketGoodsPageInfo.getPageNum());
@@ -68,6 +68,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     /**
      * 商品列表
+     *
      * @param param
      * @param marketGoods
      * @return com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo
@@ -77,10 +78,13 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public IssueAndKeywordListVo list1(BaseParam param, MarketGoods marketGoods) {
         //分页
-        PageHelper.startPage(param.getPage(), param.getLimit());
-
+        if (param.getLimit() != 0) {
+            PageHelper.startPage(param.getPage(), param.getLimit());
+        }
         MarketGoodsExample goodsExample = new MarketGoodsExample();
-        goodsExample.setOrderByClause(param.getSort() + " " + param.getOrder());
+        if (param.getOrder() != null && param.getSort() != null) {
+            goodsExample.setOrderByClause(param.getSort() + " " + param.getOrder());
+        }
 
         MarketGoodsExample.Criteria criteria = goodsExample.createCriteria();
         //条件查询
@@ -88,15 +92,20 @@ public class GoodsServiceImpl implements GoodsService {
             criteria.andIdEqualTo(marketGoods.getId());
         }
         if (marketGoods.getGoodsSn() != null) {
-            criteria.andGoodsSnEqualTo(String.valueOf(marketGoods.getGoodsSn()));
+            criteria.andGoodsSnEqualTo(marketGoods.getGoodsSn());
         }
-        if (marketGoods.getName()!=null) {
-            criteria.andNameLike("%"+marketGoods.getName()+"%");
+        if (marketGoods.getName() != null) {
+            criteria.andNameLike("%" + marketGoods.getName() + "%");
         }
         //查找
         List<MarketGoods> marketGoodsList = marketGoodsMapper.selectByExample(goodsExample);
         PageInfo pageInfo = new PageInfo(marketGoodsList);
-        IssueAndKeywordListVo listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), param.getLimit(), param.getPage(), marketGoodsList);
+        IssueAndKeywordListVo listVo;
+        if (param.getLimit() != 0) {
+            listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), param.getLimit(), param.getPage(), marketGoodsList);
+        } else {
+            listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), pageInfo.getPageSize(), pageInfo.getSize(), marketGoodsList);
+        }
         return listVo;
     }
 
@@ -113,9 +122,6 @@ public class GoodsServiceImpl implements GoodsService {
         MarketGoods goods = marketGoodsMapper.selectByPrimaryKey(id);
         String[] galleryArr = goods.getGallery();
 
-        /*String galleryString = goods.getGallery().replace("[", "").replace("]", "");
-        String[] galleryArr = galleryString.split(",");*/
-
         for (int i = 0; i < galleryArr.length; i++) {
             String replaceAll = galleryArr[i].trim().replaceAll("\"", "");
             galleryArr[i] = replaceAll;
@@ -124,18 +130,18 @@ public class GoodsServiceImpl implements GoodsService {
         // 根据传入id查商品参数表
         MarketGoodsAttributeExample goodsAttributeExample = new MarketGoodsAttributeExample();
         MarketGoodsAttributeExample.Criteria goodsAttributeExampleCriteria =
-            goodsAttributeExample.createCriteria().andGoodsIdEqualTo(id);
+                goodsAttributeExample.createCriteria().andGoodsIdEqualTo(id);
         List<MarketGoodsAttribute> attributes = marketGoodsAttributeMapper.selectByExample(goodsAttributeExample);
         // 根据传入id查商品规格表
         MarketGoodsSpecificationExample goodsSpecificationExample = new MarketGoodsSpecificationExample();
         MarketGoodsSpecificationExample.Criteria specificationExampleCriteria =
-            goodsSpecificationExample.createCriteria().andGoodsIdEqualTo(id);
+                goodsSpecificationExample.createCriteria().andGoodsIdEqualTo(id);
         List<MarketGoodsSpecification> specifications =
-            marketGoodsSpecificationMapper.selectByExample(goodsSpecificationExample);
+                marketGoodsSpecificationMapper.selectByExample(goodsSpecificationExample);
         // 根据传入id查商品货品表
         MarketGoodsProductExample goodsProductExample = new MarketGoodsProductExample();
         MarketGoodsProductExample.Criteria productExampleCriteria =
-            goodsProductExample.createCriteria().andGoodsIdEqualTo(id);
+                goodsProductExample.createCriteria().andGoodsIdEqualTo(id);
         List<MarketGoodsProduct> products = marketGoodsProductMapper.selectByExample(goodsProductExample);
 
         // 根据传入id返回商品类别 ,类别表id，商品分类id
@@ -148,10 +154,10 @@ public class GoodsServiceImpl implements GoodsService {
         arrayList.add(goods.getCategoryId());
 
         MarketGoodsVo marketGoodsVO = new MarketGoodsVo(goods.getId(), goods.getGoodsSn(), goods.getName(),
-            goods.getCategoryId(), goods.getBrandId(), galleryArr, goods.getKeywords(), goods.getBrief(),
-            goods.getIsOnSale(), goods.getSortOrder(), goods.getPicUrl(), goods.getShareUrl(), goods.getIsNew(),
-            goods.getIsHot(), goods.getUnit(), goods.getCounterPrice(), goods.getRetailPrice(), goods.getAddTime(),
-            goods.getUpdateTime(), goods.getDeleted(), goods.getDetail());
+                goods.getCategoryId(), goods.getBrandId(), galleryArr, goods.getKeywords(), goods.getBrief(),
+                goods.getIsOnSale(), goods.getSortOrder(), goods.getPicUrl(), goods.getShareUrl(), goods.getIsNew(),
+                goods.getIsHot(), goods.getUnit(), goods.getCounterPrice(), goods.getRetailPrice(), goods.getAddTime(),
+                goods.getUpdateTime(), goods.getDeleted(), goods.getDetail());
 
         DetailVo detailVo = new DetailVo();
         detailVo.setCategoryIds(arrayList);
@@ -221,15 +227,16 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     @Transactional
     public void create(CreateBo createBo) {
-        // 获得json中goods的数据
+
         // 向goods中插入上架数据
         MarketGoodsVo goods = createBo.getGoods();
         goods.setAddTime(new Date());
-
+        int goodsSn = Integer.parseInt(goods.getGoodsSn());
         // 向specification中插入数据
         List<MarketGoodsSpecification> specifications = createBo.getSpecifications();
         for (MarketGoodsSpecification specification : specifications) {
-            specification.setGoodsId(goods.getId());
+
+            specification.setGoodsId(goodsSn);
             specification.setAddTime(new Date());
             marketGoodsSpecificationMapper.insertSelective(specification);
         }
@@ -241,7 +248,7 @@ public class GoodsServiceImpl implements GoodsService {
         for (MarketGoodsProduct product : products) {
             product.setAddTime(new Date());
             product.setId(null);
-            product.setGoodsId(goods.getId());
+            product.setGoodsId(goodsSn);
 
             LowPrice = product.getPrice();
             if (LowPrice.compareTo(product.getPrice()) == -1) {
@@ -257,7 +264,7 @@ public class GoodsServiceImpl implements GoodsService {
         // 向attributes中插入数据
         List<MarketGoodsAttribute> attributes = createBo.getAttributes();
         for (MarketGoodsAttribute attribute : attributes) {
-            attribute.setGoodsId(goods.getId());
+            attribute.setGoodsId(goodsSn);
             attribute.setAddTime(new Date());
             marketGoodsAttributeMapper.insertSelective(attribute);
         }
@@ -266,7 +273,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     /**
      * 更新商品
-     * 
+     *
      * @param updateBo
      */
     @Override
@@ -292,7 +299,6 @@ public class GoodsServiceImpl implements GoodsService {
         }
 
     }
-
 
 
 }

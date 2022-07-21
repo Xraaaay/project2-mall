@@ -22,9 +22,9 @@ public class MyCouponListVO {
     String tag;
     BigDecimal min;
     BigDecimal discount;
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Date endTime;
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Date startTime;
-    boolean available = false;
+    boolean available = true;
 }

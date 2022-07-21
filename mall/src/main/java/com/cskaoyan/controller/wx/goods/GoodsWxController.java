@@ -38,8 +38,8 @@ public class GoodsWxController {
      * @date 2022/07/19 21:00
      */
     @RequestMapping("list")
-    public BaseRespVo list(ListWxBo listWxBo,String keyword,String sort,String order){
-        PageInfoDataVo list = goodsWxService.list(listWxBo,keyword,sort,order);
+    public BaseRespVo list(ListWxBo listWxBo,String keyword,String sort,String order,Integer brandId){
+        PageInfoDataVo list = goodsWxService.list(listWxBo,keyword,sort,order,brandId);
         return BaseRespVo.ok(list);
     }
 
@@ -68,7 +68,7 @@ public class GoodsWxController {
 
     /**
      * id=1009024
-     * @description 商品详情 // TODO: 2022/7/20
+     * @description 商品详情 //
      * @author pqk
      * @date 2022/07/19 23:19
      */
@@ -81,7 +81,7 @@ public class GoodsWxController {
 
     /**
      * id=1181089
-     * @description 相关商品 // todo 待测试
+     * @description 相关商品 //
      * @author pqk
      * @date 2022/07/20 14:02
      */

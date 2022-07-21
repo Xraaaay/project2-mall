@@ -84,13 +84,12 @@ public class CartController {
     @RequestMapping("add")
     public BaseRespVo addWx(@RequestBody Map<String, Integer> map) {
         Integer goodsCount = cartService.addWx(map);
-        if (goodsCount == 200){
-            return BaseRespVo.ok("添加成功");
-        } else if (goodsCount == 711) {
+        if (goodsCount == 711) {
             return BaseRespVo.invalidNumber("库存不足");
-        }else {
+        }else if (goodsCount == 404){
             return BaseRespVo.ok("加入购物车失败");
         }
+        return BaseRespVo.ok(goodsCount);
     }
 
 
@@ -101,10 +100,11 @@ public class CartController {
             return BaseRespVo.ok("添加成功");
         } else if (msg == 711) {
             return BaseRespVo.invalidNumber("库存不足");
-        }else {
+        }else if (msg == 404){
             return BaseRespVo.ok("插入异常");
+        }else {
+            return BaseRespVo.ok(msg);
         }
-
     }
 
     @GetMapping("checkout")

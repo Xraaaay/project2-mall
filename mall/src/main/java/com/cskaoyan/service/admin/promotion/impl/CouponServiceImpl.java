@@ -250,10 +250,12 @@ public class CouponServiceImpl implements CouponService {
         BigDecimal amount = new BigDecimal(0);
         if (cartId == 0) {
             // 当前用户的所有商品
-            // 根据用户id查询购物车商品表
+            // 根据用户id查询购物车商品表, 当前用户购物车中所有选中的商品
             MarketCartExample cartExample = new MarketCartExample();
             MarketCartExample.Criteria criteria = cartExample.createCriteria();
-            criteria.andDeletedEqualTo(false).andUserIdEqualTo(user.getId());
+            criteria.andDeletedEqualTo(false).
+                    andUserIdEqualTo(user.getId()).
+                    andCheckedEqualTo(true);
             List<MarketCart> cartList = cartMapper.selectByExample(cartExample);
 
             // 所有选中的商品总价
@@ -269,7 +271,7 @@ public class CouponServiceImpl implements CouponService {
             // 直接下单页面查询可用优惠券
             // 只有一个商品
 
-            // 根据cartId查询用户id和商品id和购物车中是否选择状态
+            // 根据cartId查询用户id&商品id&购物车中是否选择状态
             MarketCartExample cartExample = new MarketCartExample();
             MarketCartExample.Criteria criteria = cartExample.createCriteria();
             criteria.andDeletedEqualTo(false).andIdEqualTo(cartId);
@@ -293,7 +295,7 @@ public class CouponServiceImpl implements CouponService {
         List<MyCouponListVO> couponListVOS = commonData.getList();
         for (int i = 0; i < couponListVOS.size(); i++) {
             if (couponListVOS.get(i).getMin().compareTo(amount) > 0) {
-                couponListVOS.remove(i);
+                couponListVOS.get(i).setAvailable(false);
             }
         }
         commonData.setList(couponListVOS);
