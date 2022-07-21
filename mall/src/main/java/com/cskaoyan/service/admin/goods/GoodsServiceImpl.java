@@ -304,8 +304,6 @@ public class GoodsServiceImpl implements GoodsService {
         }
 
         for (MarketGoodsAttribute attribute : attributes) {
-
-
             if (attribute.getId()==null){
                 MarketGoodsAttribute marketGoodsAttribute = new MarketGoodsAttribute();
 
