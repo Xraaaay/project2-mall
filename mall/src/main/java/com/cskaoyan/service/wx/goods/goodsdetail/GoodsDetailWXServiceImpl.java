@@ -8,7 +8,6 @@ import com.cskaoyan.bean.wx.goods.detail.goodsdetail.Specification;
 import com.cskaoyan.mapper.common.*;
 import com.cskaoyan.service.wx.auth.AccountServiceImpl;
 import com.github.pagehelper.PageHelper;
-import com.sun.xml.bind.v2.model.core.ID;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -27,44 +26,44 @@ import java.util.*;
 public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
 
     @Autowired
-    MarketGoodsSpecificationMapper marketGoodsSpecificationMapper;
+    MarketGoodsSpecificationMapper goodsSpecificationMapper;
 
     @Autowired
-    MarketCommentMapper marketCommentMapper;
+    MarketCommentMapper commentMapper;
 
     @Autowired
-    MarketUserMapper marketUserMapper;
+    MarketUserMapper userMapper;
 
     @Autowired
-    MarketGrouponRulesMapper marketGrouponRulesMapper;
+    MarketGrouponRulesMapper grouponRulesMapper;
 
     @Autowired
-    MarketIssueMapper marketIssueMapper;
+    MarketIssueMapper issueMapper;
 
     @Autowired
-    MarketGoodsAttributeMapper marketGoodsAttributeMapper;
+    MarketGoodsAttributeMapper goodsAttributeMapper;
 
     @Autowired
-    MarketGoodsProductMapper marketGoodsProductMapper;
+    MarketGoodsProductMapper goodsProductMapper;
 
     @Autowired
-    MarketGoodsMapper marketGoodsMapper;
+    MarketGoodsMapper goodsMapper;
 
     @Autowired
-    MarketBrandMapper marketBrandMapper;
+    MarketBrandMapper brandMapper;
 
     @Autowired
-    MarketCollectMapper marketCollectMapper;
+    MarketCollectMapper collectMapper;
 
     @Autowired
-    MarketFootprintMapper marketFootprintMapper;
+    MarketFootprintMapper footprintMapper;
 
     @Override
     public GoodsDetailVO detail(Integer goodsId) {
         // attribute
         MarketGoodsAttributeExample marketGoodsAttributeExample = new MarketGoodsAttributeExample();
         marketGoodsAttributeExample.createCriteria().andDeletedEqualTo(false).andGoodsIdEqualTo(goodsId);
-        List<MarketGoodsAttribute> attribute = marketGoodsAttributeMapper.selectByExample(marketGoodsAttributeExample);
+        List<MarketGoodsAttribute> attribute = goodsAttributeMapper.selectByExample(marketGoodsAttributeExample);
 
         //comment
         // 根据商品id查询评论
@@ -73,13 +72,16 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
         Comment comment = new Comment();
         List<MarketCommentVo> marketCommentVos = new ArrayList<>();
         MarketCommentExample marketCommentExample = new MarketCommentExample();
-        marketCommentExample.createCriteria().andDeletedEqualTo(false).andValueIdEqualTo(goodsId);
-        List<MarketComment> commentList = marketCommentMapper.selectByExample(marketCommentExample);
+        marketCommentExample.createCriteria().
+                andDeletedEqualTo(false).
+                andValueIdEqualTo(goodsId).
+                andTypeEqualTo((byte) 0);
+        List<MarketComment> commentList = commentMapper.selectByExample(marketCommentExample);
         // 封装MarketCommentVO
         if (commentList.size() > 0) {
             for (MarketComment m : commentList) {
                 // 查询用户昵称
-                String username = marketUserMapper.selectByPrimaryKey(m.getUserId()).getUsername();
+                String username = userMapper.selectByPrimaryKey(m.getUserId()).getUsername();
                 MarketCommentVo marketCommentVo = new MarketCommentVo();
                 marketCommentVo.setAddTime(m.getAddTime());
                 marketCommentVo.setAdminContent(m.getAdminContent());
@@ -93,27 +95,27 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
         }
         MarketCommentExample example = new MarketCommentExample();
         example.createCriteria().andValueIdEqualTo(goodsId);
-        long count = marketCommentMapper.countByExample(example);
+        long count = commentMapper.countByExample(example);
         comment.setData(marketCommentVos);
         comment.setCount((int) count);
 
         // groupon
         MarketGrouponRulesExample marketGrouponRulesExample = new MarketGrouponRulesExample();
         marketGrouponRulesExample.createCriteria().andDeletedEqualTo(false).andGoodsIdEqualTo(goodsId);
-        List<MarketGrouponRules> groupon = marketGrouponRulesMapper.selectByExample(marketGrouponRulesExample);
+        List<MarketGrouponRules> groupon = grouponRulesMapper.selectByExample(marketGrouponRulesExample);
 
         // info
         MarketGoodsExample infoExample = new MarketGoodsExample();
         infoExample.createCriteria().andDeletedEqualTo(false).andIdEqualTo(goodsId);
-        MarketGoods info = marketGoodsMapper.selectByExample(infoExample).get(0);
+        MarketGoods info = goodsMapper.selectByExample(infoExample).get(0);
 
         // issue
-        List<MarketIssue> issue = marketIssueMapper.selectByExample(null);
+        List<MarketIssue> issue = issueMapper.selectByExample(null);
 
         // productList
         MarketGoodsProductExample marketGoodsProductExample = new MarketGoodsProductExample();
         marketGoodsProductExample.createCriteria().andDeletedEqualTo(false).andGoodsIdEqualTo(goodsId);
-        List<MarketGoodsProduct> productList = marketGoodsProductMapper.selectByExample(marketGoodsProductExample);
+        List<MarketGoodsProduct> productList = goodsProductMapper.selectByExample(marketGoodsProductExample);
 
         // share
         boolean share = true;
@@ -125,7 +127,7 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
         List<Specification> specificationList = new ArrayList<>();
         MarketGoodsSpecificationExample marketGoodsSpecificationExample = new MarketGoodsSpecificationExample();
         marketGoodsSpecificationExample.createCriteria().andDeletedEqualTo(false).andGoodsIdEqualTo(goodsId);
-        List<MarketGoodsSpecification> specifications = marketGoodsSpecificationMapper.selectByExample(marketGoodsSpecificationExample);
+        List<MarketGoodsSpecification> specifications = goodsSpecificationMapper.selectByExample(marketGoodsSpecificationExample);
         // 去重
         HashSet<String> names = new HashSet<>();
         List<MarketGoodsSpecification> marketGoodsSpecifications = new ArrayList<>();
@@ -142,12 +144,12 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
             specification1.setName(name);
             MarketGoodsSpecificationExample goodsSpecificationExample = new MarketGoodsSpecificationExample();
             goodsSpecificationExample.createCriteria().andSpecificationEqualTo(name).andGoodsIdEqualTo(goodsId);
-            specification1.setValueList(marketGoodsSpecificationMapper.selectByExample(goodsSpecificationExample));
+            specification1.setValueList(goodsSpecificationMapper.selectByExample(goodsSpecificationExample));
             specificationList.add(specification1);
         }
 
         // brand
-        MarketBrand brand = marketBrandMapper.selectByPrimaryKey(info.getBrandId());
+        MarketBrand brand = brandMapper.selectByPrimaryKey(info.getBrandId());
 
         // userHasCollect
         int userHasCollect = 0;
@@ -158,7 +160,7 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
             user = (MarketUser) principals.getPrimaryPrincipal();
             // 加入足迹
             MarketFootprint marketFootprint = new MarketFootprint(null, user.getId(), goodsId, new Date(), new Date(), false);
-            marketFootprintMapper.insertSelective(marketFootprint);
+            footprintMapper.insertSelective(marketFootprint);
             // userHasCollect
             MarketCollectExample marketCollectExample = new MarketCollectExample();
             marketCollectExample.createCriteria().
@@ -166,7 +168,7 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
                     andUserIdEqualTo(user.getId()).
                     andValueIdEqualTo(goodsId).
                     andTypeEqualTo((byte) 0);
-            List<MarketCollect> marketCollects = marketCollectMapper.selectByExample(marketCollectExample);
+            List<MarketCollect> marketCollects = collectMapper.selectByExample(marketCollectExample);
             if (marketCollects.size() > 0) {
                 userHasCollect = 1;
             }
