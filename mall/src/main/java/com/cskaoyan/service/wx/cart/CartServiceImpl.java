@@ -194,7 +194,7 @@ public class CartServiceImpl implements CartService {
         Integer existGoodsId = isExistGoodsId(marketUserId, goodsId);
         //查询goodsId 哪一条
         MarketCartExample marketCartGoodsIdExample = new MarketCartExample();
-        MarketCartExample.Criteria cartGoodsExampleCriteria = marketCartExample.createCriteria();
+        MarketCartExample.Criteria cartGoodsExampleCriteria = marketCartGoodsIdExample.createCriteria();
         cartGoodsExampleCriteria.andDeletedEqualTo(false)
                 .andUserIdEqualTo(marketUserId)
                 .andGoodsIdEqualTo(goodsId);
@@ -208,7 +208,7 @@ public class CartServiceImpl implements CartService {
             if (existGoodsId == 1) {
                 Integer newNumber = marketGoodsCarts.get(0).getNumber() + number;
                 short NewNumbershort = newNumber.shortValue();
-                marketCarts.get(0).setNumber(NewNumbershort);
+                marketGoodsCarts.get(0).setNumber(NewNumbershort);
                 marketCartMapper.updateByPrimaryKeySelective(marketGoodsCarts.get(0));
             } else {
                 //不存在相同existGoodsId 插入
@@ -224,6 +224,7 @@ public class CartServiceImpl implements CartService {
         return sumCartNumber;
     }
 
+    //是 增加购物车 和 立即购买里面的方法 判断是否有相同的 goodsid
     private Integer isExistGoodsId(Integer marketUserId, Integer goodsId) {
         MarketCartExample marketCartExample = new MarketCartExample();
         MarketCartExample.Criteria cartExampleCriteria = marketCartExample.createCriteria();
@@ -232,7 +233,7 @@ public class CartServiceImpl implements CartService {
         //开始查询
         List<MarketCart> marketCarts = marketCartMapper.selectByExample(marketCartExample);
         for (MarketCart cart : marketCarts) {
-            if (cart.getGoodsId() == goodsId) {
+            if (cart.getGoodsId().equals(goodsId) ) {
                 //存在相同 goodsid
                 return 1;
             }
@@ -403,16 +404,37 @@ public class CartServiceImpl implements CartService {
                 true, marketGoodsProduct.getUrl(), marketGoodsProduct.getAddTime(), marketGoodsProduct.getUpdateTime(), false);
         //插入数据，如果成功就返回200，异常404 数量不足返回 711
 
+
+        //判断 是否加入购物车的商品id已经存在于cart的数据库，如果存在只增加数量，如果不存在，再执行插入
+        //同理，立即购买也是一样。但是立即购买要返回的是id  哪如果有这个商品的话，只能去插入
+        //existGoodsId 为 1 存在相同 id   为0 不存在相同id
+        Integer existGoodsId = isExistGoodsId(marketUserId, goodsId);
+        //查询goodsId 哪一条
+        MarketCartExample marketCartGoodsIdExample = new MarketCartExample();
+        MarketCartExample.Criteria cartGoodsExampleCriteria = marketCartGoodsIdExample.createCriteria();
+        cartGoodsExampleCriteria.andDeletedEqualTo(false)
+                .andUserIdEqualTo(marketUserId)
+                .andGoodsIdEqualTo(goodsId);
+        List<MarketCart> marketGoodsCarts = marketCartMapper.selectByExample(marketCartGoodsIdExample);
+        //查询出哪个相同goodsId 的商品   然后给他的数量付给新值
+        //但是由于你自己知道查询出来只有一个 但是 系统不知道 还是给了个列表
         try {
-            marketCartMapper.insertSelective(marketCart);
+            if (existGoodsId == 1) {
+                Integer oldId = marketGoodsCarts.get(0).getId();
+                marketCartMapper.deleteByPrimaryKey(oldId);
+
+            }
+                //不存在相同existGoodsId 插入
+                marketCartMapper.insertSelective(marketCart);
+
+
         } catch (Exception e) {
             statusId = 404;
             e.printStackTrace();
             return statusId;
         }
-
+        //返回 id
         return  marketCart.getId();
-
     }
 
 

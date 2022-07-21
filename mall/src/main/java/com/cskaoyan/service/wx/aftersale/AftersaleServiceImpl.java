@@ -71,6 +71,12 @@ public class AftersaleServiceImpl implements AftersaleService {
         marketAftersale.setUpdateTime(addTime);
         marketAftersale.setDeleted(false);
         marketAftersaleMapper.insertSelective(marketAftersale);
+        //修改order表中该订单aftersaleStatus为1；
+        MarketOrder marketOrder = new MarketOrder();
+        marketOrder.setId(userId);
+        marketOrder.setUpdateTime(new Date());
+        marketOrder.setAftersaleStatus((short)1);
+        marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
     }
 
     /**

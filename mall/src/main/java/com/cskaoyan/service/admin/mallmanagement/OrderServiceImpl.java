@@ -165,6 +165,7 @@ public class OrderServiceImpl implements OrderService {
             Date refundTime = new Date();
             marketOrder.setRefundTime(refundTime);
             marketOrder.setUpdateTime(refundTime);
+            marketOrder.setEndTime(refundTime);
             //update
             marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
         }

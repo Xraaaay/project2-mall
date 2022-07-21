@@ -4,9 +4,7 @@ import com.cskaoyan.bean.admin.mallmanagement.po.HandleOption;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarketChannel;
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.order.*;
-import com.cskaoyan.mapper.common.MarketCommentMapper;
-import com.cskaoyan.mapper.common.MarketOrderGoodsMapper;
-import com.cskaoyan.mapper.common.MarketOrderMapper;
+import com.cskaoyan.mapper.common.*;
 import com.cskaoyan.util.Constant;
 import com.github.pagehelper.PageHelper;
 import org.apache.shiro.SecurityUtils;
@@ -16,9 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author changyong
@@ -36,6 +37,21 @@ public class WxOrderServiceImpl implements WxOrderService {
 
     @Autowired
     MarketCommentMapper marketCommentMapper;
+
+    @Autowired
+    MarketCartMapper marketCartMapper;
+
+    @Autowired
+    MarketCouponMapper marketCouponMapper;
+
+    @Autowired
+    MarketCouponUserMapper marketCouponUserMapper;
+
+    @Autowired
+    MarketAddressMapper marketAddressMapper;
+
+    @Autowired
+    MarketGoodsProductMapper marketGoodsProductMapper;
 
     /**
      * 返回订单列表
@@ -63,8 +79,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         if (showType == 4) {
             Integer orderStatus = Constant.showTypeMap.get(showType);
             //showType=4 对应已收货待评价的订单
-            criteria1.andOrderStatusBetween(orderStatus.shortValue(), (short) (orderStatus + 1))
-                    .andCommentsEqualTo((short) 0);
+            criteria1.andOrderStatusBetween(orderStatus.shortValue(), (short) (orderStatus + 1));
         }
         if (showType != 0) {
             //showType=0 表示除了已被删除的订单之外的全部订单
@@ -101,12 +116,14 @@ public class WxOrderServiceImpl implements WxOrderService {
             HandleOption handleOption = null;
             if (order.getOrderStatus() == 401 || order.getOrderStatus() == 402) {
                 //如果已收货
-                if (order.getComments() == 1) {
-                    //如果已评价
-                    handleOption = Constant.handleOptionMap.get((short) 403);
-                } else if (order.getComments() == 0) {
-                    //如果未评价
+                if (order.getComments() != 0) {
+                    // order表中“comments”字段表示该订单中未评价商品数量，
+                    // 如果订单中还有未评价商品，则状态码仍为401或402，handleOption中comment为true
+                    //如果还有商品未评价
                     handleOption = Constant.handleOptionMap.get(order.getOrderStatus());
+                } else if (order.getComments() == 0) {
+                    //如果没有商品未评价
+                    handleOption = Constant.handleOptionMap.get((short) 403);
                 }
             } else {
                 handleOption = Constant.handleOptionMap.get(order.getOrderStatus());
@@ -173,7 +190,8 @@ public class WxOrderServiceImpl implements WxOrderService {
         MarketOrder marketOrder = marketOrderMapper.selectByPrimaryKey(id);
         if ((short) 201 == marketOrder.getOrderStatus()) {
             marketOrder.setOrderStatus((short) 202);
-            marketOrder.setUpdateTime(new Date());
+            Date updateTime = new Date();
+            marketOrder.setUpdateTime(updateTime);
             marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
         }
 
@@ -189,13 +207,6 @@ public class WxOrderServiceImpl implements WxOrderService {
      */
     @Override
     public void comment(WxOrderCommentBo wxOrderCommentBo) {
-        //TODO order表中“comments”字段表示该订单中未评价商品数量，
-        // 如果订单中还有未评价商品，则状态码仍为401或402，handleOption中comment为true
-
-        //TODO 如果一个订单有多个品类商品，那就有多个“待评价”选项，评价其中一个之后，
-        // order表comments改为1，则该订单的其他品类商品不可再评价，
-        // 怎么破
-
         // orderGoodsId为orderGoods表id，根据其查询得到goodsId，orderId，进而得到userId
         MarketOrderGoods marketOrderGoods1 = marketOrderGoodsMapper.selectByPrimaryKey(wxOrderCommentBo.getOrderGoodsId());
         MarketOrder marketOrder1 = marketOrderMapper.selectByPrimaryKey(marketOrderGoods1.getOrderId());
@@ -227,8 +238,8 @@ public class WxOrderServiceImpl implements WxOrderService {
                 marketOrderGoodsMapper.updateByPrimaryKeySelective(marketOrderGoods2);
                 MarketOrder marketOrder2 = new MarketOrder();
                 marketOrder2.setId(marketOrderGoods1.getOrderId());
-                //order表中“comments”字段表示该订单中未评价商品数量，应该将comment-1
-                marketOrder2.setComments((short) (marketOrder1.getOrderStatus()-1));
+                //order表中“comments”字段表示该订单中未评价商品数量，应该将comments-1
+                marketOrder2.setComments((short) (marketOrder1.getComments() - 1));
                 marketOrder2.setUpdateTime(new Date());
                 marketOrderMapper.updateByPrimaryKeySelective(marketOrder2);
             }
@@ -272,7 +283,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         marketOrder.setUpdateTime(new Date());
         //先获取该订单的状态，如果为 102: '用户取消', 103: '系统取消', 203: '已退款'，401：'用户收货'，402：'系统收货'，则可以删除订单
         Short orderStatus = marketOrderMapper.selectByPrimaryKey(id).getOrderStatus();
-        if ((short) 102 == orderStatus || (short) 103 == orderStatus || (short) 203 == orderStatus|| (short) 401 == orderStatus|| (short) 402 == orderStatus) {
+        if ((short) 102 == orderStatus || (short) 103 == orderStatus || (short) 203 == orderStatus || (short) 401 == orderStatus || (short) 402 == orderStatus) {
             marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
         }
     }
@@ -333,8 +344,201 @@ public class WxOrderServiceImpl implements WxOrderService {
      */
     @Override
     public WxOrderSubmitPo submit(WxOrderSubmitBo wxOrderSubmitBo) {
-        //TODO 等待wx/goods/detail,wx/cart/goodscount,wx/cart/fastadd,wx/cart/checkout
-        // 需要修改购物车、商品库存、优惠券数量
-        return null;
+        //等待wx/goods/detail,wx/cart/goodscount,wx/cart/fastadd,wx/cart/checkout
+        //从购物车中取出商品，取出之后逻辑删除
+        //如果cartId=0，表示是从购物车中选择之后提交，如果cartId!=0，表示是从商品详情页面直接提交，
+        //已经判断库存是否足够，此处不赘述
+        MarketCartExample marketCartExample = new MarketCartExample();
+        MarketCartExample.Criteria criteria = marketCartExample.createCriteria();
+        //获取当前登录的userId
+        Subject subject = SecurityUtils.getSubject();
+        PrincipalCollection principals = subject.getPrincipals();
+        if (principals == null) {
+            subject.logout();
+        }
+        MarketUser primaryPrincipal = (MarketUser) principals.getPrimaryPrincipal();
+        criteria.andUserIdEqualTo(primaryPrincipal.getId());
+        if (wxOrderSubmitBo.getCartId() == 0) {
+            //如果cartId=0，表示此时cart表中全部fastadd生成的数据都应该已经逻辑删除
+            criteria.andCheckedEqualTo(true)
+                    .andDeletedEqualTo(false);
+        } else {
+            //如果cartId!=0，fastadd增加一条数据到cart表，同时该商品加入到页面购物车中
+            //如果cartId!=0，表示cartId为cart表主键id，也可根据主键查询得到数据
+            criteria.andIdEqualTo(wxOrderSubmitBo.getCartId())
+                    .andCheckedEqualTo(true)
+                    .andDeletedEqualTo(false);
+        }
+        List<MarketCart> marketCarts = marketCartMapper.selectByExample(marketCartExample);
+
+        //根据商品价格、数量、优惠券及运费，得出总价
+        //'实付费用， = order_price - integral_price',
+        BigDecimal actualPrice = new BigDecimal(0);
+        //用户积分减免
+        BigDecimal integralPrice = new BigDecimal(0);
+        //'订单费用， = goods_price + freight_price - coupon_price',
+        BigDecimal orderPrice = new BigDecimal(0);
+        //商品总费用
+        BigDecimal goodsPrice = new BigDecimal(0);
+        //优惠券费用
+        BigDecimal couponPrice = new BigDecimal(0);
+        //配送费用
+        BigDecimal freightPrice = new BigDecimal(0);
+
+        //团购优惠价减免，数据库中运算不包含该项，order表中该字段没有默认值
+        BigDecimal grouponPrice = new BigDecimal(0);
+        // 先for循环得到商品价格之和
+        for (int i = 0; i < marketCarts.size(); i++) {
+            MarketCart marketCart = marketCarts.get(i);
+            BigDecimal price = marketCart.getPrice();
+            Short number = marketCart.getNumber();
+            goodsPrice = goodsPrice.add(price.multiply(new BigDecimal(number)));
+        }
+        //得到couponPrice优惠券减免，根据couponId得到discount值
+        if (wxOrderSubmitBo.getCouponId() != 0) {
+            couponPrice = marketCouponMapper.selectByPrimaryKey(wxOrderSubmitBo.getCouponId()).getDiscount();
+        }
+        orderPrice = goodsPrice.add(freightPrice).subtract(couponPrice);
+        //如果orderPrice小于88元，加10元运费
+        if (orderPrice.compareTo(new BigDecimal(88)) == -1) {
+            freightPrice = freightPrice.add(new BigDecimal(10));
+            orderPrice = goodsPrice.add(freightPrice).subtract(couponPrice);
+        }
+        actualPrice = orderPrice.subtract(integralPrice);
+
+        //根据addressId获取地址
+        MarketAddress marketAddress = marketAddressMapper.selectByPrimaryKey(wxOrderSubmitBo.getAddressId());
+        StringBuffer stringBuffer1 = new StringBuffer(marketAddress.getProvince());
+        String address = stringBuffer1.append(marketAddress.getCity())
+                .append(marketAddress.getCounty())
+                .append(marketAddress
+                        .getAddressDetail())
+                .toString();
+        //生成orderSn：年月日+6位随机码
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String format = sdf.format(new Date());
+        StringBuffer stringBuffer = new StringBuffer(format);
+        Random random = new Random();
+        for (int i = 0; i < 6; i++) {
+            int num = random.nextInt(10);
+            stringBuffer.append(num);
+        }
+        String orderSn = stringBuffer.toString();
+        //设置数据
+        MarketOrder marketOrder = new MarketOrder();
+        marketOrder.setUserId(primaryPrincipal.getId());
+        marketOrder.setOrderSn(orderSn);
+        marketOrder.setOrderStatus((short) 101);
+        marketOrder.setAftersaleStatus((short) 0);
+        marketOrder.setConsignee(marketAddress.getName());
+        marketOrder.setMobile(marketAddress.getTel());
+        marketOrder.setAddress(address);
+        marketOrder.setMessage("");
+        marketOrder.setGoodsPrice(goodsPrice);
+        marketOrder.setFreightPrice(freightPrice);
+        marketOrder.setCouponPrice(couponPrice);
+        marketOrder.setIntegralPrice(integralPrice);
+        marketOrder.setOrderPrice(orderPrice);
+        marketOrder.setActualPrice(actualPrice);
+        marketOrder.setGrouponPrice(grouponPrice);
+        marketOrder.setComments((short) marketCarts.size());
+        Date addTime = new Date();
+        marketOrder.setAddTime(addTime);
+        marketOrder.setUpdateTime(addTime);
+        marketOrder.setDeleted(false);
+        //插入数据
+        int affectedRows1 = marketOrderMapper.insertSelective(marketOrder);
+
+        // 插入order_goods表
+        for (int i = 0; i < marketCarts.size(); i++) {
+            MarketCart marketCart = marketCarts.get(i);
+            //赋值
+            MarketOrderGoods marketOrderGoods = new MarketOrderGoods();
+            //订单insert订单表时，SQL语句设置了主键返回
+            marketOrderGoods.setOrderId(marketOrder.getId());
+            marketOrderGoods.setGoodsId(marketCart.getGoodsId());
+            marketOrderGoods.setGoodsName(marketCart.getGoodsName());
+            marketOrderGoods.setGoodsSn(marketCart.getGoodsSn());
+            marketOrderGoods.setProductId(marketCart.getProductId());
+            marketOrderGoods.setNumber(marketCart.getNumber());
+            marketOrderGoods.setPrice(marketCart.getPrice());
+            marketOrderGoods.setSpecifications(marketCart.getSpecifications());
+            marketOrderGoods.setPicUrl(marketCart.getPicUrl());
+            //'订单商品评论，如果是-1，则超期不能评价；如果是0，则可以评价；如果其他值，则是comment表里面的评论ID。
+            marketOrderGoods.setComment(0);
+            Date addTime1 = new Date();
+            marketOrderGoods.setAddTime(addTime1);
+            marketOrderGoods.setUpdateTime(addTime1);
+            marketOrderGoods.setDeleted(false);
+            //插入数据
+            marketOrderGoodsMapper.insertSelective(marketOrderGoods);
+
+        }
+
+        if (affectedRows1 == 1) {
+            //  需要修改购物车、商品库存、优惠券数量
+            //  生成订单后，所使用的优惠券状态改为1（已使用），购物车商品逻辑删除，商品库存减少，
+            //将cart表中已下单商品逻辑删除
+            for (int i = 0; i < marketCarts.size(); i++) {
+                MarketCart marketCart = marketCarts.get(i);
+                marketCart.setDeleted(true);
+                marketCart.setUpdateTime(new Date());
+                marketCartMapper.updateByPrimaryKeySelective(marketCart);
+            }
+            //所使用的优惠券状态改为1（已使用）
+            //TODO 如果后台没有对个人用户能够领取同一张优惠券的数量，该用户持有多张同一优惠券。
+            // 那应该是把哪一张优惠券更改状态
+            MarketCouponUser marketCouponUser = new MarketCouponUser();
+            marketCouponUser.setId(wxOrderSubmitBo.getUserCouponId());
+            //'使用状态, 如果是0则未使用；如果是1则已使用；如果是2则已过期；如果是3则已经下架；
+            marketCouponUser.setStatus((short) 1);
+            marketCouponUser.setUpdateTime(new Date());
+            marketCouponUserMapper.updateByPrimaryKeySelective(marketCouponUser);
+            //商品库存减少
+            //根据market_cart表中“product_id”修改market_goods_product表中数量number
+            for (int i = 0; i < marketCarts.size(); i++) {
+                MarketCart marketCart = marketCarts.get(i);
+                MarketGoodsProduct marketGoodsProduct = new MarketGoodsProduct();
+                marketGoodsProduct.setId(marketCart.getProductId());
+                //先获取库存，再减(之前已经对库存是否足够做了判断，此处不赘述)
+                Integer number = marketGoodsProductMapper.selectByPrimaryKey(marketCart.getProductId()).getNumber();
+                marketGoodsProduct.setNumber(number - marketCart.getNumber());
+                marketGoodsProduct.setUpdateTime(new Date());
+                marketGoodsProductMapper.updateByPrimaryKeySelective(marketGoodsProduct);
+            }
+        }
+        return new WxOrderSubmitPo(0, marketOrder.getId());
+    }
+
+    /**
+     * 付款
+     *
+     * @param id
+     * @return void
+     * @author changyong
+     * @since 2022/07/21 17:33
+     */
+    @Override
+    public void prepay(Integer id) {
+        //生成payId：年月日+6位随机码
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String format = sdf.format(new Date());
+        StringBuffer stringBuffer = new StringBuffer(format);
+        Random random = new Random();
+        for (int i = 0; i < 6; i++) {
+            int num = random.nextInt(10);
+            stringBuffer.append(num);
+        }
+        String payId = stringBuffer.toString();
+        //赋值
+        MarketOrder marketOrder = new MarketOrder();
+        marketOrder.setId(id);
+        marketOrder.setPayId(payId);
+        marketOrder.setOrderStatus((short)201);
+        Date payTime = new Date();
+        marketOrder.setPayTime(payTime);
+        marketOrder.setUpdateTime(payTime);
+        //update
+        marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
     }
 }
