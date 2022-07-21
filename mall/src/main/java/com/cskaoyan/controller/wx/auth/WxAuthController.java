@@ -2,15 +2,18 @@ package com.cskaoyan.controller.wx.auth;
 
 import com.cskaoyan.bean.admin.adminauth.InfoData;
 import com.cskaoyan.bean.common.BaseRespVo;
+import com.cskaoyan.bean.common.MarketCoupon;
 import com.cskaoyan.bean.common.MarketUser;
 import com.cskaoyan.bean.wx.wxcomment.UserInfo;
 import com.cskaoyan.config.shiro.MarketToken;
 import com.cskaoyan.exception.InvalidDataException;
+import com.cskaoyan.service.admin.promotion.CouponService;
 import com.cskaoyan.service.wx.auth.AccountService;
 import com.cskaoyan.util.Md5Utils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +35,9 @@ public class WxAuthController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    CouponService couponService;
 
     /**
      * 整合Shiro之后的login
@@ -108,7 +115,6 @@ public class WxAuthController {
     @RequestMapping("info")
     public BaseRespVo info(String token) {
 
-
         //开发完shiro之后，再整合
         InfoData infoData = new InfoData();
         infoData.setName("admin123");
@@ -121,7 +127,6 @@ public class WxAuthController {
         ArrayList<String> perms = new ArrayList<>();
         perms.add("*");
         infoData.setPerms(perms);
-
 
         return BaseRespVo.ok(infoData);
     }
@@ -153,6 +158,7 @@ public class WxAuthController {
         }
     }
 
+    @Transactional
     @PostMapping("/register")
     public BaseRespVo register(@RequestBody Map<String, String> map) throws Exception {
 
@@ -162,12 +168,17 @@ public class WxAuthController {
             throw new InvalidDataException("请输入正确的手机号码");
         }
         // 注册
-        int status = accountService.register(map);
+        List<MarketCoupon> couponList = accountService.register(map);
 
         // 登录
         Map<String, String> hashMap = new HashMap<>();
         hashMap.put("username", mobile);
         hashMap.put("password", map.get("password"));
+
+        // 领取注册赠券
+        for (MarketCoupon coupon : couponList) {
+            couponService.receive(coupon.getId());
+        }
 
         return login(hashMap);
     }
