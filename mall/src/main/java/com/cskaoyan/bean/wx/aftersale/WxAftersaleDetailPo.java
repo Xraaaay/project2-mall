@@ -13,13 +13,16 @@ import java.util.List;
  */
 @Data
 public class WxAftersaleDetailPo {
-    MarketAftersale marketAftersale;
-    MarketOrder marketOrder;
-    List<MarketOrderGoods> marketOrderGoodsList;
+    MarketAftersale aftersale;
+    MarketOrder order;
+    List<MarketOrderGoods> orderGoods;
 
-    public WxAftersaleDetailPo(MarketAftersale marketAftersale, MarketOrder marketOrder, List<MarketOrderGoods> marketOrderGoodsList) {
-        this.marketAftersale = marketAftersale;
-        this.marketOrder = marketOrder;
-        this.marketOrderGoodsList = marketOrderGoodsList;
+    public WxAftersaleDetailPo() {
+    }
+
+    public WxAftersaleDetailPo(MarketAftersale aftersale, MarketOrder order, List<MarketOrderGoods> orderGoods) {
+        this.aftersale = aftersale;
+        this.order = order;
+        this.orderGoods = orderGoods;
     }
 }

@@ -10,4 +10,12 @@ import lombok.Data;
 public class WxOrderSubmitPo {
     Integer grouponLinkId;
     Integer orderId;
+
+    public WxOrderSubmitPo() {
+    }
+
+    public WxOrderSubmitPo(Integer grouponLinkId, Integer orderId) {
+        this.grouponLinkId = grouponLinkId;
+        this.orderId = orderId;
+    }
 }

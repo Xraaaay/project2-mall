@@ -5,8 +5,10 @@ import com.cskaoyan.bean.admin.marketconfig.MarketExpreessVO;
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.cart.CheckoutBo;
 import com.cskaoyan.bean.wx.cart.CheckoutVo;
+import com.cskaoyan.bean.wx.coupon.MyCouponListVO;
 import com.cskaoyan.exception.UnAuthException;
 import com.cskaoyan.mapper.common.*;
+import com.cskaoyan.service.admin.promotion.CouponService;
 import com.cskaoyan.util.PrincipalUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -250,7 +252,12 @@ public class CartServiceImpl implements CartService {
         Integer addressId = checkoutBo.getAddressId();
 
         // 商品信息
-        List<MarketCart> checkedGoodsList = getCheckedCartList();
+        List<MarketCart> checkedGoodsList;
+        if (cartId <= 0) {
+            checkedGoodsList = getCheckedCartList();
+        } else {
+            checkedGoodsList = getCartListByCartId(cartId);
+        }
         Map<String, Object> cartTotal = getCartTotal(checkedGoodsList);
         BigDecimal goodsTotalPrice = (BigDecimal) cartTotal.get("checkedGoodsAmount");
 
@@ -269,33 +276,43 @@ public class CartServiceImpl implements CartService {
 
         // 优惠券数量
         Integer userId = getMarketUserId();
-        MarketCouponUserExample example = new MarketCouponUserExample();
-        example.createCriteria().andUserIdEqualTo(userId)
-                .andStatusEqualTo((short) 0)
-                .andDeletedEqualTo(false);
-        List<MarketCouponUser> marketCouponUsers = couponUserMapper.selectByExample(example);
-        Integer availableCouponLength = marketCouponUsers.size();
+        List<MyCouponListVO> couponList =
+                couponMapper.selectUserCouponListByUserIdAndStatus(userId, 0);
+        Integer availableCouponLength = couponList.size();
 
-        // 优惠信息
-        MarketCoupon coupon = couponMapper.selectByPrimaryKey(couponId);
+        // 优惠价格
         BigDecimal couponPrice = new BigDecimal(0);
-        if (coupon != null) {
-            for (MarketCouponUser couponUser : marketCouponUsers) {
-                if (couponUser.getCouponId().equals(couponId)) {
-                    couponPrice = coupon.getDiscount();
+
+        // 没有指定使用的优惠券
+        if (userCouponId <= 0) {
+            // 有优惠券，默认使用第一个
+            if (availableCouponLength > 0) {
+                MyCouponListVO coupon = couponList.get(0);
+                couponPrice = coupon.getDiscount();
+                // 更新指定使用的优惠券数据
+                userCouponId = coupon.getId();
+                couponId = coupon.getCid();
+            }
+        } else {
+            // 使用指定的优惠券
+            MarketCouponUser couponUser = couponUserMapper.selectByPrimaryKey(userCouponId);
+            if (couponUser != null) {
+                Integer couponId1 = couponUser.getCouponId();
+                MarketCoupon marketCoupon = couponMapper.selectByPrimaryKey(couponId1);
+                if (marketCoupon != null) {
+                    couponPrice = marketCoupon.getDiscount();
                 }
             }
         }
 
         // 商品总价
         BigDecimal actualPrice = goodsTotalPrice.subtract(couponPrice).add(freightPrice);
-        BigDecimal orderTotalPrice = actualPrice;
+        BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
 
         return new CheckoutVo(grouponRulesId, actualPrice, orderTotalPrice, cartId,
                 userCouponId, couponId, goodsTotalPrice, addressId, 0, checkedAddress,
                 couponPrice, availableCouponLength, freightPrice, checkedGoodsList);
     }
-
 
 
     public Map<String, Object> delete(List<Integer> productIds) {
@@ -320,7 +337,7 @@ public class CartServiceImpl implements CartService {
         // 获取用户信息
         Subject subject = SecurityUtils.getSubject();
         PrincipalCollection principals = subject.getPrincipals();
-        if (principals==null) {
+        if (principals == null) {
             // 用户未登录，购物车数量为0
             return 0;
         }
@@ -343,6 +360,7 @@ public class CartServiceImpl implements CartService {
     /**
      * lyx
      * 立即下单。 减少库存
+     *
      * @param map
      * @return
      */
@@ -420,9 +438,6 @@ public class CartServiceImpl implements CartService {
     }
 
 
-
-
-
     /**
      * 获取当前用户的所有商品信息
      *
@@ -455,6 +470,21 @@ public class CartServiceImpl implements CartService {
                 .andDeletedEqualTo(false)
                 .andUserIdEqualTo(userId);
         // 查询用户所有订单
+        return marketCartMapper.selectByExample(example);
+    }
+
+    /**
+     * 根据购物车id获取购物车信息
+     *
+     * @author Xrw
+     * @date 2022/7/21 15:38
+     */
+    private List<MarketCart> getCartListByCartId(Integer cartId) {
+        Integer userId = getMarketUserId();
+
+        MarketCartExample example = new MarketCartExample();
+        MarketCartExample.Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(cartId);
         return marketCartMapper.selectByExample(example);
     }
 

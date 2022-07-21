@@ -2,9 +2,7 @@ package com.cskaoyan.service.wx.wxcomment;
 
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
-import com.cskaoyan.bean.wx.wxcomment.UserInfo;
-import com.cskaoyan.bean.wx.wxcomment.WXCommentVo;
-import com.cskaoyan.bean.wx.wxcomment.InnerListOfCommentVo;
+import com.cskaoyan.bean.wx.wxcomment.*;
 import com.cskaoyan.mapper.common.MarketCommentMapper;
 import com.cskaoyan.mapper.common.MarketUserMapper;
 import com.cskaoyan.util.PrincipalUtil;
@@ -90,12 +88,23 @@ public class CommentWXServiceImpl implements CommentWXService {
         for (MarketComment c : comments) {
             Integer userId = c.getUserId();
             MarketUser marketUser = marketUserMapper.selectByPrimaryKey(userId);
+            //商品评论
             UserInfo userInfo = new UserInfo();
-            if (userInfo!=null) {
-                userInfo.setNickName(marketUser.getNickname());
-                userInfo.setAvatarUrl(marketUser.getAvatar());
+            //专题评论
+            UserInfoNickname userInfoNickName = new UserInfoNickname();
+            if (marketUser!=null) {
                 InnerListOfCommentVo listOfCommentVo = new InnerListOfCommentVo();
-                listOfCommentVo.setUserInfo(userInfo);
+                if (Integer.valueOf(marketComment.getType())==1) {
+                    //商品评论
+                    userInfo.setNickName(marketUser.getNickname());
+                    userInfo.setAvatarUrl(marketUser.getAvatar());
+                    listOfCommentVo.setUserInfo(userInfo);
+                }else {
+                    //专题评论
+                    userInfoNickName.setNickname(marketUser.getNickname());
+                    userInfoNickName.setAvatarUrl(marketUser.getAvatar());
+                    listOfCommentVo.setUserInfo(userInfoNickName);
+                }
                 listOfCommentVo.setAddTime(c.getAddTime());
                 listOfCommentVo.setPicList(c.getPicUrls());
                 listOfCommentVo.setAdminContent(c.getAdminContent());

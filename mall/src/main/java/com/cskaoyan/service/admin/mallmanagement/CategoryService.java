@@ -1,5 +1,6 @@
 package com.cskaoyan.service.admin.mallmanagement;
 
+import com.cskaoyan.bean.admin.mallmanagement.po.AdminCategoryL1Po;
 import com.cskaoyan.bean.common.MarketCategory;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarktCategoryListPo;
 
@@ -47,4 +48,13 @@ public interface CategoryService {
      * @since 2022/07/17 19:26
      */
     MarketCategory create(MarketCategory marketCategory);
+
+    /**
+     * 返回一级类目
+     *
+     * @return com.cskaoyan.bean.admin.mallmanagement.po.AdminCategoryL1Po
+     * @author changyong
+     * @since 2022/07/21 16:51
+     */
+    AdminCategoryL1Po l1();
 }
