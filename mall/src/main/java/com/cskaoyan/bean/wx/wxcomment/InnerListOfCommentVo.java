@@ -12,8 +12,8 @@ import java.util.Date;
  * @date 2022/07/18 22:34
  */
 @Data
-public class InnerListOfCommentVo {
-    UserInfo userInfo;
+public class InnerListOfCommentVo<T> {
+    T userInfo;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     Date addTime;
     String[] picList;

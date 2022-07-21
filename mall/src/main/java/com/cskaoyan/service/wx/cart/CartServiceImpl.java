@@ -252,7 +252,7 @@ public class CartServiceImpl implements CartService {
 
         // 商品信息
         List<MarketCart> checkedGoodsList;
-        if (cartId == 0) {
+        if (cartId <= 0) {
             checkedGoodsList = getCheckedCartList();
         } else {
             checkedGoodsList = getCartListByCartId(cartId);
@@ -283,7 +283,7 @@ public class CartServiceImpl implements CartService {
         BigDecimal couponPrice = new BigDecimal(0);
 
         // 没有指定使用的优惠券
-        if (userCouponId == 0) {
+        if (userCouponId <= 0) {
             // 有优惠券，默认使用第一个
             if (availableCouponLength > 0) {
                 MyCouponListVO coupon = couponList.get(0);
@@ -462,10 +462,7 @@ public class CartServiceImpl implements CartService {
 
         MarketCartExample example = new MarketCartExample();
         MarketCartExample.Criteria criteria = example.createCriteria();
-        criteria.andIdEqualTo(cartId)
-                .andCheckedEqualTo(true)
-                .andDeletedEqualTo(false)
-                .andUserIdEqualTo(userId);
+        criteria.andIdEqualTo(cartId);
         return marketCartMapper.selectByExample(example);
     }
 
