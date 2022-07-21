@@ -69,7 +69,7 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
         //comment
         // 根据商品id查询评论
         // 分页
-        PageHelper.startPage(1, 2);
+        PageHelper.startPage(1, 2, "add_time desc");
         Comment comment = new Comment();
         List<MarketCommentVo> marketCommentVos = new ArrayList<>();
         MarketCommentExample marketCommentExample = new MarketCommentExample();

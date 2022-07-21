@@ -293,7 +293,7 @@ public class CouponServiceImpl implements CouponService {
         List<MyCouponListVO> couponListVOS = commonData.getList();
         for (int i = 0; i < couponListVOS.size(); i++) {
             if (couponListVOS.get(i).getMin().compareTo(amount) > 0) {
-                couponListVOS.remove(i);
+                couponListVOS.get(i).setAvailable(false);
             }
         }
         commonData.setList(couponListVOS);
