@@ -62,7 +62,7 @@ public class AdminServiceImpl implements AdminService {
         MarketAdminCreateVo createVo = new MarketAdminCreateVo();
         createVo.setId(marketAdmin1.getId());
         createVo.setUsername(marketAdmin1.getUsername());
-        createVo.setPassword(marketAdmin1.getPassword());
+        createVo.setPassword("");
         createVo.setAvatar(marketAdmin1.getAvatar());
         createVo.setAddTime(marketAdmin1.getAddTime());
         createVo.setUpdateTime(marketAdmin1.getUpdateTime());
