@@ -6,8 +6,13 @@ import com.cskaoyan.bean.common.BaseParam;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.controller.admin.adminauth.AuthController;
 import com.cskaoyan.service.admin.profile.ProfileService;
+import com.cskaoyan.util.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * 这里是系统通知！
@@ -50,7 +55,10 @@ public class ProfileController {
      * @date 2022/07/21 15:36
      */
     @PostMapping("password")
-    public BaseRespVo password(@RequestBody PasswordVo passwordVo){
+    public BaseRespVo password(@RequestBody @Validated PasswordVo passwordVo,BindingResult bingResult){
+
+        // 参数校验
+        ValidationUtils.validData(bingResult);
 
         try {
             profileService.fixPassword(passwordVo);

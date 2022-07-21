@@ -80,6 +80,10 @@ public class CommentWXServiceImpl implements CommentWXService {
         MarketCommentExample.Criteria criteria = example.createCriteria();
         criteria.andValueIdEqualTo(marketComment.getValueId())
                 .andTypeEqualTo(Byte.valueOf(marketComment.getType()));
+        //有图
+        if (Integer.valueOf(showType)==1) {
+            criteria.andHasPictureEqualTo(true);
+        }
         //保存data中的list
         List<InnerListOfCommentVo> commentVos = new ArrayList<>();
         //查询评论
