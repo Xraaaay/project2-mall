@@ -46,26 +46,6 @@ public class GoodsServiceImpl implements GoodsService {
         if (page != null || limit != 0) {
             PageHelper.startPage(page, limit);
         }
-        if (page==null&limit==0){
-            MarketGoodsExample example = new MarketGoodsExample();
-            MarketGoodsExample.Criteria criteria = example.createCriteria();
-            example.setOrderByClause(sort + " " + order);
-            // 根据条件查询到 商品列表集合
-            List<MarketGoodsVo> marketGoods = marketGoodsMapper.selectByExampleVo(example);
-            // 创建2级VO
-            CommonData<MarketGoodsVo> marketGoodsCommonData = new CommonData<>();
-
-            PageInfo<MarketGoodsVo> marketGoodsPageInfo = new PageInfo<>(marketGoods);
-
-            marketGoodsCommonData.setTotal((int)marketGoodsPageInfo.getTotal());
-            marketGoodsCommonData.setLimit(marketGoodsPageInfo.getPageSize());
-            marketGoodsCommonData.setList(marketGoods);
-            marketGoodsCommonData.setPage(marketGoodsPageInfo.getPageNum());
-            marketGoodsCommonData.setPages(marketGoodsPageInfo.getPages());
-
-            return marketGoodsCommonData;
-        }
-
 
         MarketGoodsExample example = new MarketGoodsExample();
         MarketGoodsExample.Criteria criteria = example.createCriteria();
@@ -96,11 +76,12 @@ public class GoodsServiceImpl implements GoodsService {
      */
     @Override
     public IssueAndKeywordListVo list1(BaseParam param, MarketGoods marketGoods) {
-        if (param.getLimit()!=0){
-            //分页
-            PageHelper.startPage(param.getPage(), param.getLimit());
-        }
+        //分页
+        PageHelper.startPage(param.getPage(), param.getLimit());
+
         MarketGoodsExample goodsExample = new MarketGoodsExample();
+        goodsExample.setOrderByClause(param.getSort() + " " + param.getOrder());
+
         MarketGoodsExample.Criteria criteria = goodsExample.createCriteria();
         //条件查询
         if (marketGoods.getId() != null) {
@@ -115,15 +96,8 @@ public class GoodsServiceImpl implements GoodsService {
         //查找
         List<MarketGoods> marketGoodsList = marketGoodsMapper.selectByExample(goodsExample);
         PageInfo pageInfo = new PageInfo(marketGoodsList);
-
-        if (param.getLimit()!=0){
-            IssueAndKeywordListVo listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), param.getLimit(), param.getPage(), marketGoodsList);
-            return listVo;
-        }else {
-            IssueAndKeywordListVo listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(),pageInfo.getPageSize(),pageInfo.getSize(), marketGoodsList);
-            return listVo;
-        }
-
+        IssueAndKeywordListVo listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), param.getLimit(), param.getPage(), marketGoodsList);
+        return listVo;
     }
 
     @Override
