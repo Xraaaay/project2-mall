@@ -155,4 +155,19 @@ public class WxOrderController {
         WxOrderSubmitPo wxOrderSubmitPo = wxOrderService.submit(wxOrderSubmitBo);
         return BaseRespVo.ok(wxOrderSubmitPo);
     }
+
+    /**
+     * 付款
+     *
+     * @param map
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author changyong
+     * @since 2022/07/21 17:33
+     */
+    @RequestMapping("prepay")
+    public BaseRespVo prepay(@RequestBody Map map) {
+        Integer orderId = (Integer) map.get("orderId");
+        wxOrderService.prepay(orderId);
+        return BaseRespVo.ok(null);
+    }
 }

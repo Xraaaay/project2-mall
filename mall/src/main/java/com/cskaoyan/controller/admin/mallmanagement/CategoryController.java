@@ -1,5 +1,6 @@
 package com.cskaoyan.controller.admin.mallmanagement;
 
+import com.cskaoyan.bean.admin.mallmanagement.po.AdminCategoryL1Po;
 import com.cskaoyan.bean.common.MarketCategory;
 import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarktCategoryListPo;
@@ -78,5 +79,18 @@ public class CategoryController {
     public BaseRespVo create(@RequestBody MarketCategory marketCategory) {
         MarketCategory marketCategory1 = categoryService.create(marketCategory);
         return BaseRespVo.ok(marketCategory1);
+    }
+
+    /**
+     * 返回一级类目
+     *
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author changyong
+     * @since 2022/07/21 16:50
+     */
+    @RequestMapping("l1")
+    public BaseRespVo l1() {
+        AdminCategoryL1Po adminCategoryL1Po = categoryService.l1();
+        return BaseRespVo.ok(adminCategoryL1Po);
     }
 }

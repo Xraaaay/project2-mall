@@ -45,7 +45,7 @@ public class MarketOrder {
     private String shipSn;
 
     private String shipChannel;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date shipTime;
 
     private BigDecimal refundAmount;
@@ -53,13 +53,13 @@ public class MarketOrder {
     private String refundType;
 
     private String refundContent;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date refundTime;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date confirmTime;
 
     private Short comments;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date addTime;

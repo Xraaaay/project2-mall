@@ -1,5 +1,7 @@
 package com.cskaoyan.service.admin.mallmanagement;
 
+import com.cskaoyan.bean.admin.mallmanagement.po.AdminCategoryL1Po;
+import com.cskaoyan.bean.admin.mallmanagement.po.MarketCategoryL1;
 import com.cskaoyan.bean.common.MarketCategory;
 import com.cskaoyan.bean.common.MarketCategoryExample;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarktCategoryListPo;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -99,5 +102,28 @@ public class CategoryServiceImpl implements CategoryService {
         marketCategory.setUpdateTime(addTime);
         marketCategoryMapper.insertSelective(marketCategory);
         return marketCategory;
+    }
+
+    /**
+     * 返回一级类目
+     *
+     * @return com.cskaoyan.bean.admin.mallmanagement.po.AdminCategoryL1Po
+     * @author changyong
+     * @since 2022/07/21 16:51
+     */
+    @Override
+    public AdminCategoryL1Po l1() {
+        //获取list
+        MarketCategoryExample marketCategoryExample1 = new MarketCategoryExample();
+        MarketCategoryExample.Criteria criteria1 = marketCategoryExample1.createCriteria();
+        criteria1.andPidEqualTo(0)
+                .andDeletedEqualTo(false);
+        long total = marketCategoryMapper.countByExample(marketCategoryExample1);
+        List<MarketCategory> marketCategories1 = marketCategoryMapper.selectByExample(marketCategoryExample1);
+        List<MarketCategoryL1> marketCategoryL1s = new LinkedList<>();
+        for (MarketCategory marketCategory : marketCategories1) {
+            marketCategoryL1s.add(new MarketCategoryL1(marketCategory.getId(), marketCategory.getName()));
+        }
+        return new AdminCategoryL1Po(total, 1, total, 1, marketCategoryL1s);
     }
 }

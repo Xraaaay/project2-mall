@@ -102,4 +102,14 @@ public interface WxOrderService {
      * @since 2022/07/20 11:44
      */
     WxOrderSubmitPo submit(WxOrderSubmitBo wxOrderSubmitBo);
+
+    /**
+     * 付款
+     *
+     * @param id
+     * @return void
+     * @author changyong
+     * @since 2022/07/21 17:33
+     */
+    void prepay(Integer id);
 }
