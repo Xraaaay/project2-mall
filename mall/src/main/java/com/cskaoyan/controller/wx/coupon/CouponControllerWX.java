@@ -120,6 +120,6 @@ public class CouponControllerWX {
         basePageInfo.setOrder("desc");
         CommonData<MyCouponListVO> commonData = couponService.selectList(basePageInfo, cartId, grouponRulesId);
 
-        return BaseRespVo.ok(null);
+        return BaseRespVo.ok(commonData);
     }
 }
