@@ -6,7 +6,9 @@ import com.cskaoyan.bean.wx.goods.CategoryWxVo;
 import com.cskaoyan.bean.wx.goods.detail.DetailWxVo;
 import com.cskaoyan.bean.wx.goods.ListWxBo;
 import com.cskaoyan.bean.wx.goods.PageInfoDataVo;
+import com.cskaoyan.bean.wx.goods.detail.goodsdetail.GoodsDetailVO;
 import com.cskaoyan.service.wx.goods.GoodsWxService;
+import com.cskaoyan.service.wx.goods.goodsdetail.GoodsDetailWXService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +24,9 @@ public class GoodsWxController {
 
     @Autowired
     GoodsWxService goodsWxService;
+
+    @Autowired
+    GoodsDetailWXService goodsDetailWXService;
 
 
     /**
@@ -70,8 +75,8 @@ public class GoodsWxController {
     @RequestMapping("detail")
     public BaseRespVo detail(String id){
         int i = Integer.parseInt(id);
-        DetailWxVo detailWxVo = goodsWxService.detail(i);
-        return BaseRespVo.ok(detailWxVo);
+        GoodsDetailVO detail = goodsDetailWXService.detail(Integer.parseInt(id));
+        return BaseRespVo.ok(detail);
     }
 
     /**

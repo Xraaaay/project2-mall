@@ -234,7 +234,7 @@
     update market_search_history
     set user_id = #{userId,jdbcType=INTEGER},
       keyword = #{keyword,jdbcType=VARCHAR},
-      from = #{from,jdbcType=VARCHAR},
+      `from` = #{from,jdbcType=VARCHAR},
       add_time = #{addTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       deleted = #{deleted,jdbcType=BIT}

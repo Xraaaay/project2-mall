@@ -83,7 +83,7 @@ public class SearchServiceImpl implements  SearchService {
         List<MarketSearchHistory> marketSearchHistories = marketSearchHistoryMapper.selectByExample(example);
         for (MarketSearchHistory marketSearchHistory : marketSearchHistories) {
             marketSearchHistory.setDeleted(true);
-            marketSearchHistoryMapper.updateByExampleSelective(marketSearchHistory, example);
+            marketSearchHistoryMapper.updateByPrimaryKey(marketSearchHistory);
         }
 
     }

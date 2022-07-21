@@ -162,7 +162,7 @@ public class CartServiceImpl implements CartService {
 
         MarketGoodsProduct marketGoodsProduct = marketGoodsProductMapper.selectByPrimaryKey(productId);
         //goodSn 强转成 String
-        String goodsSn = Integer.toString(marketGoods.getGoodsSn());
+        String goodsSn = Integer.toString(marketGoods.getId());
         //String[]转 String
         String getSpecifications = Arrays.toString(marketGoodsProduct.getSpecifications());
         //判断库存量是否足够
@@ -318,7 +318,7 @@ public class CartServiceImpl implements CartService {
         //查询出producat
         MarketGoodsProduct marketGoodsProduct = marketGoodsProductMapper.selectByPrimaryKey(productId);
         //goodSn 强转成 String 因为从商品查出来的goodsSn为Integer类型
-        String goodsSn = Integer.toString(marketGoods.getGoodsSn());
+        String goodsSn = Integer.toString(marketGoods.getId());
         //String[]转 String  理由同上
         String getSpecifications = Arrays.toString(marketGoodsProduct.getSpecifications());
         //判断库存量是否足够
