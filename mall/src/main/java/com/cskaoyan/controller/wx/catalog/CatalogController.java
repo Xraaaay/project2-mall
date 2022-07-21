@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 商品类目
+ *
  * @author changyong
  * @since 2022/07/18 19:54
  */

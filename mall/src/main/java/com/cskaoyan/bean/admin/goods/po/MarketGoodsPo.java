@@ -1,4 +1,4 @@
-package com.cskaoyan.bean.common;
+package com.cskaoyan.bean.admin.goods.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,10 +6,11 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MarketGoods {
+public class MarketGoodsPo {
     private Integer id;
 
     private Integer goodsSn;

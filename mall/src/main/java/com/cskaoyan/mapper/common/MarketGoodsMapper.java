@@ -26,6 +26,8 @@ public interface MarketGoodsMapper {
 
     List<MarketGoods> selectByExample(MarketGoodsExample example);
 
+    List<MarketGoodsVo> selectByExampleVo(MarketGoodsExample example);
+
     // List<GoodsListVo> selectByExampleWxVo(GoodsListVoExample example);
 
     MarketGoods selectByPrimaryKey(Integer id);

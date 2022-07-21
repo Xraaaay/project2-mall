@@ -18,7 +18,7 @@ public class MarketAftersale {
 
     private BigDecimal amount;
 
-    private String pictures;
+    private String[] pictures;
 
     private String comment;
 
@@ -88,12 +88,12 @@ public class MarketAftersale {
         this.amount = amount;
     }
 
-    public String getPictures() {
+    public String[] getPictures() {
         return pictures;
     }
 
-    public void setPictures(String pictures) {
-        this.pictures = pictures == null ? null : pictures.trim();
+    public void setPictures(String[] pictures) {
+        this.pictures = pictures == null ? null : pictures;
     }
 
     public String getComment() {

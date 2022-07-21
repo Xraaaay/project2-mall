@@ -2,9 +2,11 @@ package com.cskaoyan.service.wx.goods;
 
 
 
+import com.cskaoyan.bean.common.CommonData;
 import com.cskaoyan.bean.wx.goods.CategoryWxVo;
 import com.cskaoyan.bean.wx.goods.ListWxBo;
 import com.cskaoyan.bean.wx.goods.PageInfoDataVo;
+import com.cskaoyan.bean.wx.goods.detail.DetailWxVo;
 
 import java.util.List;
 
@@ -40,4 +42,15 @@ public interface GoodsWxService {
     * @date 2022/07/19 21:39
      */
     Long count();
+
+    /***
+     *  返回相关商品
+     * @param i 商品id
+     * @return com.cskaoyan.bean.common.CommonData
+     * @author pqk
+     * @since 2022/07/20 14:10
+     */
+    CommonData related(int i);
+
+    DetailWxVo detail(int i);
 }

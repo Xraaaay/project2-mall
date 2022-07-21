@@ -129,17 +129,20 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public void ship(Integer orderId, String shipChannel, String shipSn) {
-        //获取order
+        //获取order，再获取orderStatus，为201（即未发货状态），可以发货
         MarketOrder marketOrder = marketOrderMapper.selectByPrimaryKey(orderId);
-        //赋值
-        marketOrder.setShipChannel(shipChannel);
-        marketOrder.setShipSn(shipSn);
-        Date shipTime = new Date();
-        marketOrder.setShipTime(shipTime);
-        marketOrder.setOrderStatus((short) 301);
-        marketOrder.setUpdateTime(shipTime);
-        //更新订单状态
-        marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+        if((short)201==marketOrder.getOrderStatus()){
+            //赋值
+            marketOrder.setShipChannel(shipChannel);
+            marketOrder.setShipSn(shipSn);
+            Date shipTime = new Date();
+            marketOrder.setShipTime(shipTime);
+            marketOrder.setOrderStatus((short) 301);
+            marketOrder.setUpdateTime(shipTime);
+            //更新订单状态
+            marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+        }
+
     }
 
     /**
@@ -151,20 +154,21 @@ public class OrderServiceImpl implements OrderService {
      * @author changyong
      * @since 2022/07/17 18:14
      */
-    //TODO 待测试
     @Override
     public void refund(Integer id, Double refundMoney) {
-        //创建marketOrder并赋值
-        MarketOrder marketOrder = new MarketOrder();
-        marketOrder.setId(id);
-        marketOrder.setOrderStatus((short) 203);
-        marketOrder.setRefundAmount(new BigDecimal(Double.valueOf(refundMoney)));
-        marketOrder.setRefundType("微信退款接口");
-        Date refundTime = new Date();
-        marketOrder.setRefundTime(refundTime);
-        marketOrder.setUpdateTime(refundTime);
-        //update
-        marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+        //获取order，再获取orderStatus，为202（即申请退款状态），可以退款
+        MarketOrder marketOrder = marketOrderMapper.selectByPrimaryKey(id);
+        if((short)202==marketOrder.getOrderStatus()){
+            marketOrder.setOrderStatus((short) 203);
+            marketOrder.setRefundAmount(new BigDecimal(Double.valueOf(refundMoney)));
+            marketOrder.setRefundType("微信退款接口");
+            Date refundTime = new Date();
+            marketOrder.setRefundTime(refundTime);
+            marketOrder.setUpdateTime(refundTime);
+            //update
+            marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+        }
+
     }
 
     /**
@@ -177,13 +181,16 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public void delete(Integer id) {
-        //创建marketOrder并赋值
-        MarketOrder marketOrder = new MarketOrder();
-        marketOrder.setId(id);
-        marketOrder.setDeleted(true);
-        marketOrder.setUpdateTime(new Date());
-        //update
-        marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+        //获取order，再获取orderStatus，为102（即用户取消状态），103（即系统取消状态），401（即用户取消状态），402（即系统取消状态），可以删除
+        MarketOrder marketOrder = marketOrderMapper.selectByPrimaryKey(id);
+        if((short)102==marketOrder.getOrderStatus()||(short)103==marketOrder.getOrderStatus()||(short)203==marketOrder.getOrderStatus()||(short)401==marketOrder.getOrderStatus()||(short)402==marketOrder.getOrderStatus()){
+            //创建marketOrder并赋值
+            marketOrder.setDeleted(true);
+            marketOrder.setUpdateTime(new Date());
+            //update
+            marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+        }
+
     }
     /**
     * @description 回复评论
