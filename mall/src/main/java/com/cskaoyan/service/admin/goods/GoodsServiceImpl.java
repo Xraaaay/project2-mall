@@ -96,8 +96,10 @@ public class GoodsServiceImpl implements GoodsService {
      */
     @Override
     public IssueAndKeywordListVo list1(BaseParam param, MarketGoods marketGoods) {
-        //分页
-        PageHelper.startPage(param.getPage(), param.getLimit());
+        if (param.getLimit()!=0){
+            //分页
+            PageHelper.startPage(param.getPage(), param.getLimit());
+        }
         MarketGoodsExample goodsExample = new MarketGoodsExample();
         MarketGoodsExample.Criteria criteria = goodsExample.createCriteria();
         //条件查询
@@ -113,8 +115,15 @@ public class GoodsServiceImpl implements GoodsService {
         //查找
         List<MarketGoods> marketGoodsList = marketGoodsMapper.selectByExample(goodsExample);
         PageInfo pageInfo = new PageInfo(marketGoodsList);
-        IssueAndKeywordListVo listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), param.getLimit(), param.getPage(), marketGoodsList);
-        return listVo;
+
+        if (param.getLimit()!=0){
+            IssueAndKeywordListVo listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), param.getLimit(), param.getPage(), marketGoodsList);
+            return listVo;
+        }else {
+            IssueAndKeywordListVo listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(),pageInfo.getPageSize(),pageInfo.getSize(), marketGoodsList);
+            return listVo;
+        }
+
     }
 
     @Override
