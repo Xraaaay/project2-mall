@@ -7,6 +7,7 @@ import com.cskaoyan.bean.wx.cart.CheckoutBo;
 import com.cskaoyan.bean.wx.cart.CheckoutVo;
 import com.cskaoyan.exception.UnAuthException;
 import com.cskaoyan.mapper.common.*;
+import com.cskaoyan.service.admin.promotion.CouponService;
 import com.cskaoyan.util.PrincipalUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -39,6 +40,8 @@ public class CartServiceImpl implements CartService {
     MarketAddressMapper addressMapper;
     @Autowired
     MarketSystemMapper systemMapper;
+    @Autowired
+    CouponService couponService;
 
     @Override
     public Map<String, Object> index() {
@@ -196,7 +199,12 @@ public class CartServiceImpl implements CartService {
         Integer addressId = checkoutBo.getAddressId();
 
         // 商品信息
-        List<MarketCart> checkedGoodsList = getCheckedCartList();
+        List<MarketCart> checkedGoodsList;
+        if (cartId == 0) {
+            checkedGoodsList = getCheckedCartList();
+        } else {
+            checkedGoodsList = getCartListByCartId(cartId);
+        }
         Map<String, Object> cartTotal = getCartTotal(checkedGoodsList);
         BigDecimal goodsTotalPrice = (BigDecimal) cartTotal.get("checkedGoodsAmount");
 
@@ -243,7 +251,6 @@ public class CartServiceImpl implements CartService {
     }
 
 
-
     public Map<String, Object> delete(List<Integer> productIds) {
         Integer userId = getMarketUserId();
         // 逻辑删除，修改deleted字段为true
@@ -266,7 +273,7 @@ public class CartServiceImpl implements CartService {
         // 获取用户信息
         Subject subject = SecurityUtils.getSubject();
         PrincipalCollection principals = subject.getPrincipals();
-        if (principals==null) {
+        if (principals == null) {
             // 用户未登录，购物车数量为0
             return 0;
         }
@@ -289,6 +296,7 @@ public class CartServiceImpl implements CartService {
     /**
      * lyx
      * 立即下单。 减少库存
+     *
      * @param map
      * @return
      */
@@ -343,9 +351,6 @@ public class CartServiceImpl implements CartService {
     }
 
 
-
-
-
     /**
      * 获取当前用户的所有商品信息
      *
@@ -378,6 +383,24 @@ public class CartServiceImpl implements CartService {
                 .andDeletedEqualTo(false)
                 .andUserIdEqualTo(userId);
         // 查询用户所有订单
+        return marketCartMapper.selectByExample(example);
+    }
+
+    /**
+     * 根据购物车id获取购物车信息
+     *
+     * @author Xrw
+     * @date 2022/7/21 15:38
+     */
+    private List<MarketCart> getCartListByCartId(Integer cartId) {
+        Integer userId = getMarketUserId();
+
+        MarketCartExample example = new MarketCartExample();
+        MarketCartExample.Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(cartId)
+                .andCheckedEqualTo(true)
+                .andDeletedEqualTo(false)
+                .andUserIdEqualTo(userId);
         return marketCartMapper.selectByExample(example);
     }
 
