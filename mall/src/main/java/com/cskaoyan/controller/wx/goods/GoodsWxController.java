@@ -10,6 +10,7 @@ import com.cskaoyan.service.wx.goods.GoodsWxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author pqk
@@ -32,8 +33,8 @@ public class GoodsWxController {
      * @date 2022/07/19 21:00
      */
     @RequestMapping("list")
-    public BaseRespVo list(ListWxBo listWxBo){
-        PageInfoDataVo list = goodsWxService.list(listWxBo);
+    public BaseRespVo list(ListWxBo listWxBo,String keyword,String sort,String order){
+        PageInfoDataVo list = goodsWxService.list(listWxBo,keyword,sort,order);
         return BaseRespVo.ok(list);
     }
 

@@ -8,8 +8,6 @@ import com.cskaoyan.bean.wx.goods.ListWxBo;
 import com.cskaoyan.bean.wx.goods.PageInfoDataVo;
 import com.cskaoyan.bean.wx.goods.detail.DetailWxVo;
 
-import java.util.List;
-
 /**
  * @author pqk
  * @since 2022/07/19 20:14
@@ -29,10 +27,13 @@ public interface GoodsWxService {
      * @description 商品列表
      * @return
      * @param listWxBo
+     * @param keyword
+     * @param sort
+     * @param order
      * @author pqk
      * @date 2022/07/19 21:13
      */
-    PageInfoDataVo list(ListWxBo listWxBo);
+    PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order);
 
     /**
     * @description 所有商品数量
