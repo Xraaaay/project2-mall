@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
 
     private static final int REG_CAPTCHA_DELAY = 5;
     private static final int REG_CAPTCHA_YET = 5;
-    private static final String AVATAR = "https://cskaoyan.oss-cn-beijing.aliyuncs.com/8ad9d831136c4166b182e4cc74df70bd.jpg";
+    public static final String AVATAR = "https://cskaoyan.oss-cn-beijing.aliyuncs.com/8ad9d831136c4166b182e4cc74df70bd.jpg";
     private static final String AVATAR_SPEC = "?imageView&quality=90&thumbnail=64x64";
 
     @Autowired

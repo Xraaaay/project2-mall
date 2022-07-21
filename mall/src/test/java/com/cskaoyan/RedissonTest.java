@@ -29,6 +29,7 @@ public class RedissonTest {
         System.out.println(mykey.get());
     }
 
+
     @Test
     public void testTransfer() {
         StringArrayTypeHandler arrayTypeHandler = new StringArrayTypeHandler();

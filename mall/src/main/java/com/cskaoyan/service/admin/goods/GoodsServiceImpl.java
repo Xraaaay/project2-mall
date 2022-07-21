@@ -229,7 +229,7 @@ public class GoodsServiceImpl implements GoodsService {
         // 向specification中插入数据
         List<MarketGoodsSpecification> specifications = createBo.getSpecifications();
         for (MarketGoodsSpecification specification : specifications) {
-            specification.setGoodsId(goods.getGoodsSn());
+            specification.setGoodsId(goods.getId());
             specification.setAddTime(new Date());
             marketGoodsSpecificationMapper.insertSelective(specification);
         }
@@ -241,7 +241,7 @@ public class GoodsServiceImpl implements GoodsService {
         for (MarketGoodsProduct product : products) {
             product.setAddTime(new Date());
             product.setId(null);
-            product.setGoodsId(goods.getGoodsSn());
+            product.setGoodsId(goods.getId());
 
             LowPrice = product.getPrice();
             if (LowPrice.compareTo(product.getPrice()) == -1) {
@@ -257,7 +257,7 @@ public class GoodsServiceImpl implements GoodsService {
         // 向attributes中插入数据
         List<MarketGoodsAttribute> attributes = createBo.getAttributes();
         for (MarketGoodsAttribute attribute : attributes) {
-            attribute.setGoodsId(goods.getGoodsSn());
+            attribute.setGoodsId(goods.getId());
             attribute.setAddTime(new Date());
             marketGoodsAttributeMapper.insertSelective(attribute);
         }
