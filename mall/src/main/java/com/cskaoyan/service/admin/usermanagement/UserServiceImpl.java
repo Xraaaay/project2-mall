@@ -2,9 +2,12 @@ package com.cskaoyan.service.admin.usermanagement;
 
 import com.cskaoyan.bean.admin.usermanagement.UserListVo;
 import com.cskaoyan.bean.common.*;
+import com.cskaoyan.exception.InvalidParamException;
 import com.cskaoyan.mapper.common.*;
+import com.cskaoyan.util.Md5Utils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -309,10 +312,20 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Integer updateUser(MarketUser marketUser) {
+        String newPassword=null;
+        if (marketUser.getPassword()!=null) {
+            try {
+                //Md5加密
+                newPassword = Md5Utils.getMd5(marketUser.getPassword());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         MarketUserExample userExample = new MarketUserExample();
         MarketUserExample.Criteria criteria = userExample.createCriteria();
         criteria.andIdEqualTo(marketUser.getId());
         marketUser.setUpdateTime(new Date());
+        marketUser.setPassword(newPassword);
         int updateNum = marketUserMapper.updateByExampleSelective(marketUser, userExample);
         return updateNum;
     }
