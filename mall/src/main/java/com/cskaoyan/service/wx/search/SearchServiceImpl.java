@@ -26,26 +26,28 @@ public class SearchServiceImpl implements  SearchService {
 
     @Override
     public WxSearchIndexVO index() {
+        Integer userId = getMarketUserId();
         WxSearchIndexVO wxSearchIndexVO = new WxSearchIndexVO();
         MarketKeywordExample example = new MarketKeywordExample();
         MarketKeywordExample.Criteria criteria = example.createCriteria();
         criteria.andDeletedEqualTo(false)
                 .andIsDefaultEqualTo(true);
 
-        MarketKeywordExample example2 = new MarketKeywordExample();
-        MarketKeywordExample.Criteria criteria2 = example2.createCriteria();
-        criteria2.andIsHotEqualTo(true)
+        MarketKeywordExample exampleKeyword = new MarketKeywordExample();
+        MarketKeywordExample.Criteria criteriaKeyword = exampleKeyword.createCriteria();
+        criteriaKeyword.andIsHotEqualTo(true)
                 .andDeletedEqualTo(false);
 
-        MarketSearchHistoryExample example1 = new MarketSearchHistoryExample();
-        MarketSearchHistoryExample.Criteria criteria1 = example1.createCriteria();
-        criteria1.andDeletedEqualTo(false);
+        MarketSearchHistoryExample exampleHistory = new MarketSearchHistoryExample();
+        MarketSearchHistoryExample.Criteria criteria1 = exampleHistory.createCriteria();
+        criteria1.andDeletedEqualTo(false)
+        .andUserIdEqualTo(userId);
 
         List<MarketKeyword> marketDefaultKeywords1 = marketKeywordMapper.selectByExample(example);
 
-        List<MarketKeyword> marketHotKeywords = marketKeywordMapper.selectByExample(example2);
+        List<MarketKeyword> marketHotKeywords = marketKeywordMapper.selectByExample(exampleKeyword);
 
-        List<MarketSearchHistory> marketSearchHistories = marketSearchHistoryMapper.selectByExample(example1);
+        List<MarketSearchHistory> marketSearchHistories = marketSearchHistoryMapper.selectByExample(exampleHistory);
 
 
         wxSearchIndexVO.setDefaultKeyword( marketDefaultKeywords1);
@@ -81,7 +83,7 @@ public class SearchServiceImpl implements  SearchService {
         List<MarketSearchHistory> marketSearchHistories = marketSearchHistoryMapper.selectByExample(example);
         for (MarketSearchHistory marketSearchHistory : marketSearchHistories) {
             marketSearchHistory.setDeleted(true);
-            marketSearchHistoryMapper.updateByExample(marketSearchHistory, example);
+            marketSearchHistoryMapper.updateByExampleSelective(marketSearchHistory, example);
         }
 
     }

@@ -94,7 +94,7 @@ public class CartServiceImpl implements CartService {
 
         short numbershort = number.shortValue();
         if (number > marketGoodsProduct.getNumber()) {
-            statusId = 710;
+            statusId = 711;
             return statusId;
         }
 
