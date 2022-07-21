@@ -486,7 +486,7 @@ public class WxOrderServiceImpl implements WxOrderService {
                 marketCartMapper.updateByPrimaryKeySelective(marketCart);
             }
             //所使用的优惠券状态改为1（已使用）
-            //TODO 如果后台没有对个人用户能够领取同一张优惠券的数量，该用户持有多张同一优惠券。
+            //TODO 如果后台没有对个人用户能够领取同一张优惠券的数量进行限制，该用户持有多张同一优惠券。
             // 那应该是把哪一张优惠券更改状态
             MarketCouponUser marketCouponUser = new MarketCouponUser();
             marketCouponUser.setId(wxOrderSubmitBo.getUserCouponId());

@@ -329,8 +329,6 @@ public class UserServiceImpl implements UserService {
         int updateNum = marketUserMapper.updateByExampleSelective(marketUser, userExample);
         return updateNum;
     }
-
-
 }
 
 
