@@ -53,5 +53,6 @@ public interface GoodsWxService {
      */
     CommonData related(int i);
 
+
     DetailWxVo detail(int i);
 }
