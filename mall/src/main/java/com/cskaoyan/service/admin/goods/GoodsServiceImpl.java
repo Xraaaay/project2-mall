@@ -122,9 +122,6 @@ public class GoodsServiceImpl implements GoodsService {
         MarketGoods goods = marketGoodsMapper.selectByPrimaryKey(id);
         String[] galleryArr = goods.getGallery();
 
-        /*String galleryString = goods.getGallery().replace("[", "").replace("]", "");
-        String[] galleryArr = galleryString.split(",");*/
-
         for (int i = 0; i < galleryArr.length; i++) {
             String replaceAll = galleryArr[i].trim().replaceAll("\"", "");
             galleryArr[i] = replaceAll;
@@ -230,15 +227,16 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     @Transactional
     public void create(CreateBo createBo) {
-        // 获得json中goods的数据
+
         // 向goods中插入上架数据
         MarketGoodsVo goods = createBo.getGoods();
         goods.setAddTime(new Date());
-
+        int goodsSn = Integer.parseInt(goods.getGoodsSn());
         // 向specification中插入数据
         List<MarketGoodsSpecification> specifications = createBo.getSpecifications();
         for (MarketGoodsSpecification specification : specifications) {
-            specification.setGoodsId(goods.getId());
+
+            specification.setGoodsId(goodsSn);
             specification.setAddTime(new Date());
             marketGoodsSpecificationMapper.insertSelective(specification);
         }
@@ -250,7 +248,7 @@ public class GoodsServiceImpl implements GoodsService {
         for (MarketGoodsProduct product : products) {
             product.setAddTime(new Date());
             product.setId(null);
-            product.setGoodsId(goods.getId());
+            product.setGoodsId(goodsSn);
 
             LowPrice = product.getPrice();
             if (LowPrice.compareTo(product.getPrice()) == -1) {
@@ -266,7 +264,7 @@ public class GoodsServiceImpl implements GoodsService {
         // 向attributes中插入数据
         List<MarketGoodsAttribute> attributes = createBo.getAttributes();
         for (MarketGoodsAttribute attribute : attributes) {
-            attribute.setGoodsId(goods.getId());
+            attribute.setGoodsId(goodsSn);
             attribute.setAddTime(new Date());
             marketGoodsAttributeMapper.insertSelective(attribute);
         }

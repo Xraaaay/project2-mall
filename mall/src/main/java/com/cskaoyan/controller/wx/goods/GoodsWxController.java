@@ -38,8 +38,8 @@ public class GoodsWxController {
      * @date 2022/07/19 21:00
      */
     @RequestMapping("list")
-    public BaseRespVo list(ListWxBo listWxBo,String keyword,String sort,String order){
-        PageInfoDataVo list = goodsWxService.list(listWxBo,keyword,sort,order);
+    public BaseRespVo list(ListWxBo listWxBo,String keyword,String sort,String order,Integer brandId){
+        PageInfoDataVo list = goodsWxService.list(listWxBo,keyword,sort,order,brandId);
         return BaseRespVo.ok(list);
     }
 

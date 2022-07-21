@@ -71,7 +71,7 @@ public class GoodsWxServiceImpl implements GoodsWxService {
 
     @Override
     @Transactional
-    public PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order) {
+    public PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order,Integer brandId) {
         //如果没有关键词输入就不加入
         if (keyword!=null){
             //将用户输入关键词加入历史表中
@@ -94,12 +94,15 @@ public class GoodsWxServiceImpl implements GoodsWxService {
         Integer page = listWxBo.getPage();
 
         PageHelper.startPage(page,limit);
-
-
         //根据类目id找到属于这个品类下商品
         MarketGoodsExample marketGoodsExample = new MarketGoodsExample();
         MarketGoodsExample.Criteria criteria = marketGoodsExample.createCriteria();
-        criteria.andCategoryIdEqualTo(categoryId);
+        if (categoryId!=null){
+            criteria.andCategoryIdEqualTo(categoryId);
+        }
+        if (brandId!=null){
+            criteria.andBrandIdEqualTo(brandId);
+        }
         List<MarketGoods> list = marketGoodsMapper.selectByExample(marketGoodsExample);
 
 
