@@ -2,6 +2,7 @@ package com.cskaoyan.service.wx.goods;
 
 
 import com.cskaoyan.bean.admin.goods.vo.MarketGoodsVo;
+import com.cskaoyan.bean.admin.system.MarketAdmin;
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.goods.*;
 import com.cskaoyan.bean.wx.goods.detail.CommentVo;
@@ -11,6 +12,7 @@ import com.cskaoyan.mapper.common.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -44,6 +46,8 @@ public class GoodsWxServiceImpl implements GoodsWxService {
     MarketCollectMapper marketCollectMapper;
     @Autowired
     MarketFootprintMapper marketFootprintMapper;
+    @Autowired
+    MarketSearchHistoryMapper marketSearchHistoryMapper;
 
 
     @Override
@@ -66,7 +70,19 @@ public class GoodsWxServiceImpl implements GoodsWxService {
     }
 
     @Override
-    public PageInfoDataVo list(ListWxBo listWxBo) {
+    @Transactional
+    public PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order) {
+        //将用户输入关键词加入历史表中
+        Subject subject = SecurityUtils.getSubject();
+        MarketUser primaryPrincipal = (MarketUser) subject.getPrincipals().getPrimaryPrincipal();
+        MarketSearchHistory marketSearchHistory = new MarketSearchHistory();
+        marketSearchHistory.setAddTime(new Date());
+        marketSearchHistory.setFrom("wx");
+        marketSearchHistory.setKeyword(keyword);
+        marketSearchHistory.setUserId(primaryPrincipal.getId());
+        marketSearchHistoryMapper.insertSelective(marketSearchHistory);
+
+
         Integer categoryId = listWxBo.getCategoryId();
         Integer limit = listWxBo.getLimit();
         Integer page = listWxBo.getPage();

@@ -60,8 +60,9 @@ public class CommentServiceImpl implements CommentService {
         //分页
         PageHelper.startPage(param.getPage(), param.getLimit());
 
-        //条件查询
         MarketCommentExample commentExample = new MarketCommentExample();
+        commentExample.setOrderByClause(param.getSort() + " " + param.getOrder());
+        //条件查询
         MarketCommentExample.Criteria criteria = commentExample.createCriteria();
         if (userId!=null) {
             criteria.andUserIdEqualTo(userId);

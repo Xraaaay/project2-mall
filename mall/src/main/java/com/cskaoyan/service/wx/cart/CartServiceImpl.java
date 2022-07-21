@@ -5,8 +5,12 @@ import com.cskaoyan.bean.admin.marketconfig.MarketExpreessVO;
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.cart.CheckoutBo;
 import com.cskaoyan.bean.wx.cart.CheckoutVo;
+import com.cskaoyan.exception.UnAuthException;
 import com.cskaoyan.mapper.common.*;
 import com.cskaoyan.util.PrincipalUtil;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -259,9 +263,17 @@ public class CartServiceImpl implements CartService {
     @Transactional
     @Override
     public Integer goodsCount() {
-        Integer userId = getMarketUserId();
+        // 获取用户信息
+        Subject subject = SecurityUtils.getSubject();
+        PrincipalCollection principals = subject.getPrincipals();
+        if (principals==null) {
+            // 用户未登录，购物车数量为0
+            return 0;
+        }
+        MarketUser marketUser = (MarketUser) principals.getPrimaryPrincipal();
+
         MarketCartExample example = new MarketCartExample();
-        example.createCriteria().andUserIdEqualTo(userId)
+        example.createCriteria().andUserIdEqualTo(marketUser.getId())
                 .andDeletedEqualTo(false);
 
         // 查询当前用户的所有购物车商品总数
@@ -335,7 +347,7 @@ public class CartServiceImpl implements CartService {
 
 
     /**
-     * 获取当前用户的所有订单信息
+     * 获取当前用户的所有商品信息
      *
      * @author Xrw
      * @date 2022/7/19 22:44
@@ -351,6 +363,12 @@ public class CartServiceImpl implements CartService {
         return marketCartMapper.selectByExample(example);
     }
 
+    /**
+     * 获取当前用户的选中商品信息checked
+     *
+     * @author Xrw
+     * @date 2022/7/21 9:53
+     */
     private List<MarketCart> getCheckedCartList() {
         Integer userId = getMarketUserId();
 
