@@ -1,6 +1,5 @@
 package com.cskaoyan.service.admin.goods;
 
-import com.cskaoyan.bean.admin.goods.po.MarketGoodsPo;
 import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.admin.goods.bo.Children;
@@ -214,7 +213,7 @@ public class GoodsServiceImpl implements GoodsService {
         ArrayList<BrandListVo> brandListVos = new ArrayList<>();
         for (MarketBrand marketBrand : marketBrands) {
             BrandListVo brandListVo = new BrandListVo();
-            brandListVo.setVlaue(marketBrand.getId());
+            brandListVo.setValue(marketBrand.getId());
             brandListVo.setLabel(marketBrand.getName());
             brandListVos.add(brandListVo);
         }
@@ -236,7 +235,7 @@ public class GoodsServiceImpl implements GoodsService {
         List<MarketGoodsSpecification> specifications = createBo.getSpecifications();
         for (MarketGoodsSpecification specification : specifications) {
 
-            specification.setGoodsId(goodsSn);
+            specification.setGoodsId(goods.getId());
             specification.setAddTime(new Date());
             marketGoodsSpecificationMapper.insertSelective(specification);
         }
@@ -248,7 +247,7 @@ public class GoodsServiceImpl implements GoodsService {
         for (MarketGoodsProduct product : products) {
             product.setAddTime(new Date());
             product.setId(null);
-            product.setGoodsId(goodsSn);
+            product.setGoodsId(goods.getId());
 
             LowPrice = product.getPrice();
             if (LowPrice.compareTo(product.getPrice()) == -1) {
@@ -264,7 +263,7 @@ public class GoodsServiceImpl implements GoodsService {
         // 向attributes中插入数据
         List<MarketGoodsAttribute> attributes = createBo.getAttributes();
         for (MarketGoodsAttribute attribute : attributes) {
-            attribute.setGoodsId(goodsSn);
+            attribute.setGoodsId(goods.getId());
             attribute.setAddTime(new Date());
             marketGoodsAttributeMapper.insertSelective(attribute);
         }
