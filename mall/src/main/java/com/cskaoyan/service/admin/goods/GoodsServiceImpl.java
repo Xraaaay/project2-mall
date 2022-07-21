@@ -1,6 +1,5 @@
 package com.cskaoyan.service.admin.goods;
 
-import com.cskaoyan.bean.admin.goods.po.MarketGoodsPo;
 import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.admin.goods.bo.Children;
@@ -214,7 +213,7 @@ public class GoodsServiceImpl implements GoodsService {
         ArrayList<BrandListVo> brandListVos = new ArrayList<>();
         for (MarketBrand marketBrand : marketBrands) {
             BrandListVo brandListVo = new BrandListVo();
-            brandListVo.setVlaue(marketBrand.getId());
+            brandListVo.setValue(marketBrand.getId());
             brandListVo.setLabel(marketBrand.getName());
             brandListVos.add(brandListVo);
         }

@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BrandListVo {
     private String label;
-    private Integer vlaue;
+    private Integer value;
 }

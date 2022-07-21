@@ -86,7 +86,7 @@ public class HomeServiceImpl implements HomeService {
         PageHelper.startPage(1, pageSize6);
         MarketBrandExample brandExample = new MarketBrandExample();
         MarketBrandExample.Criteria brandExampleCriteria = brandExample.createCriteria();
-        brandExample.setOrderByClause("add_time desc");
+        brandExample.setOrderByClause("id asc");
         brandExampleCriteria.andDeletedEqualTo(false);
         List<MarketBrand> brandList = brandMapper.selectByExample(brandExample);
 
