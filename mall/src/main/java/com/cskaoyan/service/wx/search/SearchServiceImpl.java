@@ -28,8 +28,8 @@ public class SearchServiceImpl implements  SearchService {
     public WxSearchIndexVO index() {
         Integer userId = getMarketUserId();
         WxSearchIndexVO wxSearchIndexVO = new WxSearchIndexVO();
-        MarketKeywordExample example = new MarketKeywordExample();
-        MarketKeywordExample.Criteria criteria = example.createCriteria();
+        MarketKeywordExample exampleDefault = new MarketKeywordExample();
+        MarketKeywordExample.Criteria criteria = exampleDefault.createCriteria();
         criteria.andDeletedEqualTo(false)
                 .andIsDefaultEqualTo(true);
 
@@ -43,14 +43,14 @@ public class SearchServiceImpl implements  SearchService {
         criteria1.andDeletedEqualTo(false)
         .andUserIdEqualTo(userId);
 
-        List<MarketKeyword> marketDefaultKeywords1 = marketKeywordMapper.selectByExample(example);
+        List<MarketKeyword> marketDefaultKeywords1 = marketKeywordMapper.selectByExample(exampleDefault);
 
         List<MarketKeyword> marketHotKeywords = marketKeywordMapper.selectByExample(exampleKeyword);
 
         List<MarketSearchHistory> marketSearchHistories = marketSearchHistoryMapper.selectByExample(exampleHistory);
 
 
-        wxSearchIndexVO.setDefaultKeyword( marketDefaultKeywords1);
+        wxSearchIndexVO.setDefaultKeyword( marketDefaultKeywords1.get(0));
         wxSearchIndexVO.setHotKeywordList(marketHotKeywords);
         wxSearchIndexVO.setHistoryKeywordList(marketSearchHistories);
 

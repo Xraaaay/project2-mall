@@ -19,7 +19,7 @@ import java.util.List;
 public class WxSearchIndexVO {
 
 
-    private List<MarketKeyword>  defaultKeyword;
+    private MarketKeyword  defaultKeyword;
     private List<MarketKeyword> hotKeywordList;
     private List<MarketSearchHistory> historyKeywordList;
 
