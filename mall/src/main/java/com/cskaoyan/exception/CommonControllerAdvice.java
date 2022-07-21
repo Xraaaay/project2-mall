@@ -27,12 +27,26 @@ public class CommonControllerAdvice {
         return BaseRespVo.invalidData(exception.getMessage());
     }
 
+    /**
+     * 无认证，没有权限异常
+     * @param exception
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author Zah
+     * @date 2022/07/21 17:12
+     */
     @ExceptionHandler(UnAuthException.class)
     public BaseRespVo unAuth(UnAuthException exception) {
         // 跳转到登录界面
         return WxAuthController.unAuthc();
     }
 
+    /**
+     * 登录时账户和密码的异常
+     * @param exception
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author Zah
+     * @date 2022/07/21 17:10
+     */
     @ExceptionHandler({UnknownAccountException.class, IncorrectCredentialsException.class})
     public BaseRespVo invalidUsernamePassword(Exception exception) {
         return BaseRespVo.invalidParameter("用户名或账号密码不正确");
@@ -44,6 +58,12 @@ public class CommonControllerAdvice {
         return BaseRespVo.invalidData("参数异常");
     }
 
+    /**
+     * 无授权操作异常
+     * @return com.cskaoyan.bean.common.BaseRespVo
+     * @author Zah
+     * @date 2022/07/21 17:10
+     */
     @ExceptionHandler(AuthorizationException.class)
     public BaseRespVo noPermission(){
         return BaseRespVo.noPermission();
