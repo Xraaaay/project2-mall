@@ -68,6 +68,7 @@ public class  ShiroConfiguration {
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 
         // 小程序的认证请求
+        filterChainDefinitionMap.put("/wx/cart/goodscount", "anon");
         filterChainDefinitionMap.put("/wx/user/index", "authc");
         filterChainDefinitionMap.put("/wx/cart/**", "authc");
         filterChainDefinitionMap.put("/wx/collect/**", "authc");
