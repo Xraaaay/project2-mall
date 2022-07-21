@@ -5,7 +5,10 @@ import com.cskaoyan.bean.common.BaseRespVo;
 import com.cskaoyan.bean.common.MarketAddress;
 import com.cskaoyan.controller.wx.auth.WxAuthController;
 import com.cskaoyan.service.wx.address.AddressService;
+import com.cskaoyan.util.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -45,6 +48,8 @@ public class WXAddressController {
 
     @PostMapping("save")
     public BaseRespVo save(@RequestBody MarketAddress address){
+
+        /*在前端小程序中做出了手机号的正则校验判断*/
 
         Integer id = addressService.postAddressSave(address);
 

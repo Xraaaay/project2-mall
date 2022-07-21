@@ -72,6 +72,11 @@ public class UserServiceImpl implements UserService {
 
         List<MarketUser> marketUsers = marketUserMapper.selectByExample(userExample);
 
+        /*优化用户名密码：密文回显到页面中*/
+        for (MarketUser marketUser : marketUsers) {
+            marketUser.setPassword("********");
+        }
+
         // 将查询结果作为有参构造方法的形参传入，可以获得PageInfo
         PageInfo<MarketUser> marketUserPageInfo = new PageInfo<>(marketUsers);
 
