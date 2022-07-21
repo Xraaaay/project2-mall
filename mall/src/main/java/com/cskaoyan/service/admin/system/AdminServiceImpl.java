@@ -94,11 +94,14 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     @Override
     public void delete(MarketAdmin admin) {
-        MarketAdmin marketAdmin = new MarketAdmin();
-        marketAdmin.setId(admin.getId());
-        marketAdmin.setUpdateTime(new Date());
-        marketAdmin.setDeleted(true);
-        adminMapper.updateByPrimaryKeySelective(marketAdmin);
+        // MarketAdmin marketAdmin = new MarketAdmin();
+        // marketAdmin.setId(admin.getId());
+        // marketAdmin.setUpdateTime(new Date());
+        // marketAdmin.setDeleted(true);
+        // adminMapper.updateByPrimaryKeySelective(marketAdmin);
+
+        // 不能用逻辑删除，login会根据username来查数据库表
+        adminMapper.deleteByPrimaryKey(admin.getId());
     }
 
     private void checkName(MarketAdmin admin) {
