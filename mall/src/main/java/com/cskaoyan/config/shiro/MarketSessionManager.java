@@ -1,5 +1,6 @@
 package com.cskaoyan.config.shiro;
 
+import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +35,10 @@ public class MarketSessionManager extends DefaultWebSessionManager {
     protected Serializable getSessionId(ServletRequest servletRequest, ServletResponse response) {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
+
+        // 禁止在url上拼接JSESSIONID
+        request.setAttribute(ShiroHttpServletRequest.SESSION_ID_URL_REWRITING_ENABLED,this.isSessionIdUrlRewritingEnabled());
+
         String sessionId = request.getHeader(MARKET_ADMIN_TOKEN);
         if (sessionId != null && !"".equals(sessionId)){
             return sessionId;
