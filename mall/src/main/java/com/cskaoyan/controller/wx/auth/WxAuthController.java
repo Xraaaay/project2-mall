@@ -174,13 +174,14 @@ public class WxAuthController {
         Map<String, String> hashMap = new HashMap<>();
         hashMap.put("username", mobile);
         hashMap.put("password", map.get("password"));
+        BaseRespVo login = login(hashMap);
 
         // 领取注册赠券
         for (MarketCoupon coupon : couponList) {
             couponService.receive(coupon.getId());
         }
 
-        return login(hashMap);
+        return login;
     }
 
     @PostMapping("/reset")
