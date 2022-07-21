@@ -52,7 +52,26 @@ public class GoodsWxServiceImpl implements GoodsWxService {
 
     @Override
     public CategoryWxVo category(String id) {
-        int cid  = Integer.parseInt(id);
+        // 判断类目级别
+        MarketCategory marketCategory = marketCategoryMapper.selectByPrimaryKey(Integer.parseInt(id));
+        Integer pid = marketCategory.getPid();
+        Integer cid = null;
+        // l1类目
+        if (pid == 0) {
+            MarketCategoryExample categoryExample = new MarketCategoryExample();
+            categoryExample.createCriteria().andDeletedEqualTo(false).andPidEqualTo(Integer.parseInt(id));
+            List<MarketCategory> marketCategories = marketCategoryMapper.selectByExample(categoryExample);
+            MarketCategory category = marketCategories.get(0);
+            if (category != null) {
+                cid = category.getId();
+            }
+            return categoryl(cid);
+        } else {
+            // l2类目
+            return categoryl(Integer.parseInt(id));
+        }
+    }
+    private CategoryWxVo categoryl(Integer cid) {
         MarketCategory currentCategory = marketCategoryMapper.selectByPrimaryKey(cid);
 
         Integer pid = currentCategory.getPid();
