@@ -1,5 +1,8 @@
 package com.cskaoyan.service.wx.auth;
 
+import com.cskaoyan.bean.common.MarketCoupon;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,11 +28,11 @@ public interface AccountService {
      * 用户注册
      *
      * @param map
-     * @return int
+     * @return java.util.List<com.cskaoyan.bean.common.MarketCoupon> 注册赠券列表
      * @author fanxing056
-     * @date 2022/07/19 21:10
+     * @date 2022/07/21 19:57
      */
-    int register(Map<String, String> map) throws Exception;
+    List<MarketCoupon> register(Map<String, String> map) throws Exception;
 
     /**
      * 用户重置密码

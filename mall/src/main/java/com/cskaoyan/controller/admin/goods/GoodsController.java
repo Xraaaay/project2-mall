@@ -101,6 +101,7 @@ public class GoodsController {
      * @description 商品上架
      * @author pqk
      * @date 2022/07/18 14:56
+     * 注：🐖 我必须给goodsid赋值 因为id传进来为null id在数据库也是自增的
      */
     @RequiresPermissions("admin:goods:create")
     @RequestMapping("create")

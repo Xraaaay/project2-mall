@@ -1,6 +1,5 @@
 package com.cskaoyan.service.admin.goods;
 
-import com.cskaoyan.bean.admin.goods.po.MarketGoodsPo;
 import com.cskaoyan.bean.admin.mallmanagement.IssueAndKeywordListVo;
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.admin.goods.bo.Children;
@@ -57,7 +56,7 @@ public class GoodsServiceImpl implements GoodsService {
 
         PageInfo<MarketGoods> marketGoodsPageInfo = new PageInfo<>(marketGoods);
 
-        marketGoodsCommonData.setTotal((int) marketGoodsPageInfo.getTotal());
+        marketGoodsCommonData.setTotal((int)marketGoodsPageInfo.getTotal());
         marketGoodsCommonData.setLimit(marketGoodsPageInfo.getPageSize());
         marketGoodsCommonData.setList(marketGoods);
         marketGoodsCommonData.setPage(marketGoodsPageInfo.getPageNum());
@@ -77,7 +76,7 @@ public class GoodsServiceImpl implements GoodsService {
      */
     @Override
     public IssueAndKeywordListVo list1(BaseParam param, MarketGoods marketGoods) {
-        //分页
+        // 分页
         if (param.getLimit() != 0) {
             PageHelper.startPage(param.getPage(), param.getLimit());
         }
@@ -87,7 +86,7 @@ public class GoodsServiceImpl implements GoodsService {
         }
 
         MarketGoodsExample.Criteria criteria = goodsExample.createCriteria();
-        //条件查询
+        // 条件查询
         if (marketGoods.getId() != null) {
             criteria.andIdEqualTo(marketGoods.getId());
         }
@@ -97,14 +96,16 @@ public class GoodsServiceImpl implements GoodsService {
         if (marketGoods.getName() != null) {
             criteria.andNameLike("%" + marketGoods.getName() + "%");
         }
-        //查找
+        // 查找
         List<MarketGoods> marketGoodsList = marketGoodsMapper.selectByExample(goodsExample);
         PageInfo pageInfo = new PageInfo(marketGoodsList);
         IssueAndKeywordListVo listVo;
         if (param.getLimit() != 0) {
-            listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), param.getLimit(), param.getPage(), marketGoodsList);
+            listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), param.getLimit(),
+                param.getPage(), marketGoodsList);
         } else {
-            listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), pageInfo.getPageSize(), pageInfo.getSize(), marketGoodsList);
+            listVo = IssueAndKeywordListVo.listVo(pageInfo.getTotal(), pageInfo.getPages(), pageInfo.getPageSize(),
+                pageInfo.getSize(), marketGoodsList);
         }
         return listVo;
     }
@@ -130,18 +131,18 @@ public class GoodsServiceImpl implements GoodsService {
         // 根据传入id查商品参数表
         MarketGoodsAttributeExample goodsAttributeExample = new MarketGoodsAttributeExample();
         MarketGoodsAttributeExample.Criteria goodsAttributeExampleCriteria =
-                goodsAttributeExample.createCriteria().andGoodsIdEqualTo(id);
+            goodsAttributeExample.createCriteria().andGoodsIdEqualTo(id);
         List<MarketGoodsAttribute> attributes = marketGoodsAttributeMapper.selectByExample(goodsAttributeExample);
         // 根据传入id查商品规格表
         MarketGoodsSpecificationExample goodsSpecificationExample = new MarketGoodsSpecificationExample();
         MarketGoodsSpecificationExample.Criteria specificationExampleCriteria =
-                goodsSpecificationExample.createCriteria().andGoodsIdEqualTo(id);
+            goodsSpecificationExample.createCriteria().andGoodsIdEqualTo(id);
         List<MarketGoodsSpecification> specifications =
-                marketGoodsSpecificationMapper.selectByExample(goodsSpecificationExample);
+            marketGoodsSpecificationMapper.selectByExample(goodsSpecificationExample);
         // 根据传入id查商品货品表
         MarketGoodsProductExample goodsProductExample = new MarketGoodsProductExample();
         MarketGoodsProductExample.Criteria productExampleCriteria =
-                goodsProductExample.createCriteria().andGoodsIdEqualTo(id);
+            goodsProductExample.createCriteria().andGoodsIdEqualTo(id);
         List<MarketGoodsProduct> products = marketGoodsProductMapper.selectByExample(goodsProductExample);
 
         // 根据传入id返回商品类别 ,类别表id，商品分类id
@@ -154,10 +155,10 @@ public class GoodsServiceImpl implements GoodsService {
         arrayList.add(goods.getCategoryId());
 
         MarketGoodsVo marketGoodsVO = new MarketGoodsVo(goods.getId(), goods.getGoodsSn(), goods.getName(),
-                goods.getCategoryId(), goods.getBrandId(), galleryArr, goods.getKeywords(), goods.getBrief(),
-                goods.getIsOnSale(), goods.getSortOrder(), goods.getPicUrl(), goods.getShareUrl(), goods.getIsNew(),
-                goods.getIsHot(), goods.getUnit(), goods.getCounterPrice(), goods.getRetailPrice(), goods.getAddTime(),
-                goods.getUpdateTime(), goods.getDeleted(), goods.getDetail());
+            goods.getCategoryId(), goods.getBrandId(), galleryArr, goods.getKeywords(), goods.getBrief(),
+            goods.getIsOnSale(), goods.getSortOrder(), goods.getPicUrl(), goods.getShareUrl(), goods.getIsNew(),
+            goods.getIsHot(), goods.getUnit(), goods.getCounterPrice(), goods.getRetailPrice(), goods.getAddTime(),
+            goods.getUpdateTime(), goods.getDeleted(), goods.getDetail());
 
         DetailVo detailVo = new DetailVo();
         detailVo.setCategoryIds(arrayList);
@@ -214,7 +215,7 @@ public class GoodsServiceImpl implements GoodsService {
         ArrayList<BrandListVo> brandListVos = new ArrayList<>();
         for (MarketBrand marketBrand : marketBrands) {
             BrandListVo brandListVo = new BrandListVo();
-            brandListVo.setVlaue(marketBrand.getId());
+            brandListVo.setValue(marketBrand.getId());
             brandListVo.setLabel(marketBrand.getName());
             brandListVos.add(brandListVo);
         }
@@ -231,44 +232,48 @@ public class GoodsServiceImpl implements GoodsService {
         // 向goods中插入上架数据
         MarketGoodsVo goods = createBo.getGoods();
         goods.setAddTime(new Date());
-        int goodsSn = Integer.parseInt(goods.getGoodsSn());
-        // 向specification中插入数据
-        List<MarketGoodsSpecification> specifications = createBo.getSpecifications();
-        for (MarketGoodsSpecification specification : specifications) {
-
-            specification.setGoodsId(goodsSn);
-            specification.setAddTime(new Date());
-            marketGoodsSpecificationMapper.insertSelective(specification);
-        }
-
-        // retail当前价格 使用规格中最低的插入数据库
+        // 低价
         BigDecimal LowPrice = null;
-        // 向products中插入数据
-        List<MarketGoodsProduct> products = createBo.getProducts();
-        for (MarketGoodsProduct product : products) {
-            product.setAddTime(new Date());
-            product.setId(null);
-            product.setGoodsId(goodsSn);
+
+        List<MarketGoodsProduct> productss = createBo.getProducts();
+        for (MarketGoodsProduct product : productss) {
 
             LowPrice = product.getPrice();
             if (LowPrice.compareTo(product.getPrice()) == -1) {
                 LowPrice = product.getPrice();
             }
-
-            marketGoodsProductMapper.insertSelective(product);
+            goods.setRetailPrice(LowPrice);
         }
 
-        goods.setRetailPrice(LowPrice);
         marketGoodsMapper.insertSelectiveVo(goods);
+
+        // 向specification中插入数据
+        List<MarketGoodsSpecification> specifications = createBo.getSpecifications();
+        for (MarketGoodsSpecification specification : specifications) {
+
+            specification.setGoodsId(goods.getId());
+            specification.setAddTime(new Date());
+            marketGoodsSpecificationMapper.insertSelective(specification);
+        }
+
+        // retail当前价格 使用规格中最低的插入数据库
+
+        // 向products中插入数据
+        List<MarketGoodsProduct> products = createBo.getProducts();
+        for (MarketGoodsProduct product : products) {
+            product.setAddTime(new Date());
+            product.setId(null);
+            product.setGoodsId(goods.getId());
+            marketGoodsProductMapper.insertSelective(product);
+        }
 
         // 向attributes中插入数据
         List<MarketGoodsAttribute> attributes = createBo.getAttributes();
         for (MarketGoodsAttribute attribute : attributes) {
-            attribute.setGoodsId(goodsSn);
+            attribute.setGoodsId(goods.getId());
             attribute.setAddTime(new Date());
             marketGoodsAttributeMapper.insertSelective(attribute);
         }
-
     }
 
     /**
@@ -289,9 +294,31 @@ public class GoodsServiceImpl implements GoodsService {
         }
 
         List<MarketGoodsAttribute> attributes = updateBo.getAttributes();
+
+        Integer goodsid=null;
+
+        for (MarketGoodsAttribute attributee : attributes) {
+            if (attributee.getGoodsId() != null) {
+                goodsid = attributee.getGoodsId();
+            }
+        }
+
         for (MarketGoodsAttribute attribute : attributes) {
+
+
+            if (attribute.getId()==null){
+                MarketGoodsAttribute marketGoodsAttribute = new MarketGoodsAttribute();
+
+                marketGoodsAttribute.setGoodsId(goodsid);
+                marketGoodsAttribute.setAttribute(attribute.getAttribute());
+                marketGoodsAttribute.setValue(attribute.getValue());
+                marketGoodsAttribute.setAddTime(new Date());
+
+                marketGoodsAttributeMapper.insertSelective(marketGoodsAttribute);
+            }
             marketGoodsAttributeMapper.updateByPrimaryKeySelective(attribute);
         }
+
 
         List<MarketGoodsSpecification> specifications = updateBo.getSpecifications();
         for (MarketGoodsSpecification specification : specifications) {
@@ -299,6 +326,5 @@ public class GoodsServiceImpl implements GoodsService {
         }
 
     }
-
 
 }

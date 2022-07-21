@@ -21,6 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -79,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public int register(Map<String, String> map) throws Exception {
+    public List<MarketCoupon> register(Map<String, String> map) throws Exception {
 
         // 判断验证码是否正确
         RBucket<Object> bucket = redissonClient.getBucket(map.get("mobile"));
@@ -125,17 +126,19 @@ public class AccountServiceImpl implements AccountService {
         // 销毁验证码
         bucket.set(null);
 
+        // 登录
+        Map<String, String> hashMap = new HashMap<>();
+        hashMap.put("username", map.get("mobile"));
+        hashMap.put("password", map.get("password"));
+
         // 领取注册赠券
         // 根据type查询所有注册赠券
         MarketCouponExample couponExample = new MarketCouponExample();
         MarketCouponExample.Criteria couponExampleCriteria = couponExample.createCriteria();
         couponExampleCriteria.andDeletedEqualTo(false).andTypeEqualTo((short) 1);
         List<MarketCoupon> couponList = couponMapper.selectByExample(couponExample);
-        for (MarketCoupon coupon : couponList) {
-            couponService.receive(coupon.getId());
-        }
 
-        return 0;
+        return couponList;
     }
 
 
