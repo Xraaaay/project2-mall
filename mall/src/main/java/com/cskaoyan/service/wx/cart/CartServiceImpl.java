@@ -250,6 +250,7 @@ public class CartServiceImpl implements CartService {
         Integer couponId = checkoutBo.getCouponId();
         Integer userCouponId = checkoutBo.getUserCouponId();
         Integer addressId = checkoutBo.getAddressId();
+        Integer userId = getMarketUserId();
 
         // 商品信息
         List<MarketCart> checkedGoodsList;
@@ -262,7 +263,17 @@ public class CartServiceImpl implements CartService {
         BigDecimal goodsTotalPrice = (BigDecimal) cartTotal.get("checkedGoodsAmount");
 
         // 地址
-        MarketAddress checkedAddress = addressMapper.selectByPrimaryKey(addressId);
+        MarketAddress checkedAddress = null;
+        if (addressId > 0) {
+            checkedAddress = addressMapper.selectByPrimaryKey(addressId);
+        } else {
+            MarketAddressExample example = new MarketAddressExample();
+            example.createCriteria().andUserIdEqualTo(userId)
+                    .andIsDefaultEqualTo(true);
+            List<MarketAddress> addressList = addressMapper.selectByExample(example);
+            checkedAddress = addressList.get(0);
+            addressId = checkedAddress.getId();
+        }
 
         // 运费
         String freightMinStr = systemMapper.selectValueByName("market_express_freight_min");
@@ -275,10 +286,16 @@ public class CartServiceImpl implements CartService {
         }
 
         // 优惠券数量
-        Integer userId = getMarketUserId();
         List<MyCouponListVO> couponList =
                 couponMapper.selectUserCouponListByUserIdAndStatus(userId, 0);
-        Integer availableCouponLength = couponList.size();
+        ArrayList<MyCouponListVO> availableCouponList = new ArrayList<>();
+        for (MyCouponListVO couponListVO : couponList) {
+            // 购物总价高于优惠券最低价格
+            if (goodsTotalPrice.compareTo(couponListVO.getMin()) >= 0) {
+                availableCouponList.add(couponListVO);
+            }
+        }
+        Integer availableCouponLength = availableCouponList.size();
 
         // 优惠价格
         BigDecimal couponPrice = new BigDecimal(0);
@@ -287,7 +304,7 @@ public class CartServiceImpl implements CartService {
         if (userCouponId <= 0) {
             // 有优惠券，默认使用第一个
             if (availableCouponLength > 0) {
-                MyCouponListVO coupon = couponList.get(0);
+                MyCouponListVO coupon = availableCouponList.get(0);
                 couponPrice = coupon.getDiscount();
                 // 更新指定使用的优惠券数据
                 userCouponId = coupon.getId();

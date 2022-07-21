@@ -284,7 +284,7 @@ public class CouponServiceImpl implements CouponService {
             Integer goodsId = cart.getGoodsId();
             Boolean checked = cart.getChecked();
             // 商品货品的价格
-            amount = cart.getPrice();
+            amount = cart.getPrice().multiply(new BigDecimal(cart.getNumber()));
 
             // 根据商品id查询商品类目
         }
