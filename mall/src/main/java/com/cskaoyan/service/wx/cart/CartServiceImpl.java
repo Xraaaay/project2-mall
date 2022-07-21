@@ -5,6 +5,7 @@ import com.cskaoyan.bean.admin.marketconfig.MarketExpreessVO;
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.cart.CheckoutBo;
 import com.cskaoyan.bean.wx.cart.CheckoutVo;
+import com.cskaoyan.bean.wx.coupon.MyCouponListVO;
 import com.cskaoyan.exception.UnAuthException;
 import com.cskaoyan.mapper.common.*;
 import com.cskaoyan.service.admin.promotion.CouponService;
@@ -40,8 +41,6 @@ public class CartServiceImpl implements CartService {
     MarketAddressMapper addressMapper;
     @Autowired
     MarketSystemMapper systemMapper;
-    @Autowired
-    CouponService couponService;
 
     @Override
     public Map<String, Object> index() {
@@ -223,27 +222,38 @@ public class CartServiceImpl implements CartService {
 
         // 优惠券数量
         Integer userId = getMarketUserId();
-        MarketCouponUserExample example = new MarketCouponUserExample();
-        example.createCriteria().andUserIdEqualTo(userId)
-                .andStatusEqualTo((short) 0)
-                .andDeletedEqualTo(false);
-        List<MarketCouponUser> marketCouponUsers = couponUserMapper.selectByExample(example);
-        Integer availableCouponLength = marketCouponUsers.size();
+        List<MyCouponListVO> couponList =
+                couponMapper.selectUserCouponListByUserIdAndStatus(userId, 0);
+        Integer availableCouponLength = couponList.size();
 
-        // 优惠信息
-        MarketCoupon coupon = couponMapper.selectByPrimaryKey(couponId);
+        // 优惠价格
         BigDecimal couponPrice = new BigDecimal(0);
-        if (coupon != null) {
-            for (MarketCouponUser couponUser : marketCouponUsers) {
-                if (couponUser.getCouponId().equals(couponId)) {
-                    couponPrice = coupon.getDiscount();
+
+        // 没有指定使用的优惠券
+        if (userCouponId == 0) {
+            // 有优惠券，默认使用第一个
+            if (availableCouponLength > 0) {
+                MyCouponListVO coupon = couponList.get(0);
+                couponPrice = coupon.getDiscount();
+                // 更新指定使用的优惠券数据
+                userCouponId = coupon.getId();
+                couponId = coupon.getCid();
+            }
+        } else {
+            // 使用指定的优惠券
+            MarketCouponUser couponUser = couponUserMapper.selectByPrimaryKey(userCouponId);
+            if (couponUser != null) {
+                Integer couponId1 = couponUser.getCouponId();
+                MarketCoupon marketCoupon = couponMapper.selectByPrimaryKey(couponId1);
+                if (marketCoupon != null) {
+                    couponPrice = marketCoupon.getDiscount();
                 }
             }
         }
 
         // 商品总价
         BigDecimal actualPrice = goodsTotalPrice.subtract(couponPrice).add(freightPrice);
-        BigDecimal orderTotalPrice = actualPrice;
+        BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
 
         return new CheckoutVo(grouponRulesId, actualPrice, orderTotalPrice, cartId,
                 userCouponId, couponId, goodsTotalPrice, addressId, 0, checkedAddress,
