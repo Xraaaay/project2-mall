@@ -5,8 +5,10 @@ import com.cskaoyan.bean.admin.marketconfig.MarketExpreessVO;
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.cart.CheckoutBo;
 import com.cskaoyan.bean.wx.cart.CheckoutVo;
+import com.cskaoyan.bean.wx.coupon.MyCouponListVO;
 import com.cskaoyan.exception.UnAuthException;
 import com.cskaoyan.mapper.common.*;
+import com.cskaoyan.service.admin.promotion.CouponService;
 import com.cskaoyan.util.PrincipalUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -94,7 +96,7 @@ public class CartServiceImpl implements CartService {
 
         short numbershort = number.shortValue();
         if (number > marketGoodsProduct.getNumber()) {
-            statusId = 710;
+            statusId = 711;
             return statusId;
         }
 
@@ -158,32 +160,85 @@ public class CartServiceImpl implements CartService {
         MarketGoodsExample.Criteria goodscriteria = goodsExample.createCriteria();
         goodscriteria.andDeletedEqualTo(false);
 
+        //cart 的总量
+        MarketCartExample marketCartExample = new MarketCartExample();
+        MarketCartExample.Criteria cartExampleCriteria = marketCartExample.createCriteria();
+        cartExampleCriteria.andDeletedEqualTo(false)
+                .andUserIdEqualTo(marketUserId);
+        //算出购物车的总量
+        Integer sumCartNumber = number;
+        List<MarketCart> marketCarts = marketCartMapper.selectByExample(marketCartExample);
+        for (MarketCart cart : marketCarts) {
+            sumCartNumber +=  cart.getNumber();
+        }
+
         MarketGoods marketGoods = marketGoodsMapper.selectByPrimaryKey(goodsId);
 
         MarketGoodsProduct marketGoodsProduct = marketGoodsProductMapper.selectByPrimaryKey(productId);
         //goodSn 强转成 String
         String goodsSn = Integer.toString(marketGoods.getId());
         //String[]转 String
-        String getSpecifications = Arrays.toString(marketGoodsProduct.getSpecifications());
+
         //判断库存量是否足够
         if (number > marketGoodsProduct.getNumber()) {
             statusId = 711;
             return statusId;
         }
         MarketCart marketCart = new MarketCart(null, marketUserId, goodsId, goodsSn,
-                marketGoods.getName(), productId, marketGoodsProduct.getPrice(), numbershort, getSpecifications,
+                marketGoods.getName(), productId, marketGoodsProduct.getPrice(), numbershort, marketGoodsProduct.getSpecifications(),
                 true, marketGoodsProduct.getUrl(), marketGoodsProduct.getAddTime(), marketGoodsProduct.getUpdateTime(), false);
 
+        //判断 是否加入购物车的商品id已经存在于cart的数据库，如果存在只增加数量，如果不存在，再执行插入
+        //同理，立即购买也是一样。但是立即购买要返回的是id  哪如果有这个商品的话，只能去插入
+        //existGoodsId 为 1 存在相同 id   为0 不存在相同id
+        Integer existGoodsId = isExistGoodsId(marketUserId, goodsId);
+        //查询goodsId 哪一条
+        MarketCartExample marketCartGoodsIdExample = new MarketCartExample();
+        MarketCartExample.Criteria cartGoodsExampleCriteria = marketCartExample.createCriteria();
+        cartGoodsExampleCriteria.andDeletedEqualTo(false)
+                .andUserIdEqualTo(marketUserId)
+                .andGoodsIdEqualTo(goodsId);
+        List<MarketCart> marketGoodsCarts = marketCartMapper.selectByExample(marketCartGoodsIdExample);
+        //查询出哪个相同goodsId 的商品   然后给他的数量付给新值
+        //但是由于你自己知道查询出来只有一个 但是 系统不知道 还是给了个列表
+
+
         try {
-            marketCartMapper.insertSelective(marketCart);
-        } catch (Exception e) {
+            //存在相同existGoodsId 添加
+            if (existGoodsId == 1) {
+                Integer newNumber = marketGoodsCarts.get(0).getNumber() + number;
+                short NewNumbershort = newNumber.shortValue();
+                marketCarts.get(0).setNumber(NewNumbershort);
+                marketCartMapper.updateByPrimaryKeySelective(marketGoodsCarts.get(0));
+            } else {
+                //不存在相同existGoodsId 插入
+                marketCartMapper.insertSelective(marketCart);
+            }
+        }catch (Exception e) {
             statusId = 404;
             e.printStackTrace();
             return statusId;
         }
-        //如果成功返回值为 200
-        statusId = 200;
-        return statusId;
+        // //如果成功返回值为 200
+        // statusId = 200;
+        return sumCartNumber;
+    }
+
+    private Integer isExistGoodsId(Integer marketUserId, Integer goodsId) {
+        MarketCartExample marketCartExample = new MarketCartExample();
+        MarketCartExample.Criteria cartExampleCriteria = marketCartExample.createCriteria();
+        cartExampleCriteria.andDeletedEqualTo(false)
+        .andUserIdEqualTo(marketUserId);
+        //开始查询
+        List<MarketCart> marketCarts = marketCartMapper.selectByExample(marketCartExample);
+        for (MarketCart cart : marketCarts) {
+            if (cart.getGoodsId() == goodsId) {
+                //存在相同 goodsid
+                return 1;
+            }
+        }
+        //不存在相同id
+       return 0;
     }
 
     @Transactional
@@ -196,7 +251,12 @@ public class CartServiceImpl implements CartService {
         Integer addressId = checkoutBo.getAddressId();
 
         // 商品信息
-        List<MarketCart> checkedGoodsList = getCheckedCartList();
+        List<MarketCart> checkedGoodsList;
+        if (cartId == 0) {
+            checkedGoodsList = getCheckedCartList();
+        } else {
+            checkedGoodsList = getCartListByCartId(cartId);
+        }
         Map<String, Object> cartTotal = getCartTotal(checkedGoodsList);
         BigDecimal goodsTotalPrice = (BigDecimal) cartTotal.get("checkedGoodsAmount");
 
@@ -215,33 +275,43 @@ public class CartServiceImpl implements CartService {
 
         // 优惠券数量
         Integer userId = getMarketUserId();
-        MarketCouponUserExample example = new MarketCouponUserExample();
-        example.createCriteria().andUserIdEqualTo(userId)
-                .andStatusEqualTo((short) 0)
-                .andDeletedEqualTo(false);
-        List<MarketCouponUser> marketCouponUsers = couponUserMapper.selectByExample(example);
-        Integer availableCouponLength = marketCouponUsers.size();
+        List<MyCouponListVO> couponList =
+                couponMapper.selectUserCouponListByUserIdAndStatus(userId, 0);
+        Integer availableCouponLength = couponList.size();
 
-        // 优惠信息
-        MarketCoupon coupon = couponMapper.selectByPrimaryKey(couponId);
+        // 优惠价格
         BigDecimal couponPrice = new BigDecimal(0);
-        if (coupon != null) {
-            for (MarketCouponUser couponUser : marketCouponUsers) {
-                if (couponUser.getCouponId().equals(couponId)) {
-                    couponPrice = coupon.getDiscount();
+
+        // 没有指定使用的优惠券
+        if (userCouponId == 0) {
+            // 有优惠券，默认使用第一个
+            if (availableCouponLength > 0) {
+                MyCouponListVO coupon = couponList.get(0);
+                couponPrice = coupon.getDiscount();
+                // 更新指定使用的优惠券数据
+                userCouponId = coupon.getId();
+                couponId = coupon.getCid();
+            }
+        } else {
+            // 使用指定的优惠券
+            MarketCouponUser couponUser = couponUserMapper.selectByPrimaryKey(userCouponId);
+            if (couponUser != null) {
+                Integer couponId1 = couponUser.getCouponId();
+                MarketCoupon marketCoupon = couponMapper.selectByPrimaryKey(couponId1);
+                if (marketCoupon != null) {
+                    couponPrice = marketCoupon.getDiscount();
                 }
             }
         }
 
         // 商品总价
         BigDecimal actualPrice = goodsTotalPrice.subtract(couponPrice).add(freightPrice);
-        BigDecimal orderTotalPrice = actualPrice;
+        BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
 
         return new CheckoutVo(grouponRulesId, actualPrice, orderTotalPrice, cartId,
                 userCouponId, couponId, goodsTotalPrice, addressId, 0, checkedAddress,
                 couponPrice, availableCouponLength, freightPrice, checkedGoodsList);
     }
-
 
 
     public Map<String, Object> delete(List<Integer> productIds) {
@@ -266,7 +336,7 @@ public class CartServiceImpl implements CartService {
         // 获取用户信息
         Subject subject = SecurityUtils.getSubject();
         PrincipalCollection principals = subject.getPrincipals();
-        if (principals==null) {
+        if (principals == null) {
             // 用户未登录，购物车数量为0
             return 0;
         }
@@ -289,6 +359,7 @@ public class CartServiceImpl implements CartService {
     /**
      * lyx
      * 立即下单。 减少库存
+     *
      * @param map
      * @return
      */
@@ -320,7 +391,7 @@ public class CartServiceImpl implements CartService {
         //goodSn 强转成 String 因为从商品查出来的goodsSn为Integer类型
         String goodsSn = Integer.toString(marketGoods.getId());
         //String[]转 String  理由同上
-        String getSpecifications = Arrays.toString(marketGoodsProduct.getSpecifications());
+
         //判断库存量是否足够
         if (number > marketGoodsProduct.getNumber()) {
             statusId = 711;
@@ -328,9 +399,10 @@ public class CartServiceImpl implements CartService {
         }
         //吧 cart数据库要用的值送给 marketCart
         MarketCart marketCart = new MarketCart(null, marketUserId, goodsId, goodsSn,
-                marketGoods.getName(), productId, marketGoodsProduct.getPrice(), numbershort, getSpecifications,
+                marketGoods.getName(), productId, marketGoodsProduct.getPrice(), numbershort, marketGoodsProduct.getSpecifications(),
                 true, marketGoodsProduct.getUrl(), marketGoodsProduct.getAddTime(), marketGoodsProduct.getUpdateTime(), false);
         //插入数据，如果成功就返回200，异常404 数量不足返回 711
+
         try {
             marketCartMapper.insertSelective(marketCart);
         } catch (Exception e) {
@@ -338,12 +410,10 @@ public class CartServiceImpl implements CartService {
             e.printStackTrace();
             return statusId;
         }
-        return statusId;
+
+        return  marketCart.getId();
 
     }
-
-
-
 
 
     /**
@@ -378,6 +448,24 @@ public class CartServiceImpl implements CartService {
                 .andDeletedEqualTo(false)
                 .andUserIdEqualTo(userId);
         // 查询用户所有订单
+        return marketCartMapper.selectByExample(example);
+    }
+
+    /**
+     * 根据购物车id获取购物车信息
+     *
+     * @author Xrw
+     * @date 2022/7/21 15:38
+     */
+    private List<MarketCart> getCartListByCartId(Integer cartId) {
+        Integer userId = getMarketUserId();
+
+        MarketCartExample example = new MarketCartExample();
+        MarketCartExample.Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(cartId)
+                .andCheckedEqualTo(true)
+                .andDeletedEqualTo(false)
+                .andUserIdEqualTo(userId);
         return marketCartMapper.selectByExample(example);
     }
 
