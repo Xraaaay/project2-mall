@@ -208,7 +208,7 @@
       #{retailPrice,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{deleted,jdbcType=BIT}, #{detail,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelectiveVo" parameterType="com.cskaoyan.bean.admin.goods.vo.MarketGoodsVo">
+  <insert id="insertSelectiveVo" parameterType="com.cskaoyan.bean.admin.goods.vo.MarketGoodsVo" useGeneratedKeys="true" keyProperty="id">
     insert into market_goods
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
