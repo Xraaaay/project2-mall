@@ -2,7 +2,10 @@ package com.cskaoyan.service.admin.promotion.impl;
 
 import com.cskaoyan.bean.common.*;
 import com.cskaoyan.bean.wx.coupon.MyCouponListVO;
-import com.cskaoyan.mapper.common.*;
+import com.cskaoyan.mapper.common.MarketCartMapper;
+import com.cskaoyan.mapper.common.MarketCouponMapper;
+import com.cskaoyan.mapper.common.MarketCouponUserMapper;
+import com.cskaoyan.mapper.common.MarketGoodsMapper;
 import com.cskaoyan.service.admin.promotion.CouponService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -17,6 +20,7 @@ import javax.validation.constraints.Min;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 优惠券管理
@@ -74,7 +78,7 @@ public class CouponServiceImpl implements CouponService {
         return CommonData.data(pageInfo);
     }
 
-    // TODO: 商品限制类型，商品限制值， 优惠券兑换码
+    // TODO: 商品限制类型，商品限制值
     @Transactional
     @Override
     public int create(MarketCoupon coupon) {
@@ -82,8 +86,50 @@ public class CouponServiceImpl implements CouponService {
         coupon.setAddTime(new Date());
         coupon.setUpdateTime(new Date());
 
+        while (true) {
+
+            // 如果是兑换码优惠券
+            if (coupon.getType() == 2) {
+                // 随机生成兑换码
+                String exchangeCode = exchangeCode();
+
+                // 查询数据库中是否已经存在
+                MarketCouponExample couponExample = new MarketCouponExample();
+                couponExample.createCriteria().
+                        andDeletedEqualTo(false).
+                        andTypeEqualTo((short) 2).
+                        andCodeEqualTo(exchangeCode);
+                List<MarketCoupon> couponList = couponMapper.selectByExample(couponExample);
+
+                // 如果不存在
+                if (couponList.size() == 0) {
+                    coupon.setCode(exchangeCode);
+                    break;
+                }
+            }
+        }
+
         int affect = couponMapper.insertSelective(coupon);
         return affect;
+    }
+
+    private String exchangeCode() {
+        int maxNum = 36;
+        int i;
+        int count = 0;
+        char[] str = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+                'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+                'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        StringBuffer pwd = new StringBuffer("");
+        Random r = new Random();
+        while (count < 8) {
+            i = Math.abs(r.nextInt(maxNum));
+            if (i >= 0 && i < str.length) {
+                pwd.append(str[i]);
+                count++;
+            }
+        }
+        return pwd.toString();
     }
 
     @Override
@@ -93,7 +139,7 @@ public class CouponServiceImpl implements CouponService {
         return coupon;
     }
 
-    // TODO:优化重复代码
+    // 优化重复代码
     @Override
     public CommonData<MarketCouponUser> listUser(BasePageInfo basePageInfo, Integer couponId, Integer userId, Short status) {
 

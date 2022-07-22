@@ -98,7 +98,7 @@ public class RoleController {
         }
         // 角色名校验
         if (!name.matches("^[\\u4e00-\\u9fa5]{5,12}$") || !name.endsWith("管理员")) {
-            throw new InvalidParamException("角色名必须为中文，且以“管理员”结尾，长度在6-12之间");
+            throw new InvalidParamException("角色名必须为中文，且以“管理员”结尾，长度在5-12之间");
         }
     }
 }

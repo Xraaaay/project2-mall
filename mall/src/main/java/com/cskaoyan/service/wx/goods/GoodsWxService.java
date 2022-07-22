@@ -33,7 +33,7 @@ public interface GoodsWxService {
      * @author pqk
      * @date 2022/07/19 21:13
      */
-    PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order,Integer brandId);
+    PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order,Integer brandId,Boolean isNew,Boolean isHot);
 
     /**
     * @description 所有商品数量

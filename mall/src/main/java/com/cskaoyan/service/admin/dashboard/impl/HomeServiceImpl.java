@@ -4,6 +4,7 @@ import com.cskaoyan.bean.common.*;
 import com.cskaoyan.mapper.common.*;
 import com.cskaoyan.service.admin.dashboard.HomeService;
 import com.github.pagehelper.PageHelper;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +73,7 @@ public class HomeServiceImpl implements HomeService {
         MarketCategoryExample.Criteria categoryExampleCriteria = categoryExample.createCriteria();
         categoryExample.setOrderByClause("add_time desc");
         categoryExampleCriteria.andDeletedEqualTo(false).andPidEqualTo(0);
-        List<MarketCategory> categoryList = categoryMapper.selectByExample(categoryExample);
+        List<MarketCategory> pCategoryList = categoryMapper.selectByExample(categoryExample);
 
         // 广告列表
         PageHelper.startPage(1, 15);
@@ -101,20 +102,41 @@ public class HomeServiceImpl implements HomeService {
         // floorGoodsList
         List<Map<String, Object>> floorGoodsList = new ArrayList<>();
         int count = 0;
-        for (MarketCategory category : categoryList) {
+        for (MarketCategory pCategory : pCategoryList) {
             Map<String, Object> floorGoods = new HashMap<>();
-            floorGoods.put("name", category.getName());
-            floorGoods.put("id", category.getId());
+            floorGoods.put("name", pCategory.getName());
+            floorGoods.put("id", pCategory.getId());
+            // 子类目列表
+            MarketCategoryExample categoryExample2 = new MarketCategoryExample();
+            MarketCategoryExample.Criteria categoryExampleCriteria2 = categoryExample2.createCriteria();
+            categoryExample2.setOrderByClause("add_time desc");
+            categoryExampleCriteria2.andDeletedEqualTo(false).andPidEqualTo(pCategory.getId());
+            List<MarketCategory> categoryList = categoryMapper.selectByExample(categoryExample2);
 
-            // 根据类目id查询商品（六条，逆序）
-            PageHelper.startPage(1, pageSize6);
-            MarketGoodsExample goodsExample3 = new MarketGoodsExample();
-            MarketGoodsExample.Criteria criteria3 = goodsExample.createCriteria();
-            goodsExample.setOrderByClause("add_time desc");
-            criteria.andDeletedEqualTo(false).andIsNewEqualTo(true);
-            List<MarketGoods> goodsList = goodsMapper.selectByExample(goodsExample3);
+            int temp = 0;
+            List<MarketGoods> marketGoods = new ArrayList<>();
+            for (MarketCategory category : categoryList) {
+                // 每个子类目取商品,取到6为止
+                if (temp >= pageSize6) {
+                    break;
+                }
+                // 根据类目id查询商品
+                MarketGoodsExample goodsExample3 = new MarketGoodsExample();
+                MarketGoodsExample.Criteria criteria3 = goodsExample3.createCriteria();
+                goodsExample3.setOrderByClause("id asc");
+                criteria3.andDeletedEqualTo(false).
+                        andCategoryIdEqualTo(category.getId());
+                List<MarketGoods> goodsList = goodsMapper.selectByExample(goodsExample3);
 
-            floorGoods.put("goodsList", goodsList);
+                for (MarketGoods goods : goodsList) {
+                    if (temp >= pageSize6) {
+                        break;
+                    }
+                    marketGoods.add(goods);
+                    temp++;
+                }
+            }
+            floorGoods.put("goodsList", marketGoods);
             floorGoodsList.add(floorGoods);
             if (count++ > pageSize3) {
                 break;
@@ -124,7 +146,7 @@ public class HomeServiceImpl implements HomeService {
         HashMap<String, Object> map = new HashMap<>();
         map.put("newGoodsList", newGoodsList);
         map.put("couponList", couponList);
-        map.put("channel", categoryList);
+        map.put("channel", pCategoryList);
         map.put("banner", adList);
         map.put("brandList", brandList);
         map.put("hotGoodsList", hotGoodsList);

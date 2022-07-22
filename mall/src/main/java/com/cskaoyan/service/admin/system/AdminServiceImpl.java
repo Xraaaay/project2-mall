@@ -62,7 +62,7 @@ public class AdminServiceImpl implements AdminService {
         MarketAdminCreateVo createVo = new MarketAdminCreateVo();
         createVo.setId(marketAdmin1.getId());
         createVo.setUsername(marketAdmin1.getUsername());
-        createVo.setPassword(marketAdmin1.getPassword());
+        createVo.setPassword("");
         createVo.setAvatar(marketAdmin1.getAvatar());
         createVo.setAddTime(marketAdmin1.getAddTime());
         createVo.setUpdateTime(marketAdmin1.getUpdateTime());
@@ -94,11 +94,14 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     @Override
     public void delete(MarketAdmin admin) {
-        MarketAdmin marketAdmin = new MarketAdmin();
-        marketAdmin.setId(admin.getId());
-        marketAdmin.setUpdateTime(new Date());
-        marketAdmin.setDeleted(true);
-        adminMapper.updateByPrimaryKeySelective(marketAdmin);
+        // MarketAdmin marketAdmin = new MarketAdmin();
+        // marketAdmin.setId(admin.getId());
+        // marketAdmin.setUpdateTime(new Date());
+        // marketAdmin.setDeleted(true);
+        // adminMapper.updateByPrimaryKeySelective(marketAdmin);
+
+        // 不能用逻辑删除，login会根据username来查数据库表
+        adminMapper.deleteByPrimaryKey(admin.getId());
     }
 
     private void checkName(MarketAdmin admin) {

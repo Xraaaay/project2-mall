@@ -52,7 +52,26 @@ public class GoodsWxServiceImpl implements GoodsWxService {
 
     @Override
     public CategoryWxVo category(String id) {
-        int cid  = Integer.parseInt(id);
+        // 判断类目级别
+        MarketCategory marketCategory = marketCategoryMapper.selectByPrimaryKey(Integer.parseInt(id));
+        Integer pid = marketCategory.getPid();
+        Integer cid = null;
+        // l1类目
+        if (pid == 0) {
+            MarketCategoryExample categoryExample = new MarketCategoryExample();
+            categoryExample.createCriteria().andDeletedEqualTo(false).andPidEqualTo(Integer.parseInt(id));
+            List<MarketCategory> marketCategories = marketCategoryMapper.selectByExample(categoryExample);
+            MarketCategory category = marketCategories.get(0);
+            if (category != null) {
+                cid = category.getId();
+            }
+            return categoryl(cid);
+        } else {
+            // l2类目
+            return categoryl(Integer.parseInt(id));
+        }
+    }
+    private CategoryWxVo categoryl(Integer cid) {
         MarketCategory currentCategory = marketCategoryMapper.selectByPrimaryKey(cid);
 
         Integer pid = currentCategory.getPid();
@@ -71,7 +90,7 @@ public class GoodsWxServiceImpl implements GoodsWxService {
 
     @Override
     @Transactional
-    public PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order,Integer brandId) {
+    public PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order,Integer brandId,Boolean isNew,Boolean isHot) {
         //如果没有关键词输入就不加入
         if (keyword!=null){
             //将用户输入关键词加入历史表中
@@ -93,16 +112,30 @@ public class GoodsWxServiceImpl implements GoodsWxService {
         Integer limit = listWxBo.getLimit();
         Integer page = listWxBo.getPage();
 
-        PageHelper.startPage(page,limit);
+
         //根据类目id找到属于这个品类下商品
         MarketGoodsExample marketGoodsExample = new MarketGoodsExample();
         MarketGoodsExample.Criteria criteria = marketGoodsExample.createCriteria();
-        if (categoryId!=null){
+
+        if (isHot!=null){
+            criteria.andIsHotEqualTo(isHot);
+        }
+        if (isNew!=null){
+            criteria.andIsNewEqualTo(isNew);
+        }
+        if (sort!=null&&order!=null){
+            marketGoodsExample.setOrderByClause(sort+" "+order);
+        }
+        if (categoryId!=null && categoryId !=0){
             criteria.andCategoryIdEqualTo(categoryId);
         }
         if (brandId!=null){
             criteria.andBrandIdEqualTo(brandId);
         }
+        if (keyword!=null){
+            criteria.andNameLike("%"+keyword+"%");
+        }
+        PageHelper.startPage(page,limit);
         List<MarketGoods> list = marketGoodsMapper.selectByExample(marketGoodsExample);
 
 

@@ -87,7 +87,7 @@ public class OrderController {
     @RequestMapping("refund")
     public BaseRespVo refund(@RequestBody Map map) {
         Integer orderId = (Integer) map.get("orderId");
-        Double refundMoney = (Double) map.get("refundMoney");
+        Integer refundMoney = (Integer) map.get("refundMoney");
         orderService.refund(orderId, refundMoney);
         return BaseRespVo.ok(null);
     }
