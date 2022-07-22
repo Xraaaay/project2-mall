@@ -90,7 +90,7 @@ public class GoodsWxServiceImpl implements GoodsWxService {
 
     @Override
     @Transactional
-    public PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order,Integer brandId) {
+    public PageInfoDataVo list(ListWxBo listWxBo, String keyword, String sort, String order,Integer brandId,Boolean isNew,Boolean isHot) {
         //如果没有关键词输入就不加入
         if (keyword!=null){
             //将用户输入关键词加入历史表中
@@ -116,6 +116,16 @@ public class GoodsWxServiceImpl implements GoodsWxService {
         //根据类目id找到属于这个品类下商品
         MarketGoodsExample marketGoodsExample = new MarketGoodsExample();
         MarketGoodsExample.Criteria criteria = marketGoodsExample.createCriteria();
+
+        if (isHot!=null){
+            criteria.andIsHotEqualTo(isHot);
+        }
+        if (isNew!=null){
+            criteria.andIsNewEqualTo(isNew);
+        }
+        if (sort!=null&&order!=null){
+            marketGoodsExample.setOrderByClause(sort+" "+order);
+        }
         if (categoryId!=null && categoryId !=0){
             criteria.andCategoryIdEqualTo(categoryId);
         }
