@@ -156,12 +156,12 @@ public class OrderServiceImpl implements OrderService {
      * @since 2022/07/17 18:14
      */
     @Override
-    public void refund(Integer id, Double refundMoney) {
+    public void refund(Integer id, Integer refundMoney) {
         //获取order，再获取orderStatus，为202（即申请退款状态），可以退款
         MarketOrder marketOrder = marketOrderMapper.selectByPrimaryKey(id);
         if((short)202==marketOrder.getOrderStatus()){
             marketOrder.setOrderStatus((short) 203);
-            marketOrder.setRefundAmount(new BigDecimal(Double.valueOf(refundMoney)));
+            marketOrder.setRefundAmount(new BigDecimal(refundMoney));
             marketOrder.setRefundType("微信退款接口");
             Date refundTime = new Date();
             marketOrder.setRefundTime(refundTime);
