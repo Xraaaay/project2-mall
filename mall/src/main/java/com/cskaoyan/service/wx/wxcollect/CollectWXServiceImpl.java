@@ -57,7 +57,9 @@ public class CollectWXServiceImpl implements CollectWXService {
         MarketCollectExample example = new MarketCollectExample();
         MarketCollectExample.Criteria criteria = example.createCriteria();
         criteria.andUserIdEqualTo(userId)
-                .andTypeEqualTo(Byte.valueOf(type));
+                .andTypeEqualTo(Byte.valueOf(type))
+                .andDeletedEqualTo(false);
+
         //保存赋值的list
         ArrayList<InnerListOfWXCollectVo> collectVos = new ArrayList<>();
 
@@ -76,7 +78,6 @@ public class CollectWXServiceImpl implements CollectWXService {
                 //list结果
                 collectVos.add(collectVo);
             }
-
         }
         // 会去获得一些分页信息
         PageInfo pageInfo = new PageInfo(collectVos);
@@ -86,7 +87,7 @@ public class CollectWXServiceImpl implements CollectWXService {
     }
 
     /**
-     * 小程序 添加收藏
+     * 小程序 添加、取消收藏
      *
      * @param map
      * @return int
@@ -99,16 +100,46 @@ public class CollectWXServiceImpl implements CollectWXService {
         MarketCollect collect = new MarketCollect();
         //shiro 获取用户信息
         MarketUser userInfo = PrincipalUtil.getUserInfo();
-
-        collect.setUserId(userInfo.getId());
-        collect.setValueId((Integer) map.get("valueId"));
+        Integer userId = userInfo.getId();
+        Integer valueId = (Integer) map.get("valueId");
         Integer integer = (Integer) map.get("type");
         Byte type = (byte) integer.intValue();
-        collect.setType(type);
-        collect.setAddTime(new Date());
-        collect.setUpdateTime(new Date());
-        collect.setDeleted(false);
-        int addNum = marketCollectMapper.insertSelective(collect);
-        return addNum;
+
+        //判断商品收藏是否已存在
+        MarketCollectExample example = new MarketCollectExample();
+        MarketCollectExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(userId)
+                .andValueIdEqualTo(valueId)
+                .andTypeEqualTo(type);
+
+        List<MarketCollect> collects = marketCollectMapper.selectByExample(example);
+
+        if (collects.size()!=0) {
+            //已存在，逻辑删除、添加
+            int updateNum=0;
+            for (MarketCollect marketCollect : collects) {
+                //已经收藏，逻辑删除
+                if (marketCollect.getDeleted().equals(false)) {
+                    marketCollect.setDeleted(true);
+                    marketCollect.setUpdateTime(new Date());
+                } else {
+                    //收藏已经取消,逻辑添加
+                    marketCollect.setDeleted(false);
+                    marketCollect.setUpdateTime(new Date());
+                }
+                updateNum = marketCollectMapper.updateByExampleSelective(marketCollect, example);
+            }
+            return updateNum;
+        }else {
+            //不存在，添加
+            collect.setUserId(userId);
+            collect.setValueId(valueId);
+            collect.setType(type);
+            collect.setAddTime(new Date());
+            collect.setUpdateTime(new Date());
+            collect.setDeleted(false);
+            int addNum = marketCollectMapper.insertSelective(collect);
+            return addNum;
+        }
     }
 }

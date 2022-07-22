@@ -36,7 +36,7 @@ public class CollectWXController {
     }
 
     /**
-     * 小程序 添加收藏
+     * 小程序 添加、取消收藏
      * @param map
      * @return com.cskaoyan.bean.admin.mallmanagement.BaseRespSuccessVo
      * @author shn

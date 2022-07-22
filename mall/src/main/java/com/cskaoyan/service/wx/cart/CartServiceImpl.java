@@ -269,10 +269,13 @@ public class CartServiceImpl implements CartService {
         } else {
             MarketAddressExample example = new MarketAddressExample();
             example.createCriteria().andUserIdEqualTo(userId)
-                    .andIsDefaultEqualTo(true);
+                    .andIsDefaultEqualTo(true)
+                    .andDeletedEqualTo(false);
             List<MarketAddress> addressList = addressMapper.selectByExample(example);
-            checkedAddress = addressList.get(0);
-            addressId = checkedAddress.getId();
+            if (addressList.size() > 0) {
+                checkedAddress = addressList.get(0);
+                addressId = checkedAddress.getId();
+            }
         }
 
         // 运费
