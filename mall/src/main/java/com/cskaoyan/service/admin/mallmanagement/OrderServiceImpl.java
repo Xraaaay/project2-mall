@@ -5,6 +5,7 @@ import com.cskaoyan.bean.admin.mallmanagement.po.MarketOrderDetailPo;
 import com.cskaoyan.bean.admin.mallmanagement.po.MarketOrderListPo;
 import com.cskaoyan.bean.admin.mallmanagement.bo.MarketOrderListBo;
 import com.cskaoyan.bean.common.*;
+import com.cskaoyan.exception.InvalidParamException;
 import com.cskaoyan.mapper.common.MarketCommentMapper;
 import com.cskaoyan.mapper.common.MarketOrderGoodsMapper;
 import com.cskaoyan.mapper.common.MarketOrderMapper;
@@ -190,8 +191,9 @@ public class OrderServiceImpl implements OrderService {
             marketOrder.setUpdateTime(new Date());
             //update
             marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+            return;
         }
-
+        throw new InvalidParamException("不允许删除该订单");
     }
     /**
     * @description 回复评论
