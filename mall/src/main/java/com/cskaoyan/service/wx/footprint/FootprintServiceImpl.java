@@ -59,6 +59,7 @@ public class FootprintServiceImpl implements FootprintService {
 
         // 根据用户的id到footprint中拿到id,goodsid,addTime
         MarketFootprintExample footprintExample = new MarketFootprintExample();
+        footprintExample.setOrderByClause("update_time desc");
 
         // 只显示delete字段为false的信息
         footprintExample.createCriteria().andDeletedEqualTo(false);

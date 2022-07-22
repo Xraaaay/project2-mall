@@ -159,8 +159,17 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
         if (principals != null) {
             user = (MarketUser) principals.getPrimaryPrincipal();
             // 加入足迹
-            MarketFootprint marketFootprint = new MarketFootprint(null, user.getId(), goodsId, new Date(), new Date(), false);
-            footprintMapper.insertSelective(marketFootprint);
+            // 判断是否已经存在该足迹
+            MarketFootprintExample footprintExample = new MarketFootprintExample();
+            footprintExample.createCriteria().andDeletedEqualTo(false).andGoodsIdEqualTo(goodsId);
+            List<MarketFootprint> marketFootprintList = footprintMapper.selectByExample(footprintExample);
+            MarketFootprint marketFootprint = new MarketFootprint(null, user.getId(), goodsId, null, new Date(), false);
+            if (marketFootprintList.size() == 0) {
+                marketFootprint.setAddTime(new Date());
+                footprintMapper.insertSelective(marketFootprint);
+            } else {
+                footprintMapper.updateByExampleSelective(marketFootprint, footprintExample);
+            }
             // userHasCollect
             MarketCollectExample marketCollectExample = new MarketCollectExample();
             marketCollectExample.createCriteria().
