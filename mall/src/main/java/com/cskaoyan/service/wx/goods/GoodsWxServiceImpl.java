@@ -112,16 +112,20 @@ public class GoodsWxServiceImpl implements GoodsWxService {
         Integer limit = listWxBo.getLimit();
         Integer page = listWxBo.getPage();
 
-        PageHelper.startPage(page,limit);
+
         //根据类目id找到属于这个品类下商品
         MarketGoodsExample marketGoodsExample = new MarketGoodsExample();
         MarketGoodsExample.Criteria criteria = marketGoodsExample.createCriteria();
-        if (categoryId!=null){
+        if (categoryId!=null && categoryId !=0){
             criteria.andCategoryIdEqualTo(categoryId);
         }
         if (brandId!=null){
             criteria.andBrandIdEqualTo(brandId);
         }
+        if (keyword!=null){
+            criteria.andNameLike("%"+keyword+"%");
+        }
+        PageHelper.startPage(page,limit);
         List<MarketGoods> list = marketGoodsMapper.selectByExample(marketGoodsExample);
 
 

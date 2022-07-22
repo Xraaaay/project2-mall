@@ -27,7 +27,6 @@ public class HomeServiceImpl implements HomeService {
     private static final int pageSize4 = 4;
     private static final int pageSize3 = 3;
     private static final int pageSize6 = 6;
-    private static final int pageSize12 = 12;
 
     @Autowired
     MarketGoodsMapper goodsMapper;

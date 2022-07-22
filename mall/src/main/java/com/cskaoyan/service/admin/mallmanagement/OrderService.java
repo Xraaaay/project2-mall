@@ -53,7 +53,7 @@ public interface OrderService {
      * @author changyong
      * @since 2022/07/17 18:13
      */
-    void refund(Integer id, Double refundMoney);
+    void refund(Integer id, Integer refundMoney);
 
     /**
      * 删除订单

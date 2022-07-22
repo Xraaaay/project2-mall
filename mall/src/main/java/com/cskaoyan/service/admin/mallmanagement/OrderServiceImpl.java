@@ -156,12 +156,12 @@ public class OrderServiceImpl implements OrderService {
      * @since 2022/07/17 18:14
      */
     @Override
-    public void refund(Integer id, Double refundMoney) {
+    public void refund(Integer id, Integer refundMoney) {
         //获取order，再获取orderStatus，为202（即申请退款状态），可以退款
         MarketOrder marketOrder = marketOrderMapper.selectByPrimaryKey(id);
         if((short)202==marketOrder.getOrderStatus()){
             marketOrder.setOrderStatus((short) 203);
-            marketOrder.setRefundAmount(new BigDecimal(Double.valueOf(refundMoney)));
+            marketOrder.setRefundAmount(new BigDecimal(refundMoney));
             marketOrder.setRefundType("微信退款接口");
             Date refundTime = new Date();
             marketOrder.setRefundTime(refundTime);
@@ -183,7 +183,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public void delete(Integer id) {
-        //获取order，再获取orderStatus，为102（即用户取消状态），103（即系统取消状态），401（即用户取消状态），402（即系统取消状态），可以删除
+        //获取order，再获取orderStatus，为102（即用户取消状态），103（即系统取消状态），203（即已退款状态），401（即用户收货状态），402（即系统收货状态），可以删除
         MarketOrder marketOrder = marketOrderMapper.selectByPrimaryKey(id);
         if((short)102==marketOrder.getOrderStatus()||(short)103==marketOrder.getOrderStatus()||(short)203==marketOrder.getOrderStatus()||(short)401==marketOrder.getOrderStatus()||(short)402==marketOrder.getOrderStatus()){
             //创建marketOrder并赋值
@@ -194,6 +194,7 @@ public class OrderServiceImpl implements OrderService {
             return;
         }
         throw new InvalidParamException("不允许删除该订单");
+
     }
     /**
     * @description 回复评论
