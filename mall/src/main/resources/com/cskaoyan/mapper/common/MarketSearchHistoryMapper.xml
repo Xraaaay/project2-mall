@@ -216,7 +216,7 @@
         keyword = #{keyword,jdbcType=VARCHAR},
       </if>
       <if test="from != null">
-        from = #{from,jdbcType=VARCHAR},
+        `from` = #{from,jdbcType=VARCHAR},
       </if>
       <if test="addTime != null">
         add_time = #{addTime,jdbcType=TIMESTAMP},
