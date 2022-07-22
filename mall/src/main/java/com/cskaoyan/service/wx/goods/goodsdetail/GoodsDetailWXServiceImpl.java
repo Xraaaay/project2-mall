@@ -14,7 +14,10 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 
 /**
@@ -159,8 +162,20 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
         if (principals != null) {
             user = (MarketUser) principals.getPrimaryPrincipal();
             // 加入足迹
-            MarketFootprint marketFootprint = new MarketFootprint(null, user.getId(), goodsId, new Date(), new Date(), false);
-            footprintMapper.insertSelective(marketFootprint);
+            // 判断是否已经存在该足迹
+            MarketFootprintExample footprintExample = new MarketFootprintExample();
+            MarketFootprintExample.Criteria criteria = footprintExample.createCriteria();
+            criteria.andDeletedEqualTo(false).andGoodsIdEqualTo(goodsId);
+            List<MarketFootprint> marketFootprintList = footprintMapper.selectByExample(footprintExample);
+            MarketFootprint marketFootprint = new MarketFootprint(null, user.getId(), goodsId, null, new Date(), false);
+            if (marketFootprintList.size() == 0) {
+                marketFootprint.setAddTime(new Date());
+                footprintMapper.insertSelective(marketFootprint);
+            } else {
+                criteria.andUserIdEqualTo(user.getId());
+                footprintMapper.updateByExampleSelective(marketFootprint, footprintExample);
+            }
+
             // userHasCollect
             MarketCollectExample marketCollectExample = new MarketCollectExample();
             marketCollectExample.createCriteria().
