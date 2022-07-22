@@ -11,6 +11,7 @@ import com.cskaoyan.bean.wx.goods.detail.SpecificationList;
 import com.cskaoyan.mapper.common.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -97,13 +98,25 @@ public class GoodsWxServiceImpl implements GoodsWxService {
             Subject subject = SecurityUtils.getSubject();
             PrincipalCollection principals = subject.getPrincipals();
             if (principals!=null){
+
+                // 判断是否已经搜索过当前keyword
+                MarketSearchHistoryExample searchHistoryExample = new MarketSearchHistoryExample();
+                searchHistoryExample.createCriteria().andDeletedEqualTo(false).andKeywordEqualTo(keyword);
+                List<MarketSearchHistory> marketSearchHistories = marketSearchHistoryMapper.selectByExample(searchHistoryExample);
                 MarketUser primaryPrincipal = (MarketUser) principals.getPrimaryPrincipal();
                 MarketSearchHistory marketSearchHistory = new MarketSearchHistory();
-                marketSearchHistory.setAddTime(new Date());
                 marketSearchHistory.setFrom("wx");
                 marketSearchHistory.setKeyword(keyword);
                 marketSearchHistory.setUserId(primaryPrincipal.getId());
-                marketSearchHistoryMapper.insertSelective(marketSearchHistory);
+                if (marketSearchHistories.size() == 0) {
+                    marketSearchHistory.setAddTime(new Date());
+                    marketSearchHistory.setUpdateTime(new Date());
+                    marketSearchHistoryMapper.insertSelective(marketSearchHistory);
+                } else {
+                    marketSearchHistory.setUpdateTime(new Date());
+                    marketSearchHistory.setId(marketSearchHistories.get(0).getId());
+                    marketSearchHistoryMapper.updateByPrimaryKeySelective(marketSearchHistory);
+                }
             }
         }
 

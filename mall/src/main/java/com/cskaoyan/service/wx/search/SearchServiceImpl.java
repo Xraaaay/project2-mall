@@ -47,6 +47,7 @@ public class SearchServiceImpl implements SearchService {
         if (principals != null) {
             MarketUser user = (MarketUser) principals.getPrimaryPrincipal();
             MarketSearchHistoryExample exampleHistory = new MarketSearchHistoryExample();
+            exampleHistory.setOrderByClause("update_time desc");
             MarketSearchHistoryExample.Criteria criteria1 = exampleHistory.createCriteria();
             criteria1.andDeletedEqualTo(false)
                     .andUserIdEqualTo(user.getId());
