@@ -10,7 +10,7 @@ public class MarketCategory {
 
     private String name;
     //自动生成的是String字符串， 改为String数组
-    private String[] keywords;
+    private String keywords;
 
     private String desc;
 
@@ -56,12 +56,12 @@ public class MarketCategory {
         this.name = name == null ? null : name.trim();
     }
 
-    public String[] getKeywords() {
+    public String getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(String[] keywords) {
-        this.keywords = keywords == null ? null : keywords;
+    public void setKeywords(String keywords) {
+        this.keywords = keywords == null ? null : keywords.trim();
     }
 
     public String getDesc() {

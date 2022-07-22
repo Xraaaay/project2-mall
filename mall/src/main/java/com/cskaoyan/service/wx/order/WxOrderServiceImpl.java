@@ -395,13 +395,13 @@ public class WxOrderServiceImpl implements WxOrderService {
             goodsPrice = goodsPrice.add(price.multiply(new BigDecimal(number)));
         }
         //得到couponPrice优惠券减免，根据couponId得到discount值
-        if (wxOrderSubmitBo.getCouponId() != 0) {
+        if (wxOrderSubmitBo.getCouponId() != 0 && wxOrderSubmitBo.getCouponId() != -1) {
             couponPrice = marketCouponMapper.selectByPrimaryKey(wxOrderSubmitBo.getCouponId()).getDiscount();
         }
         orderPrice = goodsPrice.add(freightPrice).subtract(couponPrice);
-        //如果orderPrice小于88元，加10元运费
+        //如果orderPrice小于88元，加8元运费
         if (orderPrice.compareTo(new BigDecimal(88)) == -1) {
-            freightPrice = freightPrice.add(new BigDecimal(10));
+            freightPrice = freightPrice.add(new BigDecimal(8));
             orderPrice = goodsPrice.add(freightPrice).subtract(couponPrice);
         }
         actualPrice = orderPrice.subtract(integralPrice);
@@ -488,12 +488,15 @@ public class WxOrderServiceImpl implements WxOrderService {
             //所使用的优惠券状态改为1（已使用）
             //TODO 如果后台没有对个人用户能够领取同一张优惠券的数量进行限制，该用户持有多张同一优惠券。
             // 那应该是把哪一张优惠券更改状态
-            MarketCouponUser marketCouponUser = new MarketCouponUser();
-            marketCouponUser.setId(wxOrderSubmitBo.getUserCouponId());
-            //'使用状态, 如果是0则未使用；如果是1则已使用；如果是2则已过期；如果是3则已经下架；
-            marketCouponUser.setStatus((short) 1);
-            marketCouponUser.setUpdateTime(new Date());
-            marketCouponUserMapper.updateByPrimaryKeySelective(marketCouponUser);
+            if (wxOrderSubmitBo.getUserCouponId() != 0 && wxOrderSubmitBo.getUserCouponId() != -1){
+                MarketCouponUser marketCouponUser = new MarketCouponUser();
+                marketCouponUser.setId(wxOrderSubmitBo.getUserCouponId());
+                //'使用状态, 如果是0则未使用；如果是1则已使用；如果是2则已过期；如果是3则已经下架；
+                marketCouponUser.setStatus((short) 1);
+                marketCouponUser.setUpdateTime(new Date());
+                marketCouponUserMapper.updateByPrimaryKeySelective(marketCouponUser);
+            }
+
             //商品库存减少
             //根据market_cart表中“product_id”修改market_goods_product表中数量number
             for (int i = 0; i < marketCarts.size(); i++) {
@@ -534,7 +537,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         MarketOrder marketOrder = new MarketOrder();
         marketOrder.setId(id);
         marketOrder.setPayId(payId);
-        marketOrder.setOrderStatus((short)201);
+        marketOrder.setOrderStatus((short) 201);
         Date payTime = new Date();
         marketOrder.setPayTime(payTime);
         marketOrder.setUpdateTime(payTime);
