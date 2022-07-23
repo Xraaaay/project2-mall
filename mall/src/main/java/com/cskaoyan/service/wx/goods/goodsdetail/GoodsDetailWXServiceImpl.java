@@ -7,6 +7,7 @@ import com.cskaoyan.bean.wx.goods.detail.goodsdetail.MarketCommentVo;
 import com.cskaoyan.bean.wx.goods.detail.goodsdetail.Specification;
 import com.cskaoyan.mapper.common.*;
 import com.cskaoyan.service.wx.auth.AccountServiceImpl;
+import com.cskaoyan.util.CurTimeUtil;
 import com.github.pagehelper.PageHelper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -14,6 +15,8 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -158,6 +161,35 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
         PrincipalCollection principals = subject.getPrincipals();
         if (principals != null) {
             user = (MarketUser) principals.getPrimaryPrincipal();
+
+
+            //前 先判断有没有在加入
+            // MarketFootprintExample marketFootprintExample = new MarketFootprintExample();
+            // marketFootprintExample.createCriteria().andGoodsIdEqualTo(goodsId);
+            // List<MarketFootprint> marketFootprints = footprintMapper.selectByExample(marketFootprintExample);
+            // if (marketFootprints.size()==0){
+            //     String curTime = CurTimeUtil.getCurTime();
+            //     SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+            //     SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
+            //     try {
+            //         Date Y = sdf1.parse(curTime);
+            //         Date H = sdf2.parse(curTime);
+            //
+            //
+            //     } catch (ParseException e) {
+            //         e.printStackTrace();
+            //     }
+            //
+            // }else {
+            //
+            // }
+
+
+
+
+
+
+
             // 加入足迹
             MarketFootprint marketFootprint = new MarketFootprint(null, user.getId(), goodsId, new Date(), new Date(), false);
             footprintMapper.insertSelective(marketFootprint);
