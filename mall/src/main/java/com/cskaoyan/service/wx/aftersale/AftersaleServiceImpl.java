@@ -73,7 +73,7 @@ public class AftersaleServiceImpl implements AftersaleService {
         marketAftersaleMapper.insertSelective(marketAftersale);
         //修改order表中该订单aftersaleStatus为1；
         MarketOrder marketOrder = new MarketOrder();
-        marketOrder.setId(userId);
+        marketOrder.setId(wxAftersaleSubmitBo.getOrderId());
         marketOrder.setUpdateTime(new Date());
         marketOrder.setAftersaleStatus((short)1);
         marketOrderMapper.updateByPrimaryKeySelective(marketOrder);

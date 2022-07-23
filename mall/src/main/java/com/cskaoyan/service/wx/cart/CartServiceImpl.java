@@ -10,6 +10,7 @@ import com.cskaoyan.exception.UnAuthException;
 import com.cskaoyan.mapper.common.*;
 import com.cskaoyan.service.admin.promotion.CouponService;
 import com.cskaoyan.util.PrincipalUtil;
+import com.github.pagehelper.PageHelper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -289,6 +290,7 @@ public class CartServiceImpl implements CartService {
         }
 
         // 优惠券数量
+        PageHelper.startPage(1, 100, "discount desc");
         List<MyCouponListVO> couponList =
                 couponMapper.selectUserCouponListByUserIdAndStatus(userId, 0);
         ArrayList<MyCouponListVO> availableCouponList = new ArrayList<>();

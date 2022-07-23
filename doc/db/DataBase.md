@@ -2,20 +2,20 @@
 
 ## market_ad 广告表
 
-- [ ] | 字段名           | 类型     | 长度 | not null | 注释                                 |
-  | ---------------- | -------- | ---- | -------- | ------------------------------------ |
-  | id               | int      | 11   | TRUE     |                                      |
-  | name             | varchar  | 63   | TRUE     | 广告标题                             |
-  | link             | varchar  | 255  | TRUE     | 所广告的商品页面或者活动页面链接地址 |
-  | url              | varchar  | 255  | TRUE     | 广告宣传图片                         |
-  | position         | tinyint  | 3    | FALSE    | 广告位置：1则是首页                  |
-  | content          | varchar  | 255  | FALSE    | 活动内容                             |
-  | ***start_time*** | datetime | 0    | FALSE    | 广告开始时间                         |
-  | ***end_time***   | datetime | 0    | FALSE    | 广告结束时间                         |
-  | enabled          | tinyint  | 1    | FALSE    | 是否启动                             |
-  | add_time         | datetime | 0    | FALSE    | 创建时间                             |
-  | update_time      | datetime | 0    | FALSE    | 更新时间                             |
-  | deleted          | tinyint  | 1    | FALSE    | 逻辑删除                             |
+| 字段名           | 类型     | 长度 | not null | 注释                                 |
+| ---------------- | -------- | ---- | -------- | ------------------------------------ |
+| id               | int      | 11   | TRUE     |                                      |
+| name             | varchar  | 63   | TRUE     | 广告标题                             |
+| link             | varchar  | 255  | TRUE     | 所广告的商品页面或者活动页面链接地址 |
+| url              | varchar  | 255  | TRUE     | 广告宣传图片                         |
+| position         | tinyint  | 3    | FALSE    | 广告位置：1则是首页                  |
+| content          | varchar  | 255  | FALSE    | 活动内容                             |
+| ***start_time*** | datetime | 0    | FALSE    | 广告开始时间                         |
+| ***end_time***   | datetime | 0    | FALSE    | 广告结束时间                         |
+| enabled          | tinyint  | 1    | FALSE    | 是否启动                             |
+| add_time         | datetime | 0    | FALSE    | 创建时间                             |
+| update_time      | datetime | 0    | FALSE    | 更新时间                             |
+| deleted          | tinyint  | 1    | FALSE    | 逻辑删除                             |
 
 
 
@@ -543,4 +543,11 @@
 
 
 
-## market_permissions
+## market_role_permission
+
+| primary_key | int     | 255  | TRUE  |                 |
+| ----------- | ------- | ---- | ----- | --------------- |
+| id          | varchar | 50   | FALSE | 权限id          |
+| pid         | int     | 255  | FALSE | 父权限主键值    |
+| label       | varchar | 20   | FALSE | 权限名称        |
+| api         | varchar | 50   | FALSE | 可操作的权限api |

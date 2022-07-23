@@ -179,7 +179,9 @@ public class GoodsServiceImpl implements GoodsService {
         // 查询所有pid=0的父分类集合
         List<MarketCategory> pids = marketCategoryMapper.selectByExample(marketCategoryExample);
         // 查询所有分类集合 需要id
-        List<MarketCategory> allMarketCategories = marketCategoryMapper.selectByExample(null);
+        MarketCategoryExample example = new MarketCategoryExample();
+        example.createCriteria().andDeletedEqualTo(false);
+        List<MarketCategory> allMarketCategories = marketCategoryMapper.selectByExample(example);
 
         CatAndBrandVo catAndBrandVo = new CatAndBrandVo();
 

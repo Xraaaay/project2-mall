@@ -96,7 +96,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         //先查询order表，得到orderList
         List<MarketOrder> orderList = marketOrderMapper.selectByExample(marketOrderExample1);
         //foreach循环 order赋值给orderOfList(orderOfList有成员变量isGroupin，order表中无该数据，不能直接使用orderList)
-        List<OrderOfList> orderOfLists = new LinkedList<>();
+        LinkedList<OrderOfList> orderOfLists = new LinkedList<>();
         for (MarketOrder order : orderList) {
             //循环里面，由orderId查询OrderGoods表，得到OrderGoodsList
             MarketOrderGoodsExample marketOrderGoodsExample2 = new MarketOrderGoodsExample();
@@ -130,7 +130,8 @@ public class WxOrderServiceImpl implements WxOrderService {
             }
             //生成orderOfList，并赋值
             OrderOfList orderOfList = new OrderOfList(order.getActualPrice(), order.getAftersaleStatus(), goodsOfOrderList, handleOption, order.getId(), false, order.getOrderSn(), Constant.orderStatusTextMap.get(order.getOrderStatus()));
-            orderOfLists.add(orderOfList);
+            //orderOfLists.add(orderOfList);
+            orderOfLists.addFirst(orderOfList);
         }
         //第一个foreach循环结束，List<OrderOfList> 赋值给WxOrderListPo成员变量
         return new WxOrderListPo(total, Integer.valueOf((int) pages), limit.longValue(), page, orderOfLists);
@@ -523,25 +524,30 @@ public class WxOrderServiceImpl implements WxOrderService {
      */
     @Override
     public void prepay(Integer id) {
-        //生成payId：年月日+6位随机码
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String format = sdf.format(new Date());
-        StringBuffer stringBuffer = new StringBuffer(format);
-        Random random = new Random();
-        for (int i = 0; i < 6; i++) {
-            int num = random.nextInt(10);
-            stringBuffer.append(num);
+        //获取order，再获取orderStatus，为101（即用户未付款状态），可以付款
+        MarketOrder marketOrder = marketOrderMapper.selectByPrimaryKey(id);
+        if((short)101==marketOrder.getOrderStatus()){
+            //生成payId：年月日+6位随机码
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String format = sdf.format(new Date());
+            StringBuffer stringBuffer = new StringBuffer(format);
+            Random random = new Random();
+            for (int i = 0; i < 6; i++) {
+                int num = random.nextInt(10);
+                stringBuffer.append(num);
+            }
+            String payId = stringBuffer.toString();
+            //赋值
+            MarketOrder marketOrder2 = new MarketOrder();
+            marketOrder2.setId(id);
+            marketOrder2.setPayId(payId);
+            marketOrder2.setOrderStatus((short) 201);
+            Date payTime = new Date();
+            marketOrder2.setPayTime(payTime);
+            marketOrder2.setUpdateTime(payTime);
+            //update
+            marketOrderMapper.updateByPrimaryKeySelective(marketOrder2);
         }
-        String payId = stringBuffer.toString();
-        //赋值
-        MarketOrder marketOrder = new MarketOrder();
-        marketOrder.setId(id);
-        marketOrder.setPayId(payId);
-        marketOrder.setOrderStatus((short) 201);
-        Date payTime = new Date();
-        marketOrder.setPayTime(payTime);
-        marketOrder.setUpdateTime(payTime);
-        //update
-        marketOrderMapper.updateByPrimaryKeySelective(marketOrder);
+
     }
 }

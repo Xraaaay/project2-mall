@@ -63,7 +63,7 @@ public class CatalogServiceImpl implements CatalogService {
         //获取currentSubCategory
         MarketCategoryExample marketCategoryExample2 = new MarketCategoryExample();
         MarketCategoryExample.Criteria criteria2 = marketCategoryExample2.createCriteria();
-        criteria2.andPidEqualTo(id);
+        criteria2.andPidEqualTo(id).andDeletedEqualTo(false);
         List<MarketCategory> marketCategories2 = marketCategoryMapper.selectByExample(marketCategoryExample2);
 
         return new WxCatalogIndexPo(null, marketCategory, marketCategories2);
