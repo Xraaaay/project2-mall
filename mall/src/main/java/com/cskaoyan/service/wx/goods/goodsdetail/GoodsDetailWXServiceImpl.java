@@ -162,34 +162,6 @@ public class GoodsDetailWXServiceImpl implements GoodsDetailWXService {
         if (principals != null) {
             user = (MarketUser) principals.getPrimaryPrincipal();
 
-
-            //前 先判断有没有在加入
-            // MarketFootprintExample marketFootprintExample = new MarketFootprintExample();
-            // marketFootprintExample.createCriteria().andGoodsIdEqualTo(goodsId);
-            // List<MarketFootprint> marketFootprints = footprintMapper.selectByExample(marketFootprintExample);
-            // if (marketFootprints.size()==0){
-            //     String curTime = CurTimeUtil.getCurTime();
-            //     SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-            //     SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
-            //     try {
-            //         Date Y = sdf1.parse(curTime);
-            //         Date H = sdf2.parse(curTime);
-            //
-            //
-            //     } catch (ParseException e) {
-            //         e.printStackTrace();
-            //     }
-            //
-            // }else {
-            //
-            // }
-
-
-
-
-
-
-
             // 加入足迹
             // 判断是否已经存在该足迹
             MarketFootprintExample footprintExample = new MarketFootprintExample();
